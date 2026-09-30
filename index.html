@@ -1,11 +1,17 @@
+
+index_gt_advogados.html
+
+100%
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RecebeOps • Cockpit Lote 5</title>
+  <title>RecebeOps • Cockpit GT Advogados & Lote 5</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .mono { font-family: 'JetBrains Mono', monospace; }
@@ -13,64 +19,64 @@
       body { background: #fff !important; color: #000 !important; }
       body * { visibility: hidden; }
       #printArea, #printArea * { visibility: visible; }
-      #printArea { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 2cm; background: #fff !important; color: #000 !important; }
+      #printArea { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 2cm; background: #fff !important; color: #000 !important; border: none !important; }
       .no-print { display: none !important; }
     }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
 
-  <!-- Header -->
-  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-6 py-3 flex items-center justify-between no-print">
+  <!-- Top Navigation Header -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-6 py-3 flex items-center justify-between no-print shadow-sm">
     <div class="flex items-center gap-3">
       <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center font-bold text-white shadow-md">R</div>
       <div>
         <div class="flex items-center gap-2">
           <span class="text-sm font-bold text-white">RecebeOps</span>
-          <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60">Overlay Portal Lote 5</span>
+          <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60">Overlay GT Advogados / Lote 5</span>
         </div>
-        <p class="text-[11px] text-slate-400">Emissão de Minutas & Cobrança • <strong class="text-slate-200">Loteadora Horizonte</strong></p>
+        <p class="text-[11px] text-slate-400">Automação de Minutas Jurídicas & Fila Trello • <strong class="text-slate-200">L.G.T Gestão</strong></p>
       </div>
     </div>
     <div class="flex items-center gap-5">
       <div class="hidden md:flex items-center gap-3 text-xs">
-        <div class="px-3 py-1 rounded-lg bg-slate-950 border border-slate-800"><span class="text-slate-400">Lotes Ativos:</span> <strong class="text-slate-200">1.200</strong></div>
-        <div class="px-3 py-1 rounded-lg bg-amber-950/30 border border-amber-800/40"><span class="text-amber-400">Inadimplência:</span> <strong class="text-amber-300">180 (15%)</strong></div>
+        <div class="px-3 py-1 rounded-lg bg-slate-950 border border-slate-800"><span class="text-slate-400">Fila Trello:</span> <strong class="text-slate-200" id="statFilaTotal">Ativa</strong></div>
+        <div class="px-3 py-1 rounded-lg bg-emerald-950/30 border border-emerald-800/40"><span class="text-emerald-400">Regras Dr. Leandro:</span> <strong class="text-emerald-300">Preservadas</strong></div>
       </div>
       <div class="flex items-center gap-3 pl-3 border-l border-slate-800">
         <div class="h-8 w-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-emerald-400">EV</div>
         <div class="text-left hidden sm:block">
           <div class="text-xs font-bold text-slate-200">Everton</div>
-          <div class="text-[10px] text-slate-400">Gestão de Operações & Jurídico</div>
+          <div class="text-[10px] text-slate-400">Gestão de Operações • Lote 5</div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Banner -->
+  <!-- Banner Informativo -->
   <div class="bg-slate-900/60 border-b border-slate-800/60 px-6 py-2 flex flex-wrap items-center justify-between text-xs text-slate-300 gap-2 no-print">
     <div class="flex items-center gap-2">
       <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span><strong>Cockpit Operacional Lote 5:</strong> Emissão automatizada dos 5 termos legais a partir do extrato e síntese do contrato.</span>
+      <span id="bannerStatusTexto"><strong>Conectado ao Trello:</strong> Pronto para validação e emissão dos 5 termos jurídicos sem quebra de alçada.</span>
     </div>
-    <div class="text-slate-400 text-[11px] font-mono">Lei 6.766/79 • Lei 13.786/18 • Código Civil • CDC</div>
+    <div class="text-slate-400 text-[11px] font-mono">Chave Pix: adm@gtadv.com.br (L.G.T Gestão)</div>
   </div>
 
-  <!-- Workspace -->
+  <!-- Workspace Principal -->
   <main class="flex-1 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1720px] w-full mx-auto">
-    <!-- FILA DE CASOS (4 cols) -->
+    <!-- FILA DE CASOS (4 colunas) -->
     <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4 no-print">
       <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-col gap-3">
         <div class="flex items-center justify-between">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Casos Pendentes de Minuta</h2>
-          <span class="text-[11px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full" id="caseCountBadge">5 casos</span>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Casos na Esteira (Trello / Lote 5)</h2>
+          <span class="text-[11px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full" id="caseCountBadge">Carregando...</span>
         </div>
-        <input type="text" id="searchInput" placeholder="Buscar por cliente, lote, quadra ou contrato..." 
+        <input type="text" id="searchInput" placeholder="Filtrar por nome, CPF, lote, quadra ou contrato..." 
                class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500">
         <div class="flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
           <button onclick="setFilter('ALL')" class="filter-btn active px-2.5 py-1 rounded-lg font-semibold bg-emerald-600 text-white whitespace-nowrap">Todos</button>
           <button onclick="setFilter('NOTIFICACAO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Notificação</button>
-          <button onclick="setFilter('PARCELAMENTO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Acordo</button>
+          <button onclick="setFilter('PARCELAMENTO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Acordo Curto</button>
           <button onclick="setFilter('CESSAO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Cessão</button>
           <button onclick="setFilter('REFIN')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Refin</button>
           <button onclick="setFilter('RESCISAO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Rescisão</button>
@@ -79,27 +85,27 @@
       <div class="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-270px)] pr-1" id="casesContainer"></div>
     </div>
 
-    <!-- COCKPIT DE EMISSÃO & MINUTA (8 cols) -->
+    <!-- COCKPIT DE EMISSÃO & MINUTA (8 colunas) -->
     <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-5">
       <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col gap-4 no-print">
         <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <div class="flex items-center gap-3">
-              <h1 class="text-xl font-bold text-white tracking-tight" id="detailName">Carlos Eduardo Mendes</h1>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold" id="detailBadgeType">Notificação</span>
+              <h1 class="text-xl font-bold text-white tracking-tight" id="detailName">Carregando...</h1>
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold" id="detailBadgeType">-</span>
             </div>
             <p class="text-xs text-slate-400 mt-1 flex flex-wrap items-center gap-3">
-              <span><strong>Loteamento:</strong> <span id="detailLoteamento" class="text-slate-200">Reserva Horizonte I</span></span>
+              <span><strong>Empreendimento:</strong> <span id="detailLoteamento" class="text-slate-200">-</span></span>
               <span>•</span>
-              <span><strong>Lote:</strong> <span id="detailUnidade" class="text-slate-200 font-mono">Qd. 12, Lt. 08</span></span>
+              <span><strong>Lote:</strong> <span id="detailUnidade" class="text-slate-200 font-mono">-</span></span>
               <span>•</span>
-              <span><strong>Contrato:</strong> <span id="detailContrato" class="text-slate-200 font-mono">#HZ-2023-0491</span></span>
+              <span><strong>Contrato:</strong> <span id="detailContrato" class="text-slate-200 font-mono">-</span></span>
             </p>
           </div>
           <div class="text-right">
-            <div class="text-[10px] uppercase font-bold text-slate-400">Saldo em Aberto</div>
-            <div class="text-lg font-extrabold text-amber-400 font-mono" id="detailValorTotal">R$ 14.850,00</div>
-            <div class="text-[11px] font-medium" id="detailAtraso">3 parcelas (94 dias)</div>
+            <div class="text-[10px] uppercase font-bold text-slate-400">Saldo Nominal</div>
+            <div class="text-lg font-extrabold text-amber-400 font-mono" id="detailValorTotal">R$ 0,00</div>
+            <div class="text-[11px] font-medium" id="detailAtraso">-</div>
           </div>
         </div>
 
@@ -108,7 +114,7 @@
             <span class="text-xs font-semibold text-slate-400">Termo:</span>
             <div class="flex flex-wrap bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
               <button onclick="switchDocMode('NOTIFICACAO')" id="tabBtnNotif" class="px-3 py-1.5 rounded-lg font-bold bg-emerald-600 text-white">1. Notificação</button>
-              <button onclick="switchDocMode('PARCELAMENTO')" id="tabBtnParc" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">2. Acordo</button>
+              <button onclick="switchDocMode('PARCELAMENTO')" id="tabBtnParc" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">2. Acordo Curto</button>
               <button onclick="switchDocMode('CESSAO')" id="tabBtnCessao" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">3. Cessão</button>
               <button onclick="switchDocMode('REFIN')" id="tabBtnRefin" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">4. Refin</button>
               <button onclick="switchDocMode('RESCISAO')" id="tabBtnRescisao" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">5. Rescisão</button>
@@ -121,38 +127,41 @@
         </div>
       </div>
 
+      <!-- Simulador e Alçadas (no-print) -->
       <div id="actionControlsPanel" class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-xs no-print"></div>
 
+      <!-- Visualização da Minuta em Folha Timbrada -->
       <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col">
         <div class="bg-slate-900 px-5 py-3 border-b border-slate-800 flex items-center justify-between text-xs no-print">
           <span class="text-slate-300 font-semibold flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
             Pré-visualização da Minuta Gerada
           </span>
-          <span class="text-slate-400 text-[11px]">Validação: <strong class="text-slate-200">Everton (Operações)</strong></span>
+          <span class="text-slate-400 text-[11px]">Validação: <strong class="text-slate-200">Everton (Operações Lote 5)</strong></span>
         </div>
         <div class="p-6 md:p-8 overflow-y-auto max-h-[580px] bg-slate-950/60">
           <div id="printArea" class="bg-white text-slate-900 p-8 sm:p-12 rounded-xl shadow-2xl max-w-[820px] mx-auto border border-slate-200 text-sm leading-relaxed"></div>
         </div>
         <div class="p-4 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-xs no-print">
-          <span class="text-slate-400 text-[11px]">Conformidade Legal Validada • Loteadora Horizonte</span>
-          <button onclick="approveAndSave()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Aprovar e Vincular ao Lote</button>
+          <span class="text-slate-400 text-[11px]">Regras Jurídicas Estritas (Dr. Leandro) • Sem Cônjuge em Parcelamento Curto</span>
+          <button onclick="approveAndSave()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Aprovar e Liberar PDF Oficial</button>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Modal Pix -->
+  <!-- Modal Pix Honorários / Entrada -->
   <div id="pixModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
       <button onclick="closePixModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
-      <h3 class="text-sm font-bold text-white mb-1">Cobrança Imediata Pix</h3>
-      <p class="text-xs text-slate-400 mb-3">Vinculado à entrada formalizada no termo</p>
+      <h3 class="text-sm font-bold text-white mb-1">Cobrança Imediata via Pix</h3>
+      <p class="text-xs text-slate-400 mb-3">Honorários / Entrada vinculada ao acordo</p>
       <div class="text-center py-3 bg-slate-950 rounded-xl border border-slate-800 mb-3">
-        <div class="text-xs text-slate-400">Valor da Entrada:</div>
-        <div class="text-2xl font-extrabold text-emerald-400 font-mono" id="pixModalValor">R$ 3.500,00</div>
+        <div class="text-xs text-slate-400">Valor da Entrada / Honorários:</div>
+        <div class="text-2xl font-extrabold text-emerald-400 font-mono" id="pixModalValor">R$ 398,99</div>
+        <div class="text-[11px] text-slate-400 mt-1">Beneficiário: L.G.T Gestão de Recebimentos LTDA</div>
       </div>
-      <input type="text" readonly id="pixCodeInput" value="00020126580014BR.GOV.BCB.PIX0136loteadora-cobranca@recebeops.com.br52040000530398654073500.005802BR5925LOTEADORA HORIZONTE SPE6009SAO PAULO62070503***6304E8A2" class="bg-slate-950 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 py-2 w-full font-mono mb-3">
+      <input type="text" readonly id="pixCodeInput" value="adm@gtadv.com.br" class="bg-slate-950 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 py-2 w-full font-mono mb-3 text-center">
       <div class="flex gap-2">
         <button onclick="copyPixCode()" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold">Copiar Chave Pix</button>
         <button onclick="closePixModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl">Fechar</button>
@@ -165,19 +174,216 @@
   </div>
 
   <script>
+    const APPS_SCRIPT_URL = "";
+
     const CASES = [
-      { id: 1, nome: "Carlos Eduardo Mendes", cpf: "284.910.448-32", rg: "34.882.109-SP", civ: "Casado", prof: "Engenheiro", end: "Rua das Palmeiras, 340, SJC/SP", lot: "Reserva Horizonte I", qd: "12", lt: "08", m2: "360 m²", mat: "148.902", ct: "HZ-2023-0491", dt: "14/03/2023", st: "NOTIFICACAO", stLbl: "Notificação", stCls: "bg-rose-950 text-rose-300 border-rose-800", dias: 94, parcVenc: 3, parcNum: "24 a 26/180", valOrig: 12450, multa: 249, jur: 1142.5, corr: 1008.5, tot: 14850, saldo: 284200, pago: 98400 },
-      { id: 2, nome: "Mariana Silveira Farias", cpf: "341.802.118-90", rg: "41.902.331-SP", civ: "Solteira", prof: "Arquiteta", end: "Av. Barão do Rio Branco, 820, SJC/SP", lot: "Parque dos Ipês Urban", qd: "04", lt: "19", m2: "250 m²", mat: "92.114", ct: "IP-2022-1104", dt: "08/11/2022", st: "PARCELAMENTO", stLbl: "Acordo Curto", stCls: "bg-amber-950 text-amber-300 border-amber-800", dias: 48, parcVenc: 2, parcNum: "38 e 39/120", valOrig: 5200, multa: 104, jur: 312, corr: 184, tot: 5800, saldo: 178500, pago: 104000 },
-      { id: 3, nome: "Roberto Mendonça de Assis", cpf: "190.554.818-44", rg: "29.110.840-SP", civ: "Divorciado", prof: "Comerciante", end: "Rua Teopompo de Vasconcelos, 110, SJC/SP", lot: "Reserva Horizonte I", qd: "07", lt: "03", m2: "420 m²", mat: "148.210", ct: "HZ-2021-0118", dt: "22/05/2021", st: "CESSAO", stLbl: "Cessão", stCls: "bg-blue-950 text-blue-300 border-blue-800", dias: 0, parcVenc: 0, parcNum: "Taxa Expediente", valOrig: 0, multa: 0, jur: 0, corr: 0, tot: 4500, saldo: 142000, pago: 168000, cess: { nome: "Lucas Guilherme Barbosa", cpf: "419.221.308-11", rg: "47.201.890-SP" } },
-      { id: 4, nome: "Beatriz Nogueira Duarte", cpf: "219.443.898-77", rg: "38.904.112-SP", civ: "Casada", prof: "Médica", end: "Rua Laurent Martins, 215, SJC/SP", lot: "Reserva Horizonte II", qd: "18", lt: "22", m2: "300 m²", mat: "155.804", ct: "HZ-2024-0899", dt: "10/01/2024", st: "REFIN", stLbl: "Refinanciamento", stCls: "bg-purple-950 text-purple-300 border-purple-800", dias: 65, parcVenc: 2, parcNum: "20 e 21/150", valOrig: 7400, multa: 148, jur: 520, corr: 332, tot: 8400, saldo: 345000, pago: 74000 },
-      { id: 5, nome: "Fernando Guedes Castro", cpf: "180.771.908-15", rg: "31.442.871-SP", civ: "Solteiro", prof: "Analista", end: "Rua Heitor Villa Lobos, 90, SJC/SP", lot: "Parque dos Ipês Urban", qd: "09", lt: "11", m2: "250 m²", mat: "92.440", ct: "IP-2023-0544", dt: "19/08/2023", st: "RESCISAO", stLbl: "Rescisão", stCls: "bg-red-950 text-red-300 border-red-800", dias: 140, parcVenc: 5, parcNum: "12 a 16/120", valOrig: 13500, multa: 270, jur: 1620, corr: 910, tot: 16300, saldo: 215000, pago: 42000 }
+      {
+        id: 1,
+        cardId: "OK3ymDHF",
+        nome: "Jeferson de Souza",
+        cpf: "123.456.789-00",
+        rg: "55.882.109-SSP/SC",
+        civ: "Casado",
+        prof: "Comerciante",
+        end: "Rua Joinville, 450, Centro, Joinville/SC",
+        lot: "COMVIVA JOINVILLE",
+        qd: "08",
+        lt: "14",
+        m2: "300,00 m²",
+        mat: "Matrícula nº 78.410 - Registro de Joinville",
+        ct: "L5-JOIN-0982",
+        dt: "15/02/2022",
+        st: "PARCELAMENTO",
+        stLbl: "Acordo Curto",
+        stCls: "bg-emerald-950 text-emerald-300 border-emerald-800",
+        dias: 60,
+        parcVenc: 3,
+        parcNum: "3 parcelas acordadas no Trello",
+        valOrig: 3979.91,
+        multa: 0,
+        jur: 0,
+        corr: 0,
+        tot: 1326.63,
+        saldo: 1326.63,
+        pago: 2653.28,
+        honorarios: 398.99,
+        honorariosPago: true,
+        cess: null
+      },
+      {
+        id: 2,
+        cardId: "CARLOS_01",
+        nome: "Carlos Eduardo Mendes",
+        cpf: "284.910.448-32",
+        rg: "34.882.109-SSP/SP",
+        civ: "Casado",
+        prof: "Engenheiro Civil",
+        end: "Rua das Palmeiras, 340, São José dos Campos/SP",
+        lot: "Reserva Horizonte I",
+        qd: "12",
+        lt: "08",
+        m2: "360 m²",
+        mat: "148.902 do 1º Oficial de Registro de Imóveis",
+        ct: "HZ-2023-0491",
+        dt: "14/03/2023",
+        st: "NOTIFICACAO",
+        stLbl: "Notificação",
+        stCls: "bg-rose-950 text-rose-300 border-rose-800",
+        dias: 94,
+        parcVenc: 3,
+        parcNum: "24 a 26/180",
+        valOrig: 12450,
+        multa: 249,
+        jur: 1142.5,
+        corr: 1008.5,
+        tot: 14850,
+        saldo: 284200,
+        pago: 98400,
+        honorarios: 1485,
+        honorariosPago: false,
+        cess: null
+      },
+      {
+        id: 3,
+        cardId: "MARIANA_02",
+        nome: "Mariana Silveira Farias",
+        cpf: "341.802.118-90",
+        rg: "41.902.331-SSP/SP",
+        civ: "Solteira",
+        prof: "Arquiteta",
+        end: "Av. Barão do Rio Branco, 820, SJC/SP",
+        lot: "Parque dos Ipês Urban",
+        qd: "04",
+        lt: "19",
+        m2: "250 m²",
+        mat: "92.114 do Registro de Imóveis",
+        ct: "IP-2022-1104",
+        dt: "08/11/2022",
+        st: "PARCELAMENTO",
+        stLbl: "Acordo Curto",
+        stCls: "bg-amber-950 text-amber-300 border-amber-800",
+        dias: 48,
+        parcVenc: 2,
+        parcNum: "38 e 39/120",
+        valOrig: 5200,
+        multa: 104,
+        jur: 312,
+        corr: 184,
+        tot: 5800,
+        saldo: 178500,
+        pago: 104000,
+        honorarios: 580,
+        honorariosPago: true,
+        cess: null
+      },
+      {
+        id: 4,
+        cardId: "ROBERTO_03",
+        nome: "Roberto Mendonça de Assis",
+        cpf: "190.554.818-44",
+        rg: "29.110.840-SSP/SP",
+        civ: "Divorciado",
+        prof: "Comerciante",
+        end: "Rua Teopompo de Vasconcelos, 110, SJC/SP",
+        lot: "Reserva Horizonte I",
+        qd: "07",
+        lt: "03",
+        m2: "420 m²",
+        mat: "148.210 do 1º Oficial de Registro de Imóveis",
+        ct: "HZ-2021-0118",
+        dt: "22/05/2021",
+        st: "CESSAO",
+        stLbl: "Cessão",
+        stCls: "bg-blue-950 text-blue-300 border-blue-800",
+        dias: 0,
+        parcVenc: 0,
+        parcNum: "Taxa de Expediente",
+        valOrig: 0,
+        multa: 0,
+        jur: 0,
+        corr: 0,
+        tot: 4500,
+        saldo: 142000,
+        pago: 168000,
+        honorarios: 450,
+        honorariosPago: false,
+        cess: { nome: "Lucas Guilherme Barbosa", cpf: "419.221.308-11", rg: "47.201.890-SP" }
+      },
+      {
+        id: 5,
+        cardId: "FERNANDO_05",
+        nome: "Fernando Guedes Castro",
+        cpf: "180.771.908-15",
+        rg: "31.442.871-SSP/SP",
+        civ: "Solteiro",
+        prof: "Analista",
+        end: "Rua Heitor Villa Lobos, 90, SJC/SP",
+        lot: "Parque dos Ipês Urban",
+        qd: "09",
+        lt: "11",
+        m2: "250 m²",
+        mat: "92.440 do Registro de Imóveis",
+        ct: "IP-2023-0544",
+        dt: "19/08/2023",
+        st: "RESCISAO",
+        stLbl: "Rescisão",
+        stCls: "bg-red-950 text-red-300 border-red-800",
+        dias: 140,
+        parcVenc: 5,
+        parcNum: "12 a 16/120",
+        valOrig: 13500,
+        multa: 270,
+        jur: 1620,
+        corr: 910,
+        tot: 16300,
+        saldo: 215000,
+        pago: 42000,
+        honorarios: 0,
+        honorariosPago: false,
+        cess: null
+      }
     ];
 
-    let currentCaseId = 1, currentFilter = 'ALL', currentDocMode = 'NOTIFICACAO';
-    let agreementState = { entradaValor: 3500, qtdParcelas: 3, descontoJuros: 0 };
+    let currentCaseId = 1;
+    let currentFilter = 'ALL';
+    let currentDocMode = 'PARCELAMENTO';
+    let agreementState = { entradaValor: 398.99, qtdParcelas: 3, descontoJuros: 0 };
     let rescisaoState = { retencaoClausulaPenalPct: 10, parcelasDevolucao: 12 };
 
-    function init() { renderCaseList(); selectCase(1); }
+    function init() {
+      verificarParametroCardIdNaUrl();
+      renderCaseList();
+      selectCase(1);
+    }
+
+    async function verificarParametroCardIdNaUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cardId = urlParams.get('cardId');
+      if (cardId) {
+        document.getElementById('bannerStatusTexto').innerHTML = `<strong>Cartão Carregado:</strong> Visualizando prévia do Trello ID: <code class="bg-slate-800 px-1 py-0.5 rounded text-emerald-400">${cardId}</code>`;
+        if (APPS_SCRIPT_URL) {
+          try {
+            showToast("Buscando dados no Apps Script / Trello...");
+            const resp = await fetch(`${APPS_SCRIPT_URL}?cardId=${cardId}`);
+            const data = await resp.json();
+            if (data && data.dados) {
+              const d = data.dados;
+              CASES[0].nome = d.nomeComprador || CASES[0].nome;
+              CASES[0].cpf = d.cpfComprador || CASES[0].cpf;
+              CASES[0].lot = d.empreendimentoModelo || CASES[0].lot;
+              CASES[0].ct = d.contrato || CASES[0].ct;
+              CASES[0].qd = d.quadra || CASES[0].qd;
+              CASES[0].lt = d.lote || CASES[0].lt;
+              renderCaseList();
+              selectCase(1);
+              showToast("Dados do Trello sincronizados!");
+            }
+          } catch(e) {
+            console.warn("Apps script offline ou sem CORS, usando cache local.");
+          }
+        }
+      }
+    }
 
     function setFilter(filter) {
       currentFilter = filter;
@@ -232,7 +438,8 @@
       badge.innerText = c.stLbl;
       badge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border ${c.stCls}`;
       currentDocMode = c.st;
-      agreementState.entradaValor = Math.min(3000, Math.round(c.tot * 0.3)) || 2500;
+      agreementState.entradaValor = c.honorarios || 398.99;
+      agreementState.qtdParcelas = c.parcVenc || 3;
       updateTabsUI(); renderActionControls(); renderDocumentContent(); renderCaseList();
     }
 
@@ -250,19 +457,18 @@
       const c = CASES.find(item => item.id === currentCaseId);
       const panel = document.getElementById('actionControlsPanel');
       if (currentDocMode === 'NOTIFICACAO') {
-        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>Notificação Premonitória de Mora (Art. 32 da Lei 6.766/79)</div><p class="text-slate-400 text-[11px] mt-0.5">Prazo legal de <strong>30 dias</strong> para purgação no Registro de Imóveis ou quitação direta.</p></div><button onclick="openPixModal(${c.tot})" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Emitir Pix para Purgação</button></div>`;
+        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>Notificação Premonitória de Mora (Art. 32 da Lei 6.766/79)</div><p class="text-slate-400 text-[11px] mt-0.5">Prazo de 30 dias para purgação da mora no Registro de Imóveis. <strong>Regra: sem inclusão de cônjuge.</strong></p></div><button onclick="openPixModal(${c.tot})" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Emitir Chave Pix</button></div>`;
       } else if (currentDocMode === 'PARCELAMENTO') {
-        const rest = Math.max(0, c.tot - agreementState.entradaValor);
-        const valParc = rest / agreementState.qtdParcelas;
-        panel.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3"><div><label class="block text-slate-400 mb-1">Entrada no Pix:</label><input type="number" value="${agreementState.entradaValor}" onchange="agreementState.entradaValor=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-200 font-mono"></div><div><label class="block text-slate-400 mb-1">Parcelas do Saldo:</label><select onchange="agreementState.qtdParcelas=parseInt(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-200 font-mono"><option value="1">1x</option><option value="2">2x</option><option value="3" selected>3x</option><option value="6">6x</option></select></div><div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between"><div><span class="text-[10px] text-slate-400">Resultado:</span><div class="text-emerald-400 font-bold font-mono text-sm">${agreementState.qtdParcelas}x de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div><button onclick="openPixModal(${agreementState.entradaValor})" class="text-xs text-emerald-400 underline font-semibold">Pix Entrada</button></div></div>`;
+        const valParc = c.tot / agreementState.qtdParcelas;
+        panel.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3"><div><label class="block text-slate-400 mb-1">Honorários/Entrada (Separados da Dívida):</label><input type="number" value="${agreementState.entradaValor}" onchange="agreementState.entradaValor=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-200 font-mono"></div><div><label class="block text-slate-400 mb-1">Parcelas do Acordo (Máx. 6 - Dr. Leandro):</label><select onchange="agreementState.qtdParcelas=parseInt(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-200 font-mono"><option value="1" ${agreementState.qtdParcelas==1?'selected':''}>1x</option><option value="2" ${agreementState.qtdParcelas==2?'selected':''}>2x</option><option value="3" ${agreementState.qtdParcelas==3?'selected':''}>3x</option><option value="4" ${agreementState.qtdParcelas==4?'selected':''}>4x</option><option value="6" ${agreementState.qtdParcelas==6?'selected':''}>6x</option></select></div><div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between"><div><span class="text-[10px] text-slate-400">Saldo Parcelado:</span><div class="text-emerald-400 font-bold font-mono text-sm">${agreementState.qtdParcelas}x de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div><button onclick="openPixModal(${agreementState.entradaValor})" class="text-xs text-emerald-400 underline font-semibold">Pix Honorários</button></div></div>`;
       } else if (currentDocMode === 'CESSAO') {
-        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200">Termo de Cessão de Direitos com Anuência da Loteadora</div><p class="text-slate-400 text-[11px] mt-0.5">Taxa de anuência e regularização cadastral: <strong>R$ 4.500,00</strong>.</p></div><button onclick="openPixModal(4500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Gerar Pix Taxa de Cessão</button></div>`;
+        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200">Termo de Cessão e Transferência de Lote (Com Anuência)</div><p class="text-slate-400 text-[11px] mt-0.5">Exige qualificação completa e assinatura de cônjuge se casado.</p></div><button onclick="openPixModal(4500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Pix Taxa de Cessão</button></div>`;
       } else if (currentDocMode === 'REFIN') {
-        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200">Aditivo Contratual de Repactuação (150 Meses)</div><p class="text-slate-400 text-[11px] mt-0.5">Saldo de R$ ${c.saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})} corrigido pelo IPCA + 0,8% a.m.</p></div><button onclick="openPixModal(3500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Gerar Entrada</button></div>`;
+        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200">Aditivo Contratual de Repactuação Financeira</div><p class="text-slate-400 text-[11px] mt-0.5">Saldo vincendo diluído em 150 parcelas corrigidas pelo IPCA + 0,8% a.m.</p></div><button onclick="openPixModal(3500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Gerar Entrada</button></div>`;
       } else {
         const ret = c.pago * (rescisaoState.retencaoClausulaPenalPct / 100);
         const liq = Math.max(0, c.pago - ret);
-        panel.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3"><div><span class="text-slate-400">Total Pago:</span><div class="font-bold text-slate-200 font-mono">R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div><div><label class="block text-slate-400 mb-1">Retenção Penal (Lei 13.786/18):</label><select onchange="rescisaoState.retencaoClausulaPenalPct=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1 text-slate-200 font-mono"><option value="10">10%</option><option value="20">20%</option><option value="25">25% (Máx)</option></select></div><div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><div><span class="text-[10px] text-slate-400">Devolução Líquida (12x):</span><div class="text-amber-400 font-bold font-mono">R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div></div></div>`;
+        panel.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3"><div><span class="text-slate-400">Total Pago:</span><div class="font-bold text-slate-200 font-mono">R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div><div><label class="block text-slate-400 mb-1">Retenção (Lei 13.786/18):</label><select onchange="rescisaoState.retencaoClausulaPenalPct=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1 text-slate-200 font-mono"><option value="10">10%</option><option value="20">20%</option><option value="25">25% (Máx)</option></select></div><div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><div><span class="text-[10px] text-slate-400">Restituição em 12x:</span><div class="text-amber-400 font-bold font-mono">R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div></div></div>`;
       }
     }
 
@@ -270,35 +476,39 @@
       const c = CASES.find(item => item.id === currentCaseId);
       const printArea = document.getElementById('printArea');
       const hoje = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-      const hdr = `<div class="border-b pb-3 mb-4 flex justify-between items-start"><div><h2 class="font-extrabold text-sm text-slate-900 uppercase">LOTEADORA HORIZONTE SPE LTDA.</h2><p class="text-[11px] text-slate-600">CNPJ: 42.190.840/0001-92 • Gestão Operacional de Contratos</p></div><div class="text-right text-[11px] font-mono text-slate-500">Contrato: #${c.ct}<br>Data: ${hoje}</div></div>`;
+      const hdr = `<div class="border-b pb-3 mb-4 flex justify-between items-start"><div><h2 class="font-extrabold text-sm text-slate-900 uppercase">GT ADVOGADOS • DEPARTAMENTO DE RECEBÍVEIS</h2><p class="text-[11px] text-slate-600">Assessoramento Jurídico da Loteadora • Gestão de Contratos Lote 5</p></div><div class="text-right text-[11px] font-mono text-slate-500">Contrato: #${c.ct}<br>Emissão: ${hoje}</div></div>`;
 
       if (currentDocMode === 'NOTIFICACAO') {
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">NOTIFICAÇÃO PREMONITÓRIA DE MORA (ART. 32 DA LEI 6.766/79)</h3><p class="mb-3">NOTIFICADO(A): <strong>${c.nome.toUpperCase()}</strong>, CPF nº <strong>${c.cpf}</strong>.</p><p class="mb-3 text-justify">Fica V. Sa. notificado(a) de que se encontra em mora relativo ao Contrato nº <strong>${c.ct}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> do loteamento <em>${c.lot}</em> (Matrícula nº ${c.mat}), com débito consolidado de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> (${c.parcVenc} parcelas em atraso: ${c.parcNum}).</p><p class="mb-4 font-semibold text-justify">Fica V. Sa. intimado(a) a purgar a mora no prazo legal impreterível de 30 (trinta) dias, sob pena de rescisão de pleno direito do contrato e reintegração de posse na forma da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>Loteadora Horizonte</strong><br>Everton - Operações</div><div><strong>Notificado(a)</strong><br>Data: ___/___/2026</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">NOTIFICAÇÃO PREMONITÓRIA DE MORA (ART. 32 DA LEI 6.766/79)</h3><p class="mb-3">NOTIFICADO(A): <strong>${c.nome.toUpperCase()}</strong>, CPF nº <strong>${c.cpf}</strong>.</p><p class="mb-3 text-justify">Fica V. Sa. notificado(a) de que se encontra em mora perante a credora relativamente ao Contrato nº <strong>${c.ct}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> do loteamento <em>${c.lot}</em> (${c.mat}), com débito consolidado de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> (${c.parcNum}).</p><p class="mb-4 font-semibold text-justify">Fica V. Sa. intimado(a) a purgar a mora no prazo legal de 30 (trinta) dias contados do recebimento desta, sob pena de rescisão contratual de pleno direito e reintegração de posse na forma da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>GT Advogados / L.G.T Gestão</strong><br>Everton - Operações</div><div><strong>Ciente Notificado</strong><br>Data: ___/___/2026</div></div>`;
       } else if (currentDocMode === 'PARCELAMENTO') {
-        const rest = Math.max(0, c.tot - agreementState.entradaValor);
-        const valParc = rest / agreementState.qtdParcelas;
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA E ACORDO</h3><p class="mb-3">DEVEDOR(A): <strong>${c.nome.toUpperCase()}</strong>, CPF nº <strong>${c.cpf}</strong> (Contrato #${c.ct}).</p><p class="mb-3 text-justify">O(A) Devedor(a) confessa o débito de parcelas vencidas no valor de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao Lote ${c.lt}, Quadra ${c.qd} (${c.lot}), comprometendo-se a quitá-lo com <strong>entrada imediata de R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> via Pix e o restante em <strong>${agreementState.qtdParcelas} parcelas mensais de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>.</p><p class="mb-4 text-xs text-slate-600">O atraso em qualquer parcela acarretará rescisão deste termo e imediato prosseguimento da notificação do Art. 32 da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>Loteadora Horizonte</strong><br>Everton</div><div><strong>${c.nome}</strong><br>CPF: ${c.cpf}</div></div>`;
+        const valParc = c.tot / agreementState.qtdParcelas;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA E ACORDO DE PARCELAMENTO CURTO</h3><p class="mb-3">DEVEDOR(A): <strong>${c.nome.toUpperCase()}</strong>, brasileiro(a), ${c.civ.toLowerCase()}, ${c.prof.toLowerCase()}, portador(a) do RG nº ${c.rg} e inscrito(a) no CPF/MF sob o nº <strong>${c.cpf}</strong> (sem inclusão de cônjuge, conforme regras do Dr. Leandro).</p><p class="mb-3 text-justify">1. O(A) Devedor(a) reconhece e confessa o saldo devedor de parcelas vencidas no montante de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao Lote ${c.lt}, Quadra ${c.qd} do empreendimento <em>${c.lot}</em>.</p><p class="mb-3 text-justify">2. O débito confessado será adimplido em <strong>${agreementState.qtdParcelas} parcelas mensais e sucessivas de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>.</p><p class="mb-3 text-justify">3. DOS HONORÁRIOS ADVOCATÍCIOS: O(A) Devedor(a) ajusta a verba honorária/entrada no valor de <strong>R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> paga à L.G.T Gestão de Recebimentos LTDA via Pix (adm@gtadv.com.br), verba autônoma e não compensável com o saldo da dívida.</p><p class="mb-4 text-xs text-slate-600">4. O atraso em qualquer parcela acarretará a rescisão imediata do acordo e vencimento antecipado do saldo integral com aplicação das penalidades da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>L.G.T Gestão de Recebimentos LTDA</strong><br>Validação Operacional: Everton</div><div><strong>${c.nome.toUpperCase()}</strong><br>CPF: ${c.cpf}</div></div>`;
       } else if (currentDocMode === 'CESSAO') {
         const cess = c.cess || { nome: "Lucas Guilherme Barbosa", cpf: "419.221.308-11" };
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO DE CESSÃO DE DIREITOS E OBRIGAÇÕES COM ANUÊNCIA</h3><p class="mb-3">CEDENTE: <strong>${c.nome}</strong> (CPF: ${c.cpf}) | CESSIONÁRIO: <strong>${cess.nome}</strong> (CPF: ${cess.cpf}).</p><p class="mb-3 text-justify">O Cedente, com expressa anuência da LOTEADORA, transfere ao Cessionário os direitos do Contrato #${c.ct} referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> do loteamento <em>${c.lot}</em>, assumindo este a integralidade das parcelas vincendas até a quitação.</p><p class="mb-4 text-xs font-mono bg-slate-100 p-2 rounded">Taxa de anuência e transferência de R$ 4.500,00 recolhida perante a Loteadora.</p><div class="pt-8 border-t grid grid-cols-3 text-center text-xs"><div><strong>Cedente</strong><br>${c.nome}</div><div><strong>Cessionário</strong><br>${cess.nome}</div><div><strong>Anuente</strong><br>Everton</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO DE CESSÃO DE DIREITOS E OBRIGAÇÕES COM ANUÊNCIA EXPRESSA</h3><p class="mb-3">CEDENTE: <strong>${c.nome}</strong> (CPF: ${c.cpf}) | CESSIONÁRIO: <strong>${cess.nome}</strong> (CPF: ${cess.cpf}).</p><p class="mb-3 text-justify">O Cedente, com expressa anuência da interveniente credora, cede a posse e os direitos do Contrato #${c.ct} referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> (${c.lot}), transferindo o saldo devedor vincendo ao Cessionário, recolhida a taxa de cessão de R$ 4.500,00.</p><div class="pt-8 border-t grid grid-cols-3 text-center text-xs"><div><strong>Cedente</strong><br>${c.nome}</div><div><strong>Cessionário</strong><br>${cess.nome}</div><div><strong>Anuente</strong><br>Everton</div></div>`;
       } else if (currentDocMode === 'REFIN') {
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO ADITIVO DE REPACTUAÇÃO DE SALDO E REFINANCIAMENTO</h3><p class="mb-3 text-justify">Por este aditivo ao Contrato #${c.ct}, o saldo devedor vincendo de <strong>R$ ${c.saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> é repactuado em <strong>150 parcelas mensais</strong>, corrigidas mensalmente pelo IPCA + 0,8% a.m.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>Loteadora Horizonte</strong><br>Everton</div><div><strong>${c.nome}</strong><br>CPF: ${c.cpf}</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO ADITIVO DE REPACTUAÇÃO DE SALDO E REFINANCIAMENTO</h3><p class="mb-3 text-justify">O saldo devedor vincendo de <strong>R$ ${c.saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> é repactuado em 150 prestações mensais atualizadas pelo IPCA + 0,8% a.m.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>Credora / GT Advogados</strong><br>Everton</div><div><strong>Comprador</strong><br>${c.nome}</div></div>`;
       } else {
         const ret = c.pago * (rescisaoState.retencaoClausulaPenalPct / 100);
         const liq = Math.max(0, c.pago - ret);
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">DISTRATO CONTRATUAL E RESCISÃO DE PROMESSA DE COMPRA E VENDA</h3><p class="mb-3 text-justify">As partes rescindem o Contrato #${c E VENDA</h3><p class="mb-3 text-justify">As partes rescindem o Contrato #${c.ct} do Lote ${c.lt}, Quadra ${c.qd} (${c.lot}). Registra-se o total pago de R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}, aplicando-se a retenção legal de ${rescisaoState.retencaoClausulaPenalPct}% (Lei 13.786/18), restando <strong>R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> a restituir em 12 parcelas mensais.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>Loteadora Horizonte</strong><br>Everton</div><div><strong>Distratante</strong><br>${c.nome}</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">DISTRATO CONTRATUAL E RESCISÃO DE PROMESSA DE COMPRA E VENDA</h3><p class="mb-3 text-justify">Resilição amigável do Contrato #${c.ct} do Lote ${c.lt}, Quadra ${c.qd} (${c.lot}). Total pago: R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}. Retenção legal (Lei 13.786/18) de ${rescisaoState.retencaoClausulaPenalPct}%, restando <strong>R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> restituível em 12 parcelas.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>GT Advogados</strong><br>Everton</div><div><strong>Distratante</strong><br>${c.nome}</div></div>`;
       }
     }
 
     function openPixModal(v) { document.getElementById('pixModalValor').innerText = `R$ ${parseFloat(v).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`; document.getElementById('pixModal').classList.remove('hidden'); }
     function closePixModal() { document.getElementById('pixModal').classList.add('hidden'); }
-    function copyPixCode() { navigator.clipboard.writeText(document.getElementById('pixCodeInput').value); showToast("Chave Pix Copiada!"); }
+    function copyPixCode() { navigator.clipboard.writeText(document.getElementById('pixCodeInput').value); showToast("Chave Pix copiada: adm@gtadv.com.br"); }
     function copyDocumentText() { navigator.clipboard.writeText(document.getElementById('printArea').innerText); showToast("Minuta copiada!"); }
     function printDocument() { window.print(); }
-    function approveAndSave() { const c = CASES.find(i => i.id === currentCaseId); showToast(`Termo aprovado e arquivado no prontuário do Lote ${c.lt} (Qd ${c.qd})!`); }
+    function approveAndSave() { const c = CASES.find(i => i.id === currentCaseId); showToast(`Termo aprovado e liberado para geração do PDF oficial! (Card: ${c.cardId})`); }
     function showToast(m) { const t = document.getElementById('toast'); document.getElementById('toastMessage').innerText = m; t.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000); }
 
-    window.addEventListener('DOMContentLoaded', init);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
   </script>
 </body>
 </html>
+Exibindo index_gt_advogados.html…
