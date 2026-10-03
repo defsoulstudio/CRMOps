@@ -524,8 +524,7 @@ async function searchContracts(session, nameQuery) {
     }
 
     if (cells.length >= 5) {
-      const idx =
-        Number(m[1]);
+      const idx = Number(m[1]);
 
       rows.push({
         indice: idx,
@@ -543,26 +542,18 @@ async function searchContracts(session, nameQuery) {
   return rows;
 }
 
-async function generateCod(
-  session,
-  internalKey
-) {
-  const root =
-    `${BASE}/`;
+async function generateCod(session, internalKey) {
+  const root = `${BASE}/`;
 
-  let r =
-    await session.request(root, {
-      headers: {
-        referer:
-          `${BASE}/WebUserControls/ContratosDoOperador.aspx`,
-      },
-    });
+  let r = await session.request(root, {
+    headers: {
+      referer:
+        `${BASE}/WebUserControls/ContratosDoOperador.aspx`,
+    },
+  });
 
-  const html =
-    await r.text();
-
-  const form =
-    parseInputs(html);
+  const html = await r.text();
+  const form = parseInputs(html);
 
   form.__EVENTTARGET = "";
   form.__EVENTARGUMENT = "";
@@ -573,27 +564,25 @@ async function generateCod(
   form.__CALLBACKPARAM =
     `c0:encriptar=${internalKey}`;
 
-  r =
-    await session.request(root, {
-      method: "POST",
+  r = await session.request(root, {
+    method: "POST",
 
-      headers: {
-        "content-type":
-          "application/x-www-form-urlencoded; charset=UTF-8",
+    headers: {
+      "content-type":
+        "application/x-www-form-urlencoded; charset=UTF-8",
 
-        "x-requested-with":
-          "XMLHttpRequest",
+      "x-requested-with":
+        "XMLHttpRequest",
 
-        origin: BASE,
-        referer: root,
-      },
+      origin: BASE,
+      referer: root,
+    },
 
-      body:
-        encodeForm(form),
-    });
+    body:
+      encodeForm(form),
+  });
 
-  const text =
-    await r.text();
+  const text = await r.text();
 
   const m =
     /Cliente\/Home\.aspx\?cod=([^'"}]+)/.exec(
@@ -609,10 +598,7 @@ async function generateCod(
   return htmlDecode(m[1]);
 }
 
-async function cadastralData(
-  session,
-  cod
-) {
+async function cadastralData(session, cod) {
   const url =
     `${BASE}/Cliente/EdicaoCadastro.aspx?cod=${cod}`;
 
@@ -692,16 +678,10 @@ function findExportUrl(text) {
       htmlDecode(text)
     );
 
-  return m
-    ? m[0]
-    : "";
+  return m ? m[0] : "";
 }
 
-async function downloadReport(
-  session,
-  cod,
-  type
-) {
+async function downloadReport(session, cod, type) {
   const isExtrato =
     type === "extrato";
 
@@ -902,31 +882,18 @@ function termosBuscaCliente(cliente = "") {
   add(nome);
 
   if (partes.length >= 2) {
-    add(
-      partes[0] +
-        " " +
-        partes[1]
-    );
+    add(partes[0] + " " + partes[1]);
   }
 
   add(partes[0]);
 
   if (partes.length >= 2) {
-    add(
-      partes[
-        partes.length - 1
-      ]
-    );
+    add(partes[partes.length - 1]);
   }
 
   if (partes.length >= 3) {
     add(partes[1]);
-
-    add(
-      partes[
-        partes.length - 2
-      ]
-    );
+    add(partes[partes.length - 2]);
   }
 
   if (/^JEFERSON\b/i.test(nome)) {
@@ -1145,6 +1112,16 @@ export default async function handler(
       tentativas_busca:
         buscaCliente.tentativas,
 
+      contratos_amostra:
+        contracts.slice(0, 20).map(function(c) {
+          return {
+            contrato: c.contrato || "",
+            empreendimento: c.empreendimento || "",
+            quadra: c.quadra || "",
+            lote: c.lote || ""
+          };
+        }),
+
       unidades:
         [],
     };
@@ -1193,6 +1170,24 @@ export default async function handler(
             candidates.map(
               safeContract
             ),
+
+          diagnostico: {
+            tentativas_busca:
+              buscaCliente.tentativas,
+
+            contratos_encontrados:
+              contracts.length,
+
+            contratos_amostra:
+              contracts.slice(0, 20).map(function(c) {
+                return {
+                  contrato: c.contrato || "",
+                  empreendimento: c.empreendimento || "",
+                  quadra: c.quadra || "",
+                  lote: c.lote || ""
+                };
+              })
+          }
         });
 
         continue;
