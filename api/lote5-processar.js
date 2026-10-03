@@ -512,7 +512,6 @@ async function searchContracts(session, nameQuery) {
   let m;
 
   while ((m = rowRe.exec(decoded))) {
-
     const cells = [];
 
     const cellRe =
@@ -525,7 +524,6 @@ async function searchContracts(session, nameQuery) {
     }
 
     if (cells.length >= 5) {
-
       const idx =
         Number(m[1]);
 
@@ -549,7 +547,6 @@ async function generateCod(
   session,
   internalKey
 ) {
-
   const root =
     `${BASE}/`;
 
@@ -616,7 +613,6 @@ async function cadastralData(
   session,
   cod
 ) {
-
   const url =
     `${BASE}/Cliente/EdicaoCadastro.aspx?cod=${cod}`;
 
@@ -635,7 +631,6 @@ async function cadastralData(
     parseInputs(html);
 
   function suffix(s) {
-
     const key =
       Object.keys(inputs)
         .find((k) =>
@@ -648,7 +643,6 @@ async function cadastralData(
   }
 
   return {
-
     nome:
       suffix("$txtNome"),
 
@@ -674,7 +668,6 @@ async function cadastralData(
       suffix("$txtEmail"),
 
     conjuge: {
-
       nome:
         suffix("$pnl$txtNomeCo"),
 
@@ -694,7 +687,6 @@ async function cadastralData(
 }
 
 function findExportUrl(text) {
-
   const m =
     /(?:\.\.\/)?Relatorios\/CrystalExport\.aspx\?formato=PDF&nome=[^&'"<\\\s]+&file=[^'"<\\\s]+/i.exec(
       htmlDecode(text)
@@ -710,7 +702,6 @@ async function downloadReport(
   cod,
   type
 ) {
-
   const isExtrato =
     type === "extrato";
 
@@ -741,7 +732,6 @@ async function downloadReport(
     findExportUrl(initial);
 
   if (!exportPath) {
-
     const buttons =
       isExtrato
         ? ["btnGerarRelatorio"]
@@ -752,7 +742,6 @@ async function downloadReport(
           ];
 
     for (const button of buttons) {
-
       const f = {
         ...form,
         __EVENTTARGET: "",
@@ -762,7 +751,6 @@ async function downloadReport(
       f[button] = "OK";
 
       if (isExtrato) {
-
         f.ScriptManager1 =
           "UpdatePanel1|btnGerarRelatorio";
 
@@ -772,12 +760,10 @@ async function downloadReport(
 
       r =
         await session.request(url, {
-
           method:
             "POST",
 
           headers: {
-
             "content-type":
               "application/x-www-form-urlencoded; charset=UTF-8",
 
@@ -880,13 +866,180 @@ function safeContract(contract) {
   };
 }
 
+function removerAcentosBusca(value = "") {
+  return String(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
+function termosBuscaCliente(cliente = "") {
+  const nome = removerAcentosBusca(cliente)
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!nome) return [];
+
+  const partes = nome.split(" ").filter(Boolean);
+  const termos = [];
+
+  function add(v) {
+    const t = String(v || "").trim();
+
+    if (!t) return;
+
+    if (
+      !termos.some(
+        (x) =>
+          x.toUpperCase() ===
+          t.toUpperCase()
+      )
+    ) {
+      termos.push(t);
+    }
+  }
+
+  add(nome);
+
+  if (partes.length >= 2) {
+    add(
+      partes[0] +
+        " " +
+        partes[1]
+    );
+  }
+
+  add(partes[0]);
+
+  if (partes.length >= 2) {
+    add(
+      partes[
+        partes.length - 1
+      ]
+    );
+  }
+
+  if (partes.length >= 3) {
+    add(partes[1]);
+
+    add(
+      partes[
+        partes.length - 2
+      ]
+    );
+  }
+
+  if (/^JEFERSON\b/i.test(nome)) {
+    add(
+      nome.replace(
+        /^JEFERSON\b/i,
+        "JEFFERSON"
+      )
+    );
+
+    add("JEFFERSON");
+  }
+
+  if (/^JEFFERSON\b/i.test(nome)) {
+    add(
+      nome.replace(
+        /^JEFFERSON\b/i,
+        "JEFERSON"
+      )
+    );
+
+    add("JEFERSON");
+  }
+
+  return termos;
+}
+
+function chaveContratoBusca(c) {
+  return [
+    c.contrato || "",
+    c.cliente || "",
+    c.empreendimento || "",
+    c.quadra || "",
+    c.lote || "",
+    c.chave_interna || ""
+  ]
+    .join("|")
+    .toUpperCase();
+}
+
+async function buscarContratosComFallback(
+  session,
+  cliente
+) {
+  const termos =
+    termosBuscaCliente(cliente);
+
+  const todos = [];
+  const vistos = new Set();
+  const tentativas = [];
+
+  for (const termo of termos) {
+    let encontrados = [];
+
+    try {
+      encontrados =
+        await searchContracts(
+          session,
+          termo
+        );
+    } catch (error) {
+      tentativas.push({
+        termo,
+        erro:
+          error?.message ||
+          String(error),
+
+        encontrados: 0
+      });
+
+      continue;
+    }
+
+    tentativas.push({
+      termo,
+      encontrados:
+        encontrados.length
+    });
+
+    for (
+      const contrato
+      of encontrados
+    ) {
+      const chave =
+        chaveContratoBusca(
+          contrato
+        );
+
+      if (!vistos.has(chave)) {
+        vistos.add(chave);
+        todos.push(contrato);
+      }
+    }
+
+    if (
+      todos.length > 0 &&
+      tentativas.length >= 3
+    ) {
+      break;
+    }
+  }
+
+  return {
+    contratos: todos,
+    tentativas
+  };
+}
+
 export default async function handler(
   req,
   res
 ) {
-
   if (req.method !== "POST") {
-
     return res
       .status(405)
       .json({
@@ -915,7 +1068,6 @@ export default async function handler(
     !expected ||
     received !== expected
   ) {
-
     return res
       .status(401)
       .json({
@@ -928,7 +1080,6 @@ export default async function handler(
   }
 
   try {
-
     const {
       cardId = "",
       cliente = "",
@@ -941,7 +1092,6 @@ export default async function handler(
       !Array.isArray(unidades) ||
       unidades.length === 0
     ) {
-
       return res
         .status(400)
         .json({
@@ -961,19 +1111,23 @@ export default async function handler(
 
     await login(session);
 
-    const nameQuery =
-      String(cliente)
-        .trim()
-        .split(/\s+/)[0];
-
-    const contracts =
-      await searchContracts(
+    const buscaCliente =
+      await buscarContratosComFallback(
         session,
-        nameQuery
+        cliente
       );
 
-    const result = {
+    const contracts =
+      buscaCliente.contratos;
 
+    const nameQuery =
+      buscaCliente.tentativas.length
+        ? buscaCliente.tentativas
+            .map((t) => t.termo)
+            .join(" | ")
+        : String(cliente || "");
+
+    const result = {
       status:
         "ok",
 
@@ -988,6 +1142,9 @@ export default async function handler(
       contratos_encontrados:
         contracts.length,
 
+      tentativas_busca:
+        buscaCliente.tentativas,
+
       unidades:
         [],
     };
@@ -996,7 +1153,6 @@ export default async function handler(
       const requested
       of unidades
     ) {
-
       const q =
         normalizeUnit(
           requested.quadra
@@ -1021,7 +1177,6 @@ export default async function handler(
       if (
         candidates.length !== 1
       ) {
-
         result.unidades.push({
           solicitado:
             requested,
@@ -1073,7 +1228,6 @@ export default async function handler(
         );
 
       result.unidades.push({
-
         solicitado:
           requested,
 
@@ -1110,7 +1264,10 @@ export default async function handler(
       .json(result);
 
   } catch (error) {
-    console.error("lote5-processar:", error);
+    console.error(
+      "lote5-processar:",
+      error
+    );
 
     const message =
       error && error.message
