@@ -409,7 +409,6 @@ async function searchContracts(session, nameQuery) {
   });
 
   const html = await r.text();
-
   const form = parseInputs(html);
 
   const state = callbackState(html);
@@ -419,6 +418,9 @@ async function searchContracts(session, nameQuery) {
       "callbackState da grade de contratos não encontrado."
     );
   }
+
+  form.__EVENTTARGET = "";
+  form.__EVENTARGUMENT = "";
 
   form.WucContratos_grdContratos =
     JSON.stringify({
@@ -454,9 +456,14 @@ async function searchContracts(session, nameQuery) {
     "WucContratos_navbarBusca$GCTC0$chkManterFiltro"
   ] = "U";
 
+  const nomeSerializado = "1" + nameQuery;
+  const tamanhoNomeSerializado = nomeSerializado.length;
+
   form.WucContratos_hdfFiltro =
-    '{"data":"12|#|Filtro|13|4|7|1' +
-    nameQuery +
+    '{"data":"12|#|Filtro|13|4|' +
+    tamanhoNomeSerializado +
+    '|' +
+    nomeSerializado +
     '4|2|104|1|14|1|14|1|14|1|14|1|14|1|14|1|14|1|14|1|14|1|11|0|4|1|1##"}';
 
   form.WucContratos_hdfContratos =
@@ -472,6 +479,8 @@ async function searchContracts(session, nameQuery) {
     method: "POST",
 
     headers: {
+      "accept": "*/*",
+
       "content-type":
         "application/x-www-form-urlencoded; charset=UTF-8",
 
