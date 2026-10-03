@@ -174,7 +174,7 @@ index_gt_advogados.html
   </div>
 
   <script>
-    const APPS_SCRIPT_URL = "";
+    const RECEBEOPS_API_URL = "/api/recebeops";
 
     const CASES = [
       {
@@ -361,11 +361,16 @@ index_gt_advogados.html
       const cardId = urlParams.get('cardId');
       if (cardId) {
         document.getElementById('bannerStatusTexto').innerHTML = `<strong>Cartão Carregado:</strong> Visualizando prévia do Trello ID: <code class="bg-slate-800 px-1 py-0.5 rounded text-emerald-400">${cardId}</code>`;
-        if (APPS_SCRIPT_URL) {
+        if (RECEBEOPS_API_URL) {
           try {
             showToast("Buscando dados no Apps Script / Trello...");
-            const resp = await fetch(`${APPS_SCRIPT_URL}?cardId=${cardId}`);
+            const resp = await fetch(`${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(cardId)}`);
             const data = await resp.json();
+            if (data && data.hash) window.recebeOpsPreviewHash = data.hash;
+            if (data && data.unidades && data.unidades.length) {
+              const primeira = data.unidades.find(u => u.status === "OK" && u.dados);
+              if (primeira) data.dados = primeira.dados;
+            }
             if (data && data.dados) {
               const d = data.dados;
               CASES[0].nome = d.nomeComprador || CASES[0].nome;
@@ -500,7 +505,36 @@ index_gt_advogados.html
     function copyPixCode() { navigator.clipboard.writeText(document.getElementById('pixCodeInput').value); showToast("Chave Pix copiada: adm@gtadv.com.br"); }
     function copyDocumentText() { navigator.clipboard.writeText(document.getElementById('printArea').innerText); showToast("Minuta copiada!"); }
     function printDocument() { window.print(); }
-    function approveAndSave() { const c = CASES.find(i => i.id === currentCaseId); showToast(`Termo aprovado e liberado para geração do PDF oficial! (Card: ${c.cardId})`); }
+    async function approveAndSave() {
+      const c = CASES.find(i => i.id === currentCaseId);
+      if (!c || !c.cardId) return showToast("Cartão não identificado.");
+      if (!window.recebeOpsPreviewHash) return showToast("Hash da prévia não carregado. Atualize o caso.");
+
+      try {
+        showToast("Aprovando prévia...");
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action:"approve_preview",
+            cardId:c.cardId,
+            hash:window.recebeOpsPreviewHash
+          })
+        });
+        const data = await resp.json();
+
+        if (data.status === "generated") {
+          showToast("Termo aprovado, gerado e anexado ao cartão.");
+        } else if (data.status === "approved_waiting_generator") {
+          showToast("Prévia aprovada. Gerador final ainda precisa ser conectado.");
+        } else {
+          showToast(data.message || data.code || "Não foi possível aprovar.");
+        }
+      } catch (e) {
+        console.error(e);
+        showToast("Falha ao comunicar com o backend do RecebeOps.");
+      }
+    }
     function showToast(m) { const t = document.getElementById('toast'); document.getElementById('toastMessage').innerText = m; t.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000); }
 
     if (document.readyState === 'loading') {
