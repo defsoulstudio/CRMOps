@@ -36,6 +36,33 @@ function parseInputs(html = "") {
   return out;
 }
 
+function parseSelects(html = "") {
+  const out = {};
+  const re =
+    /<select\b[^>]*name=["']([^"']+)["'][^>]*>([\s\S]*?)<\/select>/gi;
+
+  let m;
+
+  while ((m = re.exec(String(html)))) {
+    const name = m[1];
+    const body = m[2];
+
+    let selected =
+      /<option\b[^>]*selected(?:=["'][^"']*["'])?[^>]*>([\s\S]*?)<\/option>/i.exec(
+        body
+      );
+
+    if (!selected) {
+      selected =
+        /<option\b[^>]*>([\s\S]*?)<\/option>/i.exec(body);
+    }
+
+    out[name] = selected ? stripTags(selected[1]) : "";
+  }
+
+  return out;
+}
+
 function encodeForm(obj) {
   const p = new URLSearchParams();
 
@@ -149,8 +176,12 @@ function requisicaoHttpsUmaVez(url, options, agent) {
           const headersApi = {
             getSetCookie() {
               const valor = res.headers["set-cookie"];
+
               if (!valor) return [];
-              return Array.isArray(valor) ? valor : [valor];
+
+              return Array.isArray(valor)
+                ? valor
+                : [valor];
             },
 
             get(nome) {
@@ -161,7 +192,9 @@ function requisicaoHttpsUmaVez(url, options, agent) {
                 return valor.join(", ");
               }
 
-              return valor == null ? null : String(valor);
+              return valor == null
+                ? null
+                : String(valor);
             },
           };
 
@@ -215,7 +248,10 @@ class Session {
       values = headers.getSetCookie();
     } else {
       const raw = headers.get("set-cookie");
-      if (raw) values = splitSetCookie(raw);
+
+      if (raw) {
+        values = splitSetCookie(raw);
+      }
     }
 
     for (const line of values) {
@@ -236,9 +272,11 @@ class Session {
 
     let atualOptions = {
       ...options,
+
       headers: {
         "user-agent":
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154 Safari/537.36",
+
         ...(options.headers || {}),
       },
     };
@@ -250,33 +288,42 @@ class Session {
         atualOptions.headers.cookie = cookie;
       }
 
-      const response = await requisicaoHttpsUmaVez(
-        atualUrl,
-        atualOptions,
-        agent
-      );
+      const response =
+        await requisicaoHttpsUmaVez(
+          atualUrl,
+          atualOptions,
+          agent
+        );
 
       this.absorbCookies(response.headers);
 
-      const location = response.headers.get("location");
-      const status = response.status;
+      const location =
+        response.headers.get("location");
+
+      const status =
+        response.status;
 
       if (
         location &&
         [301, 302, 303, 307, 308].includes(status)
       ) {
-        atualUrl = new URL(location, atualUrl).toString();
+        atualUrl =
+          new URL(location, atualUrl).toString();
 
         if (
           status === 303 ||
-          ((status === 301 || status === 302) &&
-            String(atualOptions.method || "GET").toUpperCase() ===
-              "POST")
+          (
+            (status === 301 || status === 302) &&
+            String(
+              atualOptions.method || "GET"
+            ).toUpperCase() === "POST"
+          )
         ) {
           atualOptions = {
             ...atualOptions,
             method: "GET",
             body: undefined,
+
             headers: {
               ...atualOptions.headers,
             },
@@ -302,9 +349,13 @@ class Session {
 
 function callbackState(html) {
   const text = String(html);
-  const idx = text.indexOf("WucContratos_grdContratos");
 
-  if (idx < 0) return "";
+  const idx =
+    text.indexOf("WucContratos_grdContratos");
+
+  if (idx < 0) {
+    return "";
+  }
 
   const trecho = text.slice(
     Math.max(0, idx - 5000),
@@ -312,9 +363,13 @@ function callbackState(html) {
   );
 
   const m =
-    /["']callbackState["']\s*:\s*["']([^"']+)["']/i.exec(trecho);
+    /["']callbackState["']\s*:\s*["']([^"']+)["']/i.exec(
+      trecho
+    );
 
-  if (!m) return "";
+  if (!m) {
+    return "";
+  }
 
   return htmlDecode(m[1])
     .replace(/\\\//g, "/")
@@ -323,8 +378,11 @@ function callbackState(html) {
 }
 
 async function login(session) {
-  const user = process.env.LOTE5_USUARIO || "";
-  const pass = process.env.LOTE5_SENHA || "";
+  const user =
+    process.env.LOTE5_USUARIO || "";
+
+  const pass =
+    process.env.LOTE5_SENHA || "";
 
   if (!user || !pass) {
     throw new Error(
@@ -332,12 +390,17 @@ async function login(session) {
     );
   }
 
-  const root = `${BASE}/`;
+  const root =
+    `${BASE}/`;
 
-  let r = await session.request(root);
-  const initialHtml = await r.text();
+  let r =
+    await session.request(root);
 
-  const form = parseInputs(initialHtml);
+  const initialHtml =
+    await r.text();
+
+  const form =
+    parseInputs(initialHtml);
 
   Object.assign(form, {
     __EVENTTARGET: "",
@@ -346,17 +409,20 @@ async function login(session) {
     "pnlLogin$TxtUsuario$State":
       '{"validationState":""}',
 
-    "pnlLogin$TxtUsuario": user,
+    "pnlLogin$TxtUsuario":
+      user,
 
     "pnlLogin$TxtSenha$State":
       '{"validationState":""}',
 
-    "pnlLogin$TxtSenha": pass,
+    "pnlLogin$TxtSenha":
+      pass,
 
     "pnlLogin$captcha$TB$State":
       '{"validationState":""}',
 
-    "pnlLogin$captcha$TB": "",
+    "pnlLogin$captcha$TB":
+      "",
 
     popupRecuperarSenhaState:
       '{"windowsState":"0:0:-1:0:0:0:-10000:-10000:1:0:0:0"}',
@@ -370,48 +436,68 @@ async function login(session) {
     pcAlterarSenhaAdmState:
       '{"windowsState":"0:0:-1:0:0:0:-10000:-10000:1:0:0:0"}',
 
-    __CALLBACKID: "callbackDoLogin",
-    __CALLBACKPARAM: "c0:",
+    __CALLBACKID:
+      "callbackDoLogin",
+
+    __CALLBACKPARAM:
+      "c0:",
   });
 
-  r = await session.request(root, {
-    method: "POST",
+  r =
+    await session.request(root, {
+      method: "POST",
 
-    headers: {
-      "content-type":
-        "application/x-www-form-urlencoded; charset=UTF-8",
+      headers: {
+        accept: "*/*",
 
-      "x-requested-with":
-        "XMLHttpRequest",
+        "content-type":
+          "application/x-www-form-urlencoded; charset=UTF-8",
 
-      origin: BASE,
-      referer: root,
-    },
+        "x-requested-with":
+          "XMLHttpRequest",
 
-    body: encodeForm(form),
-  });
+        origin: BASE,
+        referer: root,
+      },
 
-  const text = await r.text();
+      body:
+        encodeForm(form),
+    });
 
-  if (!text.includes("selecionarContratoOperador")) {
-    throw new Error("Login Lote5 não confirmado.");
+  const text =
+    await r.text();
+
+  if (
+    !text.includes("selecionarContratoOperador")
+  ) {
+    throw new Error(
+      "Login Lote5 não confirmado."
+    );
   }
 }
 
-async function searchContracts(session, nameQuery) {
+async function searchContracts(
+  session,
+  nameQuery
+) {
   const url =
     `${BASE}/WebUserControls/ContratosDoOperador.aspx`;
 
-  let r = await session.request(url, {
-    headers: {
-      referer: `${BASE}/`,
-    },
-  });
+  let r =
+    await session.request(url, {
+      headers: {
+        referer: `${BASE}/`,
+      },
+    });
 
-  const html = await r.text();
-  const form = parseInputs(html);
+  const html =
+    await r.text();
 
-  const state = callbackState(html);
+  const form =
+    parseInputs(html);
+
+  const state =
+    callbackState(html);
 
   if (!state) {
     throw new Error(
@@ -456,13 +542,16 @@ async function searchContracts(session, nameQuery) {
     "WucContratos_navbarBusca$GCTC0$chkManterFiltro"
   ] = "U";
 
-  const nomeSerializado = "1" + nameQuery;
-  const tamanhoNomeSerializado = nomeSerializado.length;
+  const nomeSerializado =
+    "1" + nameQuery;
+
+  const tamanhoNomeSerializado =
+    nomeSerializado.length;
 
   form.WucContratos_hdfFiltro =
     '{"data":"12|#|Filtro|13|4|' +
     tamanhoNomeSerializado +
-    '|' +
+    "|" +
     nomeSerializado +
     '4|2|104|1|14|1|14|1|14|1|14|1|14|1|14|1|14|1|14|1|14|1|11|0|4|1|1##"}';
 
@@ -475,32 +564,37 @@ async function searchContracts(session, nameQuery) {
   form.__CALLBACKPARAM =
     "c0:KV|2;[];FR|2;-1;CT|2;{};GB|31;14|CUSTOMCALLBACK11|atualizar;N;";
 
-  r = await session.request(url, {
-    method: "POST",
+  r =
+    await session.request(url, {
+      method: "POST",
 
-    headers: {
-      "accept": "*/*",
+      headers: {
+        "content-type":
+          "application/x-www-form-urlencoded; charset=UTF-8",
 
-      "content-type":
-        "application/x-www-form-urlencoded; charset=UTF-8",
+        "x-requested-with":
+          "XMLHttpRequest",
 
-      "x-requested-with":
-        "XMLHttpRequest",
+        origin: BASE,
+        referer: url,
+      },
 
-      origin: BASE,
-      referer: url,
-    },
+      body:
+        encodeForm(form),
+    });
 
-    body: encodeForm(form),
-  });
+  const raw =
+    await r.text();
 
-  const raw = await r.text();
-  const decoded = htmlDecode(raw);
+  const decoded =
+    htmlDecode(raw);
 
   const keys = [];
 
   const keysMatch =
-    /["']keys["']\s*:\s*\[(.*?)\]/s.exec(raw);
+    /["']keys["']\s*:\s*\[(.*?)\]/s.exec(
+      raw
+    );
 
   if (keysMatch) {
     const re =
@@ -508,7 +602,9 @@ async function searchContracts(session, nameQuery) {
 
     let km;
 
-    while ((km = re.exec(keysMatch[1]))) {
+    while (
+      (km = re.exec(keysMatch[1]))
+    ) {
       keys.push(km[1]);
     }
   }
@@ -528,12 +624,17 @@ async function searchContracts(session, nameQuery) {
 
     let c;
 
-    while ((c = cellRe.exec(m[2]))) {
-      cells.push(stripTags(c[1]));
+    while (
+      (c = cellRe.exec(m[2]))
+    ) {
+      cells.push(
+        stripTags(c[1])
+      );
     }
 
     if (cells.length >= 5) {
-      const idx = Number(m[1]);
+      const idx =
+        Number(m[1]);
 
       rows.push({
         indice: idx,
@@ -542,6 +643,7 @@ async function searchContracts(session, nameQuery) {
         empreendimento: cells[2],
         quadra: cells[3],
         lote: cells[4],
+
         chave_interna:
           keys[idx] || "",
       });
@@ -551,18 +653,26 @@ async function searchContracts(session, nameQuery) {
   return rows;
 }
 
-async function generateCod(session, internalKey) {
-  const root = `${BASE}/`;
+async function generateCod(
+  session,
+  internalKey
+) {
+  const root =
+    `${BASE}/`;
 
-  let r = await session.request(root, {
-    headers: {
-      referer:
-        `${BASE}/WebUserControls/ContratosDoOperador.aspx`,
-    },
-  });
+  let r =
+    await session.request(root, {
+      headers: {
+        referer:
+          `${BASE}/WebUserControls/ContratosDoOperador.aspx`,
+      },
+    });
 
-  const html = await r.text();
-  const form = parseInputs(html);
+  const html =
+    await r.text();
+
+  const form =
+    parseInputs(html);
 
   form.__EVENTTARGET = "";
   form.__EVENTARGUMENT = "";
@@ -573,25 +683,27 @@ async function generateCod(session, internalKey) {
   form.__CALLBACKPARAM =
     `c0:encriptar=${internalKey}`;
 
-  r = await session.request(root, {
-    method: "POST",
+  r =
+    await session.request(root, {
+      method: "POST",
 
-    headers: {
-      "content-type":
-        "application/x-www-form-urlencoded; charset=UTF-8",
+      headers: {
+        "content-type":
+          "application/x-www-form-urlencoded; charset=UTF-8",
 
-      "x-requested-with":
-        "XMLHttpRequest",
+        "x-requested-with":
+          "XMLHttpRequest",
 
-      origin: BASE,
-      referer: root,
-    },
+        origin: BASE,
+        referer: root,
+      },
 
-    body:
-      encodeForm(form),
-  });
+      body:
+        encodeForm(form),
+    });
 
-  const text = await r.text();
+  const text =
+    await r.text();
 
   const m =
     /Cliente\/Home\.aspx\?cod=([^'"}]+)/.exec(
@@ -607,7 +719,10 @@ async function generateCod(session, internalKey) {
   return htmlDecode(m[1]);
 }
 
-async function cadastralData(session, cod) {
+async function cadastralData(
+  session,
+  cod
+) {
   const url =
     `${BASE}/Cliente/EdicaoCadastro.aspx?cod=${cod}`;
 
@@ -615,7 +730,7 @@ async function cadastralData(session, cod) {
     await session.request(url, {
       headers: {
         referer:
-          `${BASE}/`,
+          `${BASE}/Cliente/Home.aspx?cod=${cod}`,
       },
     });
 
@@ -625,59 +740,249 @@ async function cadastralData(session, cod) {
   const inputs =
     parseInputs(html);
 
+  const selects =
+    parseSelects(html);
+
+  const campos = {
+    ...inputs,
+    ...selects,
+  };
+
   function suffix(s) {
     const key =
-      Object.keys(inputs)
-        .find((k) =>
-          k.endsWith(s)
-        );
+      Object.keys(campos).find(
+        (k) => k.endsWith(s)
+      );
 
     return key
-      ? inputs[key]
+      ? campos[key]
       : "";
   }
 
+  function suffixAny(lista) {
+    for (const s of lista) {
+      const v = suffix(s);
+
+      if (
+        String(v || "").trim()
+      ) {
+        return String(v).trim();
+      }
+    }
+
+    return "";
+  }
+
+  const endereco = {
+    logradouro:
+      suffixAny([
+        "$txtEndereco",
+        "$txtLogradouro",
+        "$txtEnd",
+      ]),
+
+    numero:
+      suffixAny([
+        "$txtNumero",
+        "$txtNr",
+        "$txtNumeroEndereco",
+      ]),
+
+    complemento:
+      suffixAny([
+        "$txtComplemento",
+        "$txtCompl",
+      ]),
+
+    bairro:
+      suffixAny([
+        "$txtBairro",
+      ]),
+
+    cidade:
+      suffixAny([
+        "$txtCidade",
+        "$cboCidade",
+      ]),
+
+    uf:
+      suffixAny([
+        "$cboUF",
+        "$cboUf",
+        "$txtUF",
+        "$txtUf",
+      ]),
+
+    cep:
+      suffixAny([
+        "$txtCep",
+        "$txtCEP",
+      ]),
+  };
+
+  const telefone =
+    suffixAny([
+      "$txtCelular",
+      "$txtTelefoneCelular",
+      "$txtFoneCelular",
+      "$txtTelefone",
+      "$txtFone",
+      "$txtTel",
+    ]);
+
+  const campos_visiveis =
+    Object.entries(campos)
+      .filter(([k, v]) => {
+        const n =
+          String(k).toLowerCase();
+
+        const val =
+          String(v || "").trim();
+
+        if (!val) {
+          return false;
+        }
+
+        if (
+          n.includes("__viewstate") ||
+          n.includes("__eventvalidation") ||
+          n.includes("callbackstate")
+        ) {
+          return false;
+        }
+
+        return /(nome|cpf|rg|nasc|prof|email|mail|fone|tel|cel|end|logradouro|numero|compl|bairro|cidade|cep|uf|estado|civil|conju|co$|regime)/i.test(
+          k
+        );
+      })
+      .slice(0, 120)
+      .map(([campo, valor]) => ({
+        campo,
+        valor:
+          String(valor).slice(0, 180),
+      }));
+
   return {
     nome:
-      suffix("$txtNome"),
+      suffixAny([
+        "$txtNome",
+      ]),
 
     estado_civil:
-      suffix("$cboEstCivil"),
+      suffixAny([
+        "$cboEstCivil",
+        "$cboEstadoCivil",
+      ]),
+
+    regime_bens:
+      suffixAny([
+        "$cboRegimeBens",
+        "$txtRegimeBens",
+      ]),
 
     sexo:
-      suffix("$cboSexo"),
+      suffixAny([
+        "$cboSexo",
+      ]),
 
     data_nascimento:
-      suffix("$dtaNasc"),
+      suffixAny([
+        "$dtaNasc",
+        "$dteDtNasc",
+        "$txtDataNascimento",
+      ]),
 
     profissao:
-      suffix("$txtProfissao"),
+      suffixAny([
+        "$txtProfissao",
+      ]),
 
     rg:
-      suffix("$txtRg"),
+      suffixAny([
+        "$txtRg",
+        "$txtRG",
+      ]),
+
+    orgao_expedidor_rg:
+      suffixAny([
+        "$txtOrgaoExpedidor",
+        "$txtOrgaoRG",
+        "$txtOrgExp",
+      ]),
 
     cpf:
-      suffix("$txtCpf"),
+      suffixAny([
+        "$txtCpf",
+        "$txtCPF",
+      ]),
 
     email:
-      suffix("$txtEmail"),
+      suffixAny([
+        "$txtEmail",
+        "$txtEMail",
+        "$txtE_mail",
+      ]),
+
+    telefone,
+
+    endereco,
 
     conjuge: {
       nome:
-        suffix("$pnl$txtNomeCo"),
+        suffixAny([
+          "$pnl$txtNomeCo",
+          "$txtNomeCo",
+        ]),
 
       cpf:
-        suffix("$pnl$txtCpfCo"),
+        suffixAny([
+          "$pnl$txtCpfCo",
+          "$txtCpfCo",
+        ]),
 
       rg:
-        suffix("$pnl$txtRGCo"),
+        suffixAny([
+          "$pnl$txtRGCo",
+          "$pnl$txtRgCo",
+          "$txtRGCo",
+          "$txtRgCo",
+        ]),
+
+      orgao_expedidor_rg:
+        suffixAny([
+          "$pnl$txtOrgaoExpedidorCo",
+          "$txtOrgaoExpedidorCo",
+        ]),
 
       data_nascimento:
-        suffix("$pnl$dteDtNascCo"),
+        suffixAny([
+          "$pnl$dteDtNascCo",
+          "$pnl$dtaNascCo",
+          "$dteDtNascCo",
+        ]),
 
       profissao:
-        suffix("$pnl$txtProfissaoCo"),
+        suffixAny([
+          "$pnl$txtProfissaoCo",
+          "$txtProfissaoCo",
+        ]),
+
+      email:
+        suffixAny([
+          "$pnl$txtEmailCo",
+          "$txtEmailCo",
+        ]),
+
+      telefone:
+        suffixAny([
+          "$pnl$txtCelularCo",
+          "$pnl$txtTelefoneCo",
+          "$txtCelularCo",
+          "$txtTelefoneCo",
+        ]),
     },
+
+    campos_visiveis,
   };
 }
 
@@ -687,10 +992,16 @@ function findExportUrl(text) {
       htmlDecode(text)
     );
 
-  return m ? m[0] : "";
+  return m
+    ? m[0]
+    : "";
 }
 
-async function downloadReport(session, cod, type) {
+async function downloadReport(
+  session,
+  cod,
+  type
+) {
   const isExtrato =
     type === "extrato";
 
@@ -723,14 +1034,19 @@ async function downloadReport(session, cod, type) {
   if (!exportPath) {
     const buttons =
       isExtrato
-        ? ["btnGerarRelatorio"]
+        ? [
+            "btnGerarRelatorio",
+          ]
         : [
             "btnGerarRelatorio",
             "btnGerar",
             "btnVisualizar",
           ];
 
-    for (const button of buttons) {
+    for (
+      const button
+      of buttons
+    ) {
       const f = {
         ...form,
         __EVENTTARGET: "",
@@ -749,8 +1065,7 @@ async function downloadReport(session, cod, type) {
 
       r =
         await session.request(url, {
-          method:
-            "POST",
+          method: "POST",
 
           headers: {
             "content-type":
@@ -855,27 +1170,42 @@ function safeContract(contract) {
   };
 }
 
-function removerAcentosBusca(value = "") {
+function removerAcentosBusca(
+  value = ""
+) {
   return String(value)
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(
+      /[\u0300-\u036f]/g,
+      ""
+    )
     .trim();
 }
 
-function termosBuscaCliente(cliente = "") {
-  const nome = removerAcentosBusca(cliente)
-    .replace(/\s+/g, " ")
-    .trim();
+function termosBuscaCliente(
+  cliente = ""
+) {
+  const nome =
+    removerAcentosBusca(cliente)
+      .replace(/\s+/g, " ")
+      .trim();
 
-  if (!nome) return [];
+  if (!nome) {
+    return [];
+  }
 
-  const partes = nome.split(" ").filter(Boolean);
+  const partes =
+    nome.split(" ").filter(Boolean);
+
   const termos = [];
 
   function add(v) {
-    const t = String(v || "").trim();
+    const t =
+      String(v || "").trim();
 
-    if (!t) return;
+    if (!t) {
+      return;
+    }
 
     if (
       !termos.some(
@@ -891,18 +1221,31 @@ function termosBuscaCliente(cliente = "") {
   add(nome);
 
   if (partes.length >= 2) {
-    add(partes[0] + " " + partes[1]);
+    add(
+      partes[0] +
+      " " +
+      partes[1]
+    );
   }
 
   add(partes[0]);
 
   if (partes.length >= 2) {
-    add(partes[partes.length - 1]);
+    add(
+      partes[
+        partes.length - 1
+      ]
+    );
   }
 
   if (partes.length >= 3) {
     add(partes[1]);
-    add(partes[partes.length - 2]);
+
+    add(
+      partes[
+        partes.length - 2
+      ]
+    );
   }
 
   if (/^JEFERSON\b/i.test(nome)) {
@@ -937,7 +1280,7 @@ function chaveContratoBusca(c) {
     c.empreendimento || "",
     c.quadra || "",
     c.lote || "",
-    c.chave_interna || ""
+    c.chave_interna || "",
   ]
     .join("|")
     .toUpperCase();
@@ -966,11 +1309,12 @@ async function buscarContratosComFallback(
     } catch (error) {
       tentativas.push({
         termo,
+
         erro:
           error?.message ||
           String(error),
 
-        encontrados: 0
+        encontrados: 0,
       });
 
       continue;
@@ -979,7 +1323,7 @@ async function buscarContratosComFallback(
     tentativas.push({
       termo,
       encontrados:
-        encontrados.length
+        encontrados.length,
     });
 
     for (
@@ -1007,7 +1351,7 @@ async function buscarContratosComFallback(
 
   return {
     contratos: todos,
-    tentativas
+    tentativas,
   };
 }
 
@@ -1015,7 +1359,9 @@ export default async function handler(
   req,
   res
 ) {
-  if (req.method !== "POST") {
+  if (
+    req.method !== "POST"
+  ) {
     return res
       .status(405)
       .json({
@@ -1099,9 +1445,14 @@ export default async function handler(
     const nameQuery =
       buscaCliente.tentativas.length
         ? buscaCliente.tentativas
-            .map((t) => t.termo)
+            .map(
+              (t) =>
+                t.termo
+            )
             .join(" | ")
-        : String(cliente || "");
+        : String(
+            cliente || ""
+          );
 
     const result = {
       status:
@@ -1122,17 +1473,25 @@ export default async function handler(
         buscaCliente.tentativas,
 
       contratos_amostra:
-        contracts.slice(0, 20).map(function(c) {
-          return {
-            contrato: c.contrato || "",
-            empreendimento: c.empreendimento || "",
-            quadra: c.quadra || "",
-            lote: c.lote || ""
-          };
-        }),
+        contracts
+          .slice(0, 20)
+          .map(function (c) {
+            return {
+              contrato:
+                c.contrato || "",
 
-      unidades:
-        [],
+              empreendimento:
+                c.empreendimento || "",
+
+              quadra:
+                c.quadra || "",
+
+              lote:
+                c.lote || "",
+            };
+          }),
+
+      unidades: [],
     };
 
     for (
@@ -1188,15 +1547,26 @@ export default async function handler(
               contracts.length,
 
             contratos_amostra:
-              contracts.slice(0, 20).map(function(c) {
-                return {
-                  contrato: c.contrato || "",
-                  empreendimento: c.empreendimento || "",
-                  quadra: c.quadra || "",
-                  lote: c.lote || ""
-                };
-              })
-          }
+              contracts
+                .slice(0, 20)
+                .map(
+                  function (c) {
+                    return {
+                      contrato:
+                        c.contrato || "",
+
+                      empreendimento:
+                        c.empreendimento || "",
+
+                      quadra:
+                        c.quadra || "",
+
+                      lote:
+                        c.lote || "",
+                    };
+                  }
+                ),
+          },
         });
 
         continue;
@@ -1246,6 +1616,22 @@ export default async function handler(
         dados_cadastrais:
           cadastro,
 
+        snapshot: {
+          capturado_em:
+            new Date().toISOString(),
+
+          origem_cadastro:
+            "LOTE5_EDICAO_CADASTRO",
+
+          origem_contrato:
+            "LOTE5_CONTRATOS_DO_OPERADOR",
+
+          documentos: [
+            "EXTRATO_FINANCEIRO",
+            "SINTESE_CONTRATO",
+          ],
+        },
+
         extratoPdfBase64:
           extrato.toString(
             "base64"
@@ -1266,7 +1652,6 @@ export default async function handler(
     return res
       .status(200)
       .json(result);
-
   } catch (error) {
     console.error(
       "lote5-processar:",
@@ -1298,15 +1683,27 @@ export default async function handler(
         ? String(cause.name)
         : "";
 
-    return res.status(500).json({
-      status: "error",
-      code: "LOTE5_BACKEND_ERROR",
-      message,
-      cause: {
-        name: causeName,
-        code: causeCode,
-        message: causeMessage
-      }
-    });
+    return res
+      .status(500)
+      .json({
+        status:
+          "error",
+
+        code:
+          "LOTE5_BACKEND_ERROR",
+
+        message,
+
+        cause: {
+          name:
+            causeName,
+
+          code:
+            causeCode,
+
+          message:
+            causeMessage,
+        },
+      });
   }
 }
