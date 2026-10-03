@@ -1,20 +1,62 @@
-
-index_gt_advogados.html
-
-100%
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RecebeOps • Cockpit GT Advogados & Lote 5</title>
+  <title>RecebeOps CRM • GT Advogados & Lote 5</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(16,185,129,.08), transparent 30%),
+        radial-gradient(circle at top right, rgba(20,184,166,.06), transparent 28%),
+        #07111f;
+    }
+
     .mono { font-family: 'JetBrains Mono', monospace; }
+
+    .glass {
+      background: rgba(15, 23, 42, .78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(148, 163, 184, .10);
+      box-shadow: 0 16px 50px rgba(2, 6, 23, .24);
+    }
+
+    .crm-card {
+      background: linear-gradient(180deg, rgba(15,23,42,.92), rgba(10,18,32,.92));
+      border: 1px solid rgba(148, 163, 184, .10);
+      box-shadow: 0 12px 34px rgba(2, 6, 23, .20);
+    }
+
+    .soft-line { border-color: rgba(148,163,184,.10); }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background: #34d399;
+      box-shadow: 0 0 0 5px rgba(52,211,153,.08), 0 0 18px rgba(52,211,153,.45);
+    }
+
+    .premium-badge {
+      background: linear-gradient(180deg, rgba(6,78,59,.42), rgba(6,78,59,.20));
+      border: 1px solid rgba(52,211,153,.20);
+    }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #273449; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
     @media print {
       body { background: #fff !important; color: #000 !important; }
       body * { visibility: hidden; }
@@ -24,51 +66,75 @@ index_gt_advogados.html
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+<body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
 
   <!-- Top Navigation Header -->
-  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-6 py-3 flex items-center justify-between no-print shadow-sm">
-    <div class="flex items-center gap-3">
-      <div class="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center font-bold text-white shadow-md">R</div>
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-bold text-white">RecebeOps</span>
-          <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60">Overlay GT Advogados / Lote 5</span>
+  <header class="sticky top-0 z-40 px-5 md:px-7 py-3.5 no-print border-b soft-line bg-[#081321]/90 backdrop-blur-xl">
+    <div class="max-w-[1720px] mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="relative shrink-0">
+          <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 flex items-center justify-center font-extrabold text-white shadow-lg shadow-emerald-950/40">R</div>
+          <span class="absolute -right-1 -bottom-1 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-[#081321]"></span>
         </div>
-        <p class="text-[11px] text-slate-400">Automação de Minutas Jurídicas & Fila Trello • <strong class="text-slate-200">L.G.T Gestão</strong></p>
+
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[15px] font-extrabold tracking-tight text-white">RecebeOps</span>
+            <span class="premium-badge text-[9px] font-bold uppercase tracking-[0.12em] px-2 py-1 rounded-full text-emerald-300">CRM Jurídico</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-0.5 truncate">Operações • Minutas • Trello • Lote 5</p>
+        </div>
       </div>
-    </div>
-    <div class="flex items-center gap-5">
-      <div class="hidden md:flex items-center gap-3 text-xs">
-        <div class="px-3 py-1 rounded-lg bg-slate-950 border border-slate-800"><span class="text-slate-400">Fila Trello:</span> <strong class="text-slate-200" id="statFilaTotal">Ativa</strong></div>
-        <div class="px-3 py-1 rounded-lg bg-emerald-950/30 border border-emerald-800/40"><span class="text-emerald-400">Regras Dr. Leandro:</span> <strong class="text-emerald-300">Preservadas</strong></div>
-      </div>
-      <div class="flex items-center gap-3 pl-3 border-l border-slate-800">
-        <div class="h-8 w-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-emerald-400">EV</div>
-        <div class="text-left hidden sm:block">
-          <div class="text-xs font-bold text-slate-200">Everton</div>
-          <div class="text-[10px] text-slate-400">Gestão de Operações • Lote 5</div>
+
+      <div class="flex items-center gap-3 md:gap-4">
+        <div class="hidden lg:flex items-center gap-2">
+          <div class="glass rounded-xl px-3 py-2 flex items-center gap-2">
+            <span class="status-dot"></span>
+            <div>
+              <div class="text-[9px] uppercase tracking-wider text-slate-500 font-bold">Fila Trello</div>
+              <div class="text-[11px] font-bold text-slate-200" id="statFilaTotal">Ativa</div>
+            </div>
+          </div>
+
+          <div class="glass rounded-xl px-3 py-2">
+            <div class="text-[9px] uppercase tracking-wider text-slate-500 font-bold">Governança</div>
+            <div class="text-[11px] font-bold text-emerald-300">Regras preservadas</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 pl-3 md:pl-4 border-l soft-line">
+          <div class="h-9 w-9 rounded-xl bg-slate-800 border border-slate-700/70 flex items-center justify-center text-[11px] font-extrabold text-emerald-300 shadow-inner">EL</div>
+          <div class="text-left hidden sm:block leading-tight">
+            <div class="text-[12px] font-bold text-slate-100">Everton Lanzilotti</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">Gestão de Operações • Lote 5</div>
+          </div>
         </div>
       </div>
     </div>
   </header>
 
   <!-- Banner Informativo -->
-  <div class="bg-slate-900/60 border-b border-slate-800/60 px-6 py-2 flex flex-wrap items-center justify-between text-xs text-slate-300 gap-2 no-print">
-    <div class="flex items-center gap-2">
-      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span id="bannerStatusTexto"><strong>Conectado ao Trello:</strong> Pronto para validação e emissão dos 5 termos jurídicos sem quebra de alçada.</span>
+  <div class="no-print border-b soft-line bg-[#0b1727]/72 px-5 md:px-7 py-2.5">
+    <div class="max-w-[1720px] mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <span class="status-dot shrink-0"></span>
+        <span id="bannerStatusTexto" class="text-[11px] text-slate-300"><strong class="text-slate-100">Ambiente operacional conectado.</strong> Trello, validação e emissão centralizados no RecebeOps.</span>
+      </div>
+      <div class="hidden md:flex items-center gap-2 text-[10px] text-slate-500">
+        <span class="px-2 py-1 rounded-lg bg-slate-900/80 border soft-line">GT Advogados</span>
+        <span class="px-2 py-1 rounded-lg bg-slate-900/80 border soft-line">Lote 5</span>
+        <span class="px-2 py-1 rounded-lg bg-slate-900/80 border soft-line">Gestão operacional</span>
+      </div>
     </div>
-    <div class="text-slate-400 text-[11px] font-mono">Chave Pix: adm@gtadv.com.br (L.G.T Gestão)</div>
   </div>
 
   <!-- Workspace Principal -->
   <main class="flex-1 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1720px] w-full mx-auto">
     <!-- FILA DE CASOS (4 colunas) -->
     <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4 no-print">
-      <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 flex flex-col gap-3">
+      <div class="crm-card p-4 rounded-2xl flex flex-col gap-3">
         <div class="flex items-center justify-between">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Casos na Esteira (Trello / Lote 5)</h2>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Pipeline Operacional</h2>
           <span class="text-[11px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full" id="caseCountBadge">Carregando...</span>
         </div>
         <input type="text" id="searchInput" placeholder="Filtrar por nome, CPF, lote, quadra ou contrato..." 
@@ -85,9 +151,9 @@ index_gt_advogados.html
       <div class="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-270px)] pr-1" id="casesContainer"></div>
     </div>
 
-    <!-- COCKPIT DE EMISSÃO & MINUTA (8 colunas) -->
+    <!-- CRM OPERACIONAL & MINUTA (8 colunas) -->
     <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-5">
-      <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 flex flex-col gap-4 no-print">
+      <div class="crm-card p-5 rounded-2xl flex flex-col gap-4 no-print">
         <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <div class="flex items-center gap-3">
@@ -131,13 +197,13 @@ index_gt_advogados.html
       <div id="actionControlsPanel" class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-xs no-print"></div>
 
       <!-- Visualização da Minuta em Folha Timbrada -->
-      <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col">
+      <div class="crm-card rounded-2xl overflow-hidden flex flex-col">
         <div class="bg-slate-900 px-5 py-3 border-b border-slate-800 flex items-center justify-between text-xs no-print">
           <span class="text-slate-300 font-semibold flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
             Pré-visualização da Minuta Gerada
           </span>
-          <span class="text-slate-400 text-[11px]">Validação: <strong class="text-slate-200">Everton (Operações Lote 5)</strong></span>
+          <span class="text-slate-400 text-[11px]">Validação: <strong class="text-slate-200">Everton Lanzilotti (Operações Lote 5)</strong></span>
         </div>
         <div class="p-6 md:p-8 overflow-y-auto max-h-[580px] bg-slate-950/60">
           <div id="printArea" class="bg-white text-slate-900 p-8 sm:p-12 rounded-xl shadow-2xl max-w-[820px] mx-auto border border-slate-200 text-sm leading-relaxed"></div>
@@ -484,19 +550,19 @@ index_gt_advogados.html
       const hdr = `<div class="border-b pb-3 mb-4 flex justify-between items-start"><div><h2 class="font-extrabold text-sm text-slate-900 uppercase">GT ADVOGADOS • DEPARTAMENTO DE RECEBÍVEIS</h2><p class="text-[11px] text-slate-600">Assessoramento Jurídico da Loteadora • Gestão de Contratos Lote 5</p></div><div class="text-right text-[11px] font-mono text-slate-500">Contrato: #${c.ct}<br>Emissão: ${hoje}</div></div>`;
 
       if (currentDocMode === 'NOTIFICACAO') {
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">NOTIFICAÇÃO PREMONITÓRIA DE MORA (ART. 32 DA LEI 6.766/79)</h3><p class="mb-3">NOTIFICADO(A): <strong>${c.nome.toUpperCase()}</strong>, CPF nº <strong>${c.cpf}</strong>.</p><p class="mb-3 text-justify">Fica V. Sa. notificado(a) de que se encontra em mora perante a credora relativamente ao Contrato nº <strong>${c.ct}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> do loteamento <em>${c.lot}</em> (${c.mat}), com débito consolidado de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> (${c.parcNum}).</p><p class="mb-4 font-semibold text-justify">Fica V. Sa. intimado(a) a purgar a mora no prazo legal de 30 (trinta) dias contados do recebimento desta, sob pena de rescisão contratual de pleno direito e reintegração de posse na forma da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>GT Advogados / L.G.T Gestão</strong><br>Everton - Operações</div><div><strong>Ciente Notificado</strong><br>Data: ___/___/2026</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">NOTIFICAÇÃO PREMONITÓRIA DE MORA (ART. 32 DA LEI 6.766/79)</h3><p class="mb-3">NOTIFICADO(A): <strong>${c.nome.toUpperCase()}</strong>, CPF nº <strong>${c.cpf}</strong>.</p><p class="mb-3 text-justify">Fica V. Sa. notificado(a) de que se encontra em mora perante a credora relativamente ao Contrato nº <strong>${c.ct}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> do loteamento <em>${c.lot}</em> (${c.mat}), com débito consolidado de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> (${c.parcNum}).</p><p class="mb-4 font-semibold text-justify">Fica V. Sa. intimado(a) a purgar a mora no prazo legal de 30 (trinta) dias contados do recebimento desta, sob pena de rescisão contratual de pleno direito e reintegração de posse na forma da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>GT Advogados / L.G.T Gestão</strong><br>Everton Lanzilotti - Operações</div><div><strong>Ciente Notificado</strong><br>Data: ___/___/2026</div></div>`;
       } else if (currentDocMode === 'PARCELAMENTO') {
         const valParc = c.tot / agreementState.qtdParcelas;
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA E ACORDO DE PARCELAMENTO CURTO</h3><p class="mb-3">DEVEDOR(A): <strong>${c.nome.toUpperCase()}</strong>, brasileiro(a), ${c.civ.toLowerCase()}, ${c.prof.toLowerCase()}, portador(a) do RG nº ${c.rg} e inscrito(a) no CPF/MF sob o nº <strong>${c.cpf}</strong> (sem inclusão de cônjuge, conforme regras do Dr. Leandro).</p><p class="mb-3 text-justify">1. O(A) Devedor(a) reconhece e confessa o saldo devedor de parcelas vencidas no montante de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao Lote ${c.lt}, Quadra ${c.qd} do empreendimento <em>${c.lot}</em>.</p><p class="mb-3 text-justify">2. O débito confessado será adimplido em <strong>${agreementState.qtdParcelas} parcelas mensais e sucessivas de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>.</p><p class="mb-3 text-justify">3. DOS HONORÁRIOS ADVOCATÍCIOS: O(A) Devedor(a) ajusta a verba honorária/entrada no valor de <strong>R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> paga à L.G.T Gestão de Recebimentos LTDA via Pix (adm@gtadv.com.br), verba autônoma e não compensável com o saldo da dívida.</p><p class="mb-4 text-xs text-slate-600">4. O atraso em qualquer parcela acarretará a rescisão imediata do acordo e vencimento antecipado do saldo integral com aplicação das penalidades da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>L.G.T Gestão de Recebimentos LTDA</strong><br>Validação Operacional: Everton</div><div><strong>${c.nome.toUpperCase()}</strong><br>CPF: ${c.cpf}</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA E ACORDO DE PARCELAMENTO CURTO</h3><p class="mb-3">DEVEDOR(A): <strong>${c.nome.toUpperCase()}</strong>, brasileiro(a), ${c.civ.toLowerCase()}, ${c.prof.toLowerCase()}, portador(a) do RG nº ${c.rg} e inscrito(a) no CPF/MF sob o nº <strong>${c.cpf}</strong> (sem inclusão de cônjuge, conforme regras do Dr. Leandro).</p><p class="mb-3 text-justify">1. O(A) Devedor(a) reconhece e confessa o saldo devedor de parcelas vencidas no montante de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao Lote ${c.lt}, Quadra ${c.qd} do empreendimento <em>${c.lot}</em>.</p><p class="mb-3 text-justify">2. O débito confessado será adimplido em <strong>${agreementState.qtdParcelas} parcelas mensais e sucessivas de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>.</p><p class="mb-3 text-justify">3. DOS HONORÁRIOS ADVOCATÍCIOS: O(A) Devedor(a) ajusta a verba honorária/entrada no valor de <strong>R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> paga à L.G.T Gestão de Recebimentos LTDA via Pix (adm@gtadv.com.br), verba autônoma e não compensável com o saldo da dívida.</p><p class="mb-4 text-xs text-slate-600">4. O atraso em qualquer parcela acarretará a rescisão imediata do acordo e vencimento antecipado do saldo integral com aplicação das penalidades da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>L.G.T Gestão de Recebimentos LTDA</strong><br>Validação Operacional: Everton Lanzilotti</div><div><strong>${c.nome.toUpperCase()}</strong><br>CPF: ${c.cpf}</div></div>`;
       } else if (currentDocMode === 'CESSAO') {
         const cess = c.cess || { nome: "Lucas Guilherme Barbosa", cpf: "419.221.308-11" };
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO DE CESSÃO DE DIREITOS E OBRIGAÇÕES COM ANUÊNCIA EXPRESSA</h3><p class="mb-3">CEDENTE: <strong>${c.nome}</strong> (CPF: ${c.cpf}) | CESSIONÁRIO: <strong>${cess.nome}</strong> (CPF: ${cess.cpf}).</p><p class="mb-3 text-justify">O Cedente, com expressa anuência da interveniente credora, cede a posse e os direitos do Contrato #${c.ct} referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> (${c.lot}), transferindo o saldo devedor vincendo ao Cessionário, recolhida a taxa de cessão de R$ 4.500,00.</p><div class="pt-8 border-t grid grid-cols-3 text-center text-xs"><div><strong>Cedente</strong><br>${c.nome}</div><div><strong>Cessionário</strong><br>${cess.nome}</div><div><strong>Anuente</strong><br>Everton</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO DE CESSÃO DE DIREITOS E OBRIGAÇÕES COM ANUÊNCIA EXPRESSA</h3><p class="mb-3">CEDENTE: <strong>${c.nome}</strong> (CPF: ${c.cpf}) | CESSIONÁRIO: <strong>${cess.nome}</strong> (CPF: ${cess.cpf}).</p><p class="mb-3 text-justify">O Cedente, com expressa anuência da interveniente credora, cede a posse e os direitos do Contrato #${c.ct} referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> (${c.lot}), transferindo o saldo devedor vincendo ao Cessionário, recolhida a taxa de cessão de R$ 4.500,00.</p><div class="pt-8 border-t grid grid-cols-3 text-center text-xs"><div><strong>Cedente</strong><br>${c.nome}</div><div><strong>Cessionário</strong><br>${cess.nome}</div><div><strong>Anuente</strong><br>Everton Lanzilotti</div></div>`;
       } else if (currentDocMode === 'REFIN') {
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO ADITIVO DE REPACTUAÇÃO DE SALDO E REFINANCIAMENTO</h3><p class="mb-3 text-justify">O saldo devedor vincendo de <strong>R$ ${c.saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> é repactuado em 150 prestações mensais atualizadas pelo IPCA + 0,8% a.m.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>Credora / GT Advogados</strong><br>Everton</div><div><strong>Comprador</strong><br>${c.nome}</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO ADITIVO DE REPACTUAÇÃO DE SALDO E REFINANCIAMENTO</h3><p class="mb-3 text-justify">O saldo devedor vincendo de <strong>R$ ${c.saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> é repactuado em 150 prestações mensais atualizadas pelo IPCA + 0,8% a.m.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>Credora / GT Advogados</strong><br>Everton Lanzilotti</div><div><strong>Comprador</strong><br>${c.nome}</div></div>`;
       } else {
         const ret = c.pago * (rescisaoState.retencaoClausulaPenalPct / 100);
         const liq = Math.max(0, c.pago - ret);
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">DISTRATO CONTRATUAL E RESCISÃO DE PROMESSA DE COMPRA E VENDA</h3><p class="mb-3 text-justify">Resilição amigável do Contrato #${c.ct} do Lote ${c.lt}, Quadra ${c.qd} (${c.lot}). Total pago: R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}. Retenção legal (Lei 13.786/18) de ${rescisaoState.retencaoClausulaPenalPct}%, restando <strong>R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> restituível em 12 parcelas.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>GT Advogados</strong><br>Everton</div><div><strong>Distratante</strong><br>${c.nome}</div></div>`;
+        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">DISTRATO CONTRATUAL E RESCISÃO DE PROMESSA DE COMPRA E VENDA</h3><p class="mb-3 text-justify">Resilição amigável do Contrato #${c.ct} do Lote ${c.lt}, Quadra ${c.qd} (${c.lot}). Total pago: R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}. Retenção legal (Lei 13.786/18) de ${rescisaoState.retencaoClausulaPenalPct}%, restando <strong>R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> restituível em 12 parcelas.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>GT Advogados</strong><br>Everton Lanzilotti</div><div><strong>Distratante</strong><br>${c.nome}</div></div>`;
       }
     }
 
@@ -545,4 +611,3 @@ index_gt_advogados.html
   </script>
 </body>
 </html>
-Exibindo index_gt_advogados.html…
