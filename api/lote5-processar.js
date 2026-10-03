@@ -916,30 +916,42 @@ export default async function handler(
       .json(result);
 
   } catch (error) {
-
-    console.error(
-      "lote5-processar:",
-      error
-    );
+    console.error("lote5-processar:", error);
 
     const message =
-      error &&
-      error.message
-        ? String(
-            error.message
-          )
+      error && error.message
+        ? String(error.message)
         : String(error);
 
-    return res
-      .status(500)
-      .json({
-        status:
-          "error",
+    const cause =
+      error && error.cause
+        ? error.cause
+        : null;
 
-        code:
-          "LOTE5_BACKEND_ERROR",
+    const causeCode =
+      cause && cause.code
+        ? String(cause.code)
+        : "";
 
-        message,
-      });
+    const causeMessage =
+      cause && cause.message
+        ? String(cause.message)
+        : "";
+
+    const causeName =
+      cause && cause.name
+        ? String(cause.name)
+        : "";
+
+    return res.status(500).json({
+      status: "error",
+      code: "LOTE5_BACKEND_ERROR",
+      message,
+      cause: {
+        name: causeName,
+        code: causeCode,
+        message: causeMessage
+      }
+    });
   }
 }
