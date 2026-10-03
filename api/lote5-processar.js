@@ -1,3 +1,7 @@
+import https from "node:https";
+import tls from "node:tls";
+import { X509Certificate } from "node:crypto";
+
 export const config = {
   maxDuration: 60,
 };
@@ -49,6 +53,150 @@ function splitSetCookie(headerValue = "") {
     .filter(Boolean);
 }
 
+const LOTE5_INTERMEDIATE_CA_URL =
+  "https://secure.globalsign.com/cacert/gsatlasr46alphasslca2026q3.crt";
+
+let lote5AgentPromise = null;
+
+async function obterAgenteLote5() {
+  if (lote5AgentPromise) return lote5AgentPromise;
+
+  lote5AgentPromise = new Promise((resolve, reject) => {
+    https
+      .get(LOTE5_INTERMEDIATE_CA_URL, (res) => {
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          reject(
+            new Error(
+              "Não foi possível baixar o certificado intermediário GlobalSign. HTTP " +
+                res.statusCode
+            )
+          );
+          return;
+        }
+
+        const chunks = [];
+
+        res.on("data", (chunk) => chunks.push(chunk));
+
+        res.on("end", () => {
+          try {
+            const certificadoBruto = Buffer.concat(chunks);
+            const certificado = new X509Certificate(certificadoBruto);
+            const pem = certificado.toString();
+
+            const agent = new https.Agent({
+              keepAlive: true,
+              ca: [...tls.rootCertificates, pem],
+              rejectUnauthorized: true,
+            });
+
+            resolve(agent);
+          } catch (error) {
+            reject(
+              new Error(
+                "Erro ao preparar certificado GlobalSign: " +
+                  (error?.message || error)
+              )
+            );
+          }
+        });
+      })
+      .on("error", reject);
+  });
+
+  return lote5AgentPromise;
+}
+
+function requisicaoHttpsUmaVez(url, options, agent) {
+  return new Promise((resolve, reject) => {
+    const destino = new URL(url);
+    const method = options.method || "GET";
+
+    const body =
+      options.body != null
+        ? Buffer.from(String(options.body))
+        : null;
+
+    const headers = {
+      ...(options.headers || {}),
+    };
+
+    if (
+      body &&
+      !headers["content-length"] &&
+      !headers["Content-Length"]
+    ) {
+      headers["content-length"] = String(body.length);
+    }
+
+    const req = https.request(
+      destino,
+      {
+        method,
+        headers,
+        agent,
+        servername: destino.hostname,
+        rejectUnauthorized: true,
+      },
+      (res) => {
+        const chunks = [];
+
+        res.on("data", (chunk) => chunks.push(chunk));
+
+        res.on("end", () => {
+          const data = Buffer.concat(chunks);
+
+          const headersApi = {
+            getSetCookie() {
+              const valor = res.headers["set-cookie"];
+              if (!valor) return [];
+              return Array.isArray(valor) ? valor : [valor];
+            },
+
+            get(nome) {
+              const valor =
+                res.headers[String(nome).toLowerCase()];
+
+              if (Array.isArray(valor)) {
+                return valor.join(", ");
+              }
+
+              return valor == null ? null : String(valor);
+            },
+          };
+
+          resolve({
+            status: res.statusCode || 0,
+            headers: headersApi,
+
+            async text() {
+              return data.toString("utf8");
+            },
+
+            async arrayBuffer() {
+              return data;
+            },
+          });
+        });
+      }
+    );
+
+    req.on("error", reject);
+
+    req.setTimeout(30000, () => {
+      req.destroy(
+        new Error("Timeout na conexão com o Lote5.")
+      );
+    });
+
+    if (body) {
+      req.write(body);
+    }
+
+    req.end();
+  });
+}
+
 class Session {
   constructor() {
     this.cookies = {};
@@ -82,27 +230,73 @@ class Session {
   }
 
   async request(url, options = {}) {
-    const headers = {
-      "user-agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154 Safari/537.36",
-      ...(options.headers || {}),
+    const agent = await obterAgenteLote5();
+
+    let atualUrl = url;
+
+    let atualOptions = {
+      ...options,
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/154 Safari/537.36",
+        ...(options.headers || {}),
+      },
     };
 
-    const cookie = this.cookieHeader();
+    for (let redirect = 0; redirect <= 5; redirect++) {
+      const cookie = this.cookieHeader();
 
-    if (cookie) {
-      headers.cookie = cookie;
+      if (cookie) {
+        atualOptions.headers.cookie = cookie;
+      }
+
+      const response = await requisicaoHttpsUmaVez(
+        atualUrl,
+        atualOptions,
+        agent
+      );
+
+      this.absorbCookies(response.headers);
+
+      const location = response.headers.get("location");
+      const status = response.status;
+
+      if (
+        location &&
+        [301, 302, 303, 307, 308].includes(status)
+      ) {
+        atualUrl = new URL(location, atualUrl).toString();
+
+        if (
+          status === 303 ||
+          ((status === 301 || status === 302) &&
+            String(atualOptions.method || "GET").toUpperCase() ===
+              "POST")
+        ) {
+          atualOptions = {
+            ...atualOptions,
+            method: "GET",
+            body: undefined,
+            headers: {
+              ...atualOptions.headers,
+            },
+          };
+
+          delete atualOptions.headers["content-length"];
+          delete atualOptions.headers["Content-Length"];
+          delete atualOptions.headers["content-type"];
+          delete atualOptions.headers["Content-Type"];
+        }
+
+        continue;
+      }
+
+      return response;
     }
 
-    const response = await fetch(url, {
-      redirect: "follow",
-      ...options,
-      headers,
-    });
-
-    this.absorbCookies(response.headers);
-
-    return response;
+    throw new Error(
+      "Excesso de redirecionamentos no Portal Lote5."
+    );
   }
 }
 
