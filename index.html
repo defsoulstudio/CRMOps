@@ -474,6 +474,18 @@
         <div id="recebeOpsAuditTimeline"></div>
       </div>
 
+      <div id="recebeOpsProvenienciaPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Origem dos Dados</div>
+            <div class="text-xs text-slate-300 mt-1">Mostra de onde cada informação foi obtida. Campo ausente não é inferido.</div>
+          </div>
+          <span class="px-2 py-1 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-[9px] font-bold">PROVENIÊNCIA</span>
+        </div>
+        <div id="recebeOpsProvenienciaGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2.5"></div>
+        <div id="recebeOpsProvenienciaAviso" class="mt-3 text-[10px] text-slate-500"></div>
+      </div>
+
       <!-- SEÇÃO 2: ÁREA DA MINUTA / FOLHA TIMBRADA -->
       <div id="viewMinutaContainer" class="crm-card rounded-2xl overflow-hidden flex flex-col shadow-2xl">
         <div class="bg-slate-900/90 px-5 py-3 border-b soft-border flex items-center justify-between text-xs no-print">
@@ -1124,6 +1136,7 @@
 
           preencherComplementosNaTelaRecebeOps();
           atualizarStatusModeloNaTelaRecebeOps();
+          renderizarProvenienciaRecebeOps();
           renderDocumentContent();
         }
 
@@ -1151,6 +1164,79 @@
         el.innerText = "| Modelo não mapeado";
       } else {
         el.innerText = "| Modelo jurídico será conectado depois";
+      }
+    }
+
+    function escaparHtmlRecebeOps(valor) {
+      return String(valor == null ? "" : valor)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderizarProvenienciaRecebeOps() {
+      const grid = document.getElementById("recebeOpsProvenienciaGrid");
+      const aviso = document.getElementById("recebeOpsProvenienciaAviso");
+      if (!grid) return;
+
+      const previa = window.recebeOpsLivePreview || {};
+      const d = previa.dados || {};
+      const prov = d.proveniencia || previa.proveniencia || {};
+      const campos = Array.isArray(prov.campos) ? prov.campos : [];
+
+      if (!campos.length) {
+        grid.innerHTML = `
+          <div class="md:col-span-2 xl:col-span-3 text-xs text-slate-500 border border-slate-800 rounded-xl p-4">
+            Proveniência ainda não disponível para este snapshot.
+          </div>
+        `;
+        if (aviso) aviso.textContent = "";
+        return;
+      }
+
+      grid.innerHTML = campos.map(function(item) {
+        const localizado = item.status === "LOCALIZADO";
+        const statusCls = localizado
+          ? "text-emerald-300 border-emerald-900/60 bg-emerald-950/30"
+          : "text-amber-300 border-amber-900/60 bg-amber-950/30";
+
+        const valor = localizado
+          ? escaparHtmlRecebeOps(item.valor)
+          : "Não localizado";
+
+        return `
+          <div class="rounded-xl border border-slate-800 bg-slate-950/50 p-3">
+            <div class="flex items-start justify-between gap-2">
+              <div class="text-[10px] uppercase tracking-wide text-slate-500 font-extrabold">
+                ${escaparHtmlRecebeOps(item.rotulo)}
+              </div>
+              <span class="px-1.5 py-0.5 rounded-md border text-[8px] font-bold ${statusCls}">
+                ${localizado ? "LOCALIZADO" : "AUSENTE"}
+              </span>
+            </div>
+            <div class="mt-1.5 text-xs font-bold text-slate-200 break-words">${valor}</div>
+            <div class="mt-2 pt-2 border-t border-slate-800/80">
+              <div class="text-[9px] text-slate-500">Fonte</div>
+              <div class="text-[10px] font-semibold text-sky-300">${escaparHtmlRecebeOps(item.fonte || "")}</div>
+              <div class="mt-1 flex items-center gap-2 text-[9px] text-slate-500">
+                <span>Prioridade ${escaparHtmlRecebeOps(item.prioridade || "")}</span>
+                <span>•</span>
+                <span>Confiança operacional: ${escaparHtmlRecebeOps(item.confiancaOperacional || "")}</span>
+              </div>
+              ${item.observacao ? `
+                <div class="mt-1.5 text-[9px] text-slate-500 leading-relaxed">
+                  ${escaparHtmlRecebeOps(item.observacao)}
+                </div>
+              ` : ""}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (aviso) {
+        aviso.textContent = prov.aviso || "";
       }
     }
 
@@ -1239,6 +1325,7 @@
       atualizarStatusModeloNaTelaRecebeOps();
       preencherComplementosNaTelaRecebeOps();
       atualizarEstadoProcessoRecebeOps();
+      renderizarProvenienciaRecebeOps();
       carregarAuditoriaRecebeOps();
 
       return true;
