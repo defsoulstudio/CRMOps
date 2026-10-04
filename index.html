@@ -506,6 +506,54 @@
         </div>
       </div>
 
+      <div id="retornoTrelloPanel" class="crm-card p-5 rounded-2xl text-xs no-print">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Retorno ao Trello</div>
+            <div class="mt-1 text-sm font-extrabold text-white">Preparação segura de ações</div>
+            <div class="mt-1.5 text-[11px] leading-relaxed text-slate-400">
+              Nenhuma alteração é feita automaticamente. As ações ficam registradas para revisão antes de qualquer escrita no Trello.
+            </div>
+          </div>
+
+          <span class="px-2.5 py-1 rounded-lg border border-sky-800 bg-sky-950/40 text-sky-300 text-[9px] font-extrabold">
+            MODO SEGURO
+          </span>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-3">
+          <div>
+            <label class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">Comentário a preparar</label>
+            <textarea
+              id="trelloRetornoComentario"
+              rows="3"
+              class="mt-1.5 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2.5 text-slate-200 text-xs resize-y"
+              placeholder="Ex.: Dados revisados no RecebeOps. Aguardando complemento cadastral."
+            ></textarea>
+          </div>
+
+          <div class="flex lg:items-end">
+            <button
+              id="btnPrepararComentarioTrello"
+              onclick="prepararComentarioTrelloRecebeOps()"
+              class="w-full lg:w-auto px-4 py-2.5 rounded-xl border border-sky-700 bg-sky-950/40 hover:bg-sky-900/50 text-sky-200 text-xs font-extrabold transition-all"
+            >
+              Preparar comentário
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-slate-800">
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <div class="text-[10px] uppercase tracking-[0.12em] text-slate-500 font-extrabold">Ações preparadas</div>
+            <button onclick="carregarFilaRetornoTrelloRecebeOps()" class="text-[10px] text-slate-400 hover:text-slate-200 font-semibold">
+              Atualizar
+            </button>
+          </div>
+          <div id="trelloRetornoFila" class="space-y-2"></div>
+        </div>
+      </div>
+
       <div id="recebeOpsAuditPanel" class="crm-card p-5 rounded-2xl text-xs no-print">
         <div class="flex items-center justify-between gap-3 mb-4">
           <div>
@@ -1170,6 +1218,150 @@
       }).join("");
     }
 
+    function humanizarStatusFilaTrelloRecebeOps(status) {
+      const mapa = {
+        AGUARDANDO_REVISAO: "Aguardando revisão",
+        APROVADO: "Aprovado",
+        EXECUTADO: "Executado",
+        CANCELADO: "Cancelado"
+      };
+      return mapa[status] || humanizarStatusTecnicoRecebeOps(status);
+    }
+
+    function renderizarFilaRetornoTrelloRecebeOps(itens) {
+      const alvo = document.getElementById("trelloRetornoFila");
+      if (!alvo) return;
+
+      const lista = Array.isArray(itens) ? itens : [];
+
+      if (!lista.length) {
+        alvo.innerHTML = `
+          <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-3 text-[11px] text-slate-500">
+            Nenhuma ação preparada para este cartão.
+          </div>
+        `;
+        return;
+      }
+
+      alvo.innerHTML = lista.map(function(item) {
+        const retorno = item.retorno || {};
+        const descricao =
+          retorno.tipo === "COMENTARIO"
+            ? retorno.comentario
+            : retorno.tipo === "ANEXO"
+              ? ("Anexo: " + (retorno.anexoNome || retorno.anexoArquivoId || "arquivo"))
+              : retorno.tipo === "STATUS"
+                ? ("Alterar status para: " + retorno.statusDestino)
+                : "Ação preparada";
+
+        return `
+          <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="text-[10px] font-extrabold text-slate-300">
+                  ${retorno.tipo === "COMENTARIO" ? "Comentário" : retorno.tipo === "ANEXO" ? "Anexo" : "Status"}
+                </div>
+                <div class="mt-1 text-[11px] text-slate-400 break-words">
+                  ${escaparHtmlRecebeOps(descricao)}
+                </div>
+                <div class="mt-2 text-[9px] text-slate-600">
+                  ${formatarDataAuditoriaRecebeOps(item.criadoEm)}
+                  ${item.autor ? " • " + humanizarAutorRecebeOps(item.autor) : ""}
+                </div>
+              </div>
+
+              <span class="shrink-0 px-2 py-1 rounded-lg border border-amber-800/70 bg-amber-950/30 text-amber-300 text-[8px] font-extrabold">
+                ${humanizarStatusFilaTrelloRecebeOps(item.status)}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function carregarFilaRetornoTrelloRecebeOps() {
+      const c = casoAtualRecebeOps();
+      if (!c || !c.cardId || !window.recebeOpsPreviewHash) {
+        renderizarFilaRetornoTrelloRecebeOps([]);
+        return;
+      }
+
+      try {
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action: "get_trello_return_queue",
+            cardId: c.cardId
+          })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || data.status === "error") {
+          throw new Error(data.message || data.code || "Falha ao carregar fila do Trello.");
+        }
+
+        renderizarFilaRetornoTrelloRecebeOps(data.itens || []);
+      } catch (e) {
+        console.error("Falha ao carregar fila de retorno ao Trello:", e);
+      }
+    }
+
+    async function prepararComentarioTrelloRecebeOps() {
+      const c = casoAtualRecebeOps();
+      const campo = document.getElementById("trelloRetornoComentario");
+      const comentario = campo ? String(campo.value || "").trim() : "";
+
+      if (!c || !c.cardId) {
+        return showToast("Nenhum cartão carregado.");
+      }
+
+      if (!window.recebeOpsPreviewHash) {
+        return showToast("Não foi possível validar a versão atual da prévia.");
+      }
+
+      if (!comentario) {
+        return showToast("Digite o comentário que deseja preparar.");
+      }
+
+      try {
+        showToast("Preparando comentário para revisão...");
+
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action: "prepare_trello_return",
+            cardId: c.cardId,
+            hash: window.recebeOpsPreviewHash,
+            autor: "Everton Lanzilotti",
+            retorno: {
+              tipo: "COMENTARIO",
+              comentario: comentario,
+              motivo: "Preparado manualmente no RecebeOps"
+            }
+          })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || data.status === "error") {
+          throw new Error(data.message || data.code || "Falha ao preparar comentário.");
+        }
+
+        if (campo) campo.value = "";
+
+        await carregarFilaRetornoTrelloRecebeOps();
+        await carregarAuditoriaRecebeOps();
+
+        showToast("Comentário preparado para revisão. Nada foi enviado ao Trello.");
+      } catch (e) {
+        console.error("Falha ao preparar retorno ao Trello:", e);
+        showToast(e.message || "Não foi possível preparar a ação.");
+      }
+    }
+
     async function carregarAuditoriaRecebeOps() {
       const c = casoAtualRecebeOps();
       if (!c || !c.cardId) return;
@@ -1762,6 +1954,7 @@
       renderizarProvenienciaRecebeOps();
       atualizarGovernancaRecebeOps();
       carregarAuditoriaRecebeOps();
+      carregarFilaRetornoTrelloRecebeOps();
 
       return true;
     }
