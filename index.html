@@ -757,6 +757,22 @@
         .join(" • ");
     }
 
+    function atualizarStatusModeloNaTelaRecebeOps() {
+      const el = document.getElementById("modeloStatusHeader");
+      if (!el) return;
+
+      const nome = window.recebeOpsModeloNome || "";
+      const status = window.recebeOpsGenerationStatus || "";
+
+      if (nome) {
+        el.innerText = "| " + nome + (status ? " • " + status : "");
+      } else if (window.recebeOpsModeloStatus === "MODELO_NAO_MAPEADO") {
+        el.innerText = "| Modelo não mapeado";
+      } else {
+        el.innerText = "| Modelo jurídico será conectado depois";
+      }
+    }
+
     function aplicarDadosReaisNoCaso(data, cardId) {
       const d = normalizarDadosPreviewRecebeOps(data);
       if (!d) return false;
@@ -767,6 +783,12 @@
         data.hash ||
         (data.registro && data.registro.hash) ||
         null;
+
+      if (data.registro) {
+        window.recebeOpsGenerationStatus = data.registro.geracaoStatus || "";
+        window.recebeOpsModeloStatus = data.registro.modeloStatus || "";
+        window.recebeOpsModeloNome = data.registro.modeloNome || "";
+      }
 
       const c = CASES[0];
       c.cardId = cardId || data.cardId || c.cardId;
@@ -824,6 +846,8 @@
       c.pago = acordo.pago !== undefined
         ? valorCentavosRecebeOps(acordo.pago)
         : numeroBRRecebeOps(d.valorPago || 0);
+
+      atualizarStatusModeloNaTelaRecebeOps();
 
       return true;
     }
@@ -1386,7 +1410,29 @@
         }
 
         if (data.status === "approved_waiting_generator") {
-          showToast("Dados aprovados. Aguardando o módulo de geração do Google Docs.");
+          window.recebeOpsModeloNome = data.modeloNome || window.recebeOpsModeloNome || "";
+          window.recebeOpsModeloStatus = data.modeloStatus || window.recebeOpsModeloStatus || "";
+          window.recebeOpsGenerationStatus = data.generationStatus || window.recebeOpsGenerationStatus || "";
+          atualizarStatusModeloNaTelaRecebeOps();
+
+          const modeloNome = data.modeloNome || "";
+          const modeloStatus = data.modeloStatus || "";
+          const generationStatus = data.generationStatus || "";
+
+          if (modeloStatus === "MODELO_LOCALIZADO" && modeloNome) {
+            if (generationStatus === "AGUARDANDO_COMPLEMENTOS") {
+              showToast("Modelo localizado: " + modeloNome + " • Aguardando complementos.");
+            } else if (generationStatus === "PRONTO_PARA_GERACAO_CONTROLADA") {
+              showToast("Modelo localizado: " + modeloNome + " • Pronto para geração controlada.");
+            } else {
+              showToast("Modelo localizado: " + modeloNome + " • " + (generationStatus || "Fila preparada."));
+            }
+          } else if (generationStatus) {
+            showToast("Dados aprovados • " + generationStatus);
+          } else {
+            showToast("Dados aprovados. Aguardando o módulo de geração do Google Docs.");
+          }
+
           return;
         }
 
