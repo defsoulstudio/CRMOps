@@ -726,15 +726,34 @@
       return acordo && Array.isArray(acordo.parcelas) ? acordo.parcelas : [];
     }
 
+    function valorCentavosRecebeOps(centavos) {
+      const n = Number(centavos);
+      return Number.isFinite(n) ? n / 100 : 0;
+    }
+
+    function valorParcelaNumeroRecebeOps(parcela) {
+      if (!parcela) return 0;
+
+      if (parcela.centavos !== undefined && parcela.centavos !== null && parcela.centavos !== "") {
+        return valorCentavosRecebeOps(parcela.centavos);
+      }
+
+      return numeroBRRecebeOps(parcela.valor || parcela.valorFormatado || 0);
+    }
+
+    function valorParcelaFormatadoRecebeOps(parcela) {
+      return valorParcelaNumeroRecebeOps(parcela).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
     function resumoParcelasReaisRecebeOps() {
       const parcelas = parcelasReaisDoAcordoRecebeOps();
       if (!parcelas.length) return "";
 
       return parcelas
-        .map((p, i) => {
-          const valor = p.valor || p.valorFormatado || "";
-          return `${i + 1}ª R$ ${String(valor).replace(/^R\$\s*/i, "")}`;
-        })
+        .map((p, i) => `${i + 1}ª R$ ${valorParcelaFormatadoRecebeOps(p)}`)
         .join(" • ");
     }
 
@@ -776,10 +795,12 @@
         ? `${parcelas.length} parcela(s) identificada(s)`
         : "";
 
-      const honorarios = numeroBRRecebeOps(
-        d.valorHonorarios ||
-        (acordo.honorarios && (acordo.honorarios.valor || acordo.honorarios.valorFormatado))
-      );
+      const honorarios = acordo.honorarios && acordo.honorarios.centavos !== undefined
+        ? valorCentavosRecebeOps(acordo.honorarios.centavos)
+        : numeroBRRecebeOps(
+            d.valorHonorarios ||
+            (acordo.honorarios && (acordo.honorarios.valor || acordo.honorarios.valorFormatado))
+          );
 
       agreementState.entradaValor = honorarios;
       agreementState.qtdParcelas = c.parcVenc || 1;
@@ -787,12 +808,22 @@
       c.honorarios = honorarios;
 
       const totalParcelas = parcelas.reduce(
-        (soma, p) => soma + numeroBRRecebeOps(p.valor || p.valorFormatado || 0),
+        (soma, p) => soma + valorParcelaNumeroRecebeOps(p),
         0
       );
 
-      c.tot = totalParcelas || numeroBRRecebeOps(d.valorAcordo || acordo.total || acordo.saldo || 0);
-      c.saldo = numeroBRRecebeOps(acordo.saldo || d.saldo || 0);
+      c.tot = totalParcelas ||
+        (acordo.total !== undefined
+          ? valorCentavosRecebeOps(acordo.total)
+          : numeroBRRecebeOps(d.valorAcordo || 0));
+
+      c.saldo = acordo.saldo !== undefined
+        ? valorCentavosRecebeOps(acordo.saldo)
+        : numeroBRRecebeOps(d.saldo || 0);
+
+      c.pago = acordo.pago !== undefined
+        ? valorCentavosRecebeOps(acordo.pago)
+        : numeroBRRecebeOps(d.valorPago || 0);
 
       return true;
     }
@@ -1044,7 +1075,7 @@
             </div>
             <div class="bg-slate-950/80 p-2.5 rounded-xl border soft-border flex items-center justify-between">
               <div>
-                <span class="text-[10px] uppercase font-bold text-slate-500">Saldo Repactuado:</span>
+                <span class="text-[10px] uppercase font-bold text-slate-500">Parcelas do acordo:</span>
                 <div class="text-emerald-400 font-bold font-mono text-xs leading-relaxed">${resumoParcelas}</div>
               </div>
               <button onclick="openPixModal(${agreementState.entradaValor})" class="text-xs text-emerald-400 underline font-bold hover:text-emerald-300">Pix Entrada</button>
@@ -1115,7 +1146,9 @@
       const temConjuge = !!String(conjuge.nome || '').trim();
       const pendencias = Array.isArray(d.pendencias) ? d.pendencias : [];
       const printArea = document.getElementById('printArea');
-      const linhasParcelas = parcelas.length ? parcelas.map((p,i)=>`<tr class="border-t border-slate-200"><td class="py-2 pr-3">${i+1}ª</td><td class="py-2 pr-3 font-mono font-bold">R$ ${escapeHtmlRecebeOps(p.valor || p.valorFormatado || '')}</td><td class="py-2">${escapeHtmlRecebeOps(p.vencimento || '')}</td></tr>`).join('') : '<tr><td colspan="3" class="py-3 text-amber-600">Parcelas não localizadas no Trello</td></tr>';
+      const linhasParcelas = parcelas.length
+        ? parcelas.map((p,i)=>`<tr class="border-t border-slate-200"><td class="py-2 pr-3">${i+1}ª</td><td class="py-2 pr-3 font-mono font-bold">R$ ${valorParcelaFormatadoRecebeOps(p)}</td><td class="py-2">${escapeHtmlRecebeOps(p.vencimento || '')}</td></tr>`).join('')
+        : '<tr><td colspan="3" class="py-3 text-amber-600">Parcelas não localizadas no Trello</td></tr>';
       
       printArea.innerHTML = `
         <div class="space-y-6 text-slate-800">
@@ -1233,7 +1266,7 @@
       } else if (currentDocMode === 'PARCELAMENTO') {
         const parcelasReais = parcelasReaisDoAcordoRecebeOps();
         const linhas = parcelasReais.length
-          ? parcelasReais.map((p, i) => `<li>${i + 1}ª parcela — R$ ${escapeHtmlRecebeOps(p.valor || p.valorFormatado || '')} — ${escapeHtmlRecebeOps(p.vencimento || '')}</li>`).join('')
+          ? parcelasReais.map((p, i) => `<li>${i + 1}ª parcela — R$ ${valorParcelaFormatadoRecebeOps(p)} — ${escapeHtmlRecebeOps(p.vencimento || '')}</li>`).join('')
           : '<li>Condições não localizadas.</li>';
 
         printArea.innerHTML = `
