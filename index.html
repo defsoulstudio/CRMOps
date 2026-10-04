@@ -241,6 +241,8 @@
 
   <script>
     const RECEBEOPS_API_URL = "/api/recebeops";
+    window.recebeOpsLivePreview = null;
+    window.recebeOpsPreviewHash = null;
 
     const CASES = [
       {
@@ -433,6 +435,7 @@
             const resp = await fetch(`${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(cardId)}`);
             const data = await resp.json();
             if (data && data.hash) window.recebeOpsPreviewHash = data.hash;
+            window.recebeOpsLivePreview = data || null;
             if (data && data.unidades && data.unidades.length) {
               const primeira = data.unidades.find(u => u.status === "OK" && u.dados);
               if (primeira) data.dados = primeira.dados;
@@ -441,10 +444,18 @@
               const d = data.dados;
               CASES[0].nome = d.nomeComprador || CASES[0].nome;
               CASES[0].cpf = d.cpfComprador || CASES[0].cpf;
+              CASES[0].rg = d.rgComprador || "";
+              CASES[0].civ = d.estadoCivilComprador || "";
+              CASES[0].prof = d.profissaoComprador || "";
+              CASES[0].end = d.enderecoComprador || "";
               CASES[0].lot = d.empreendimentoModelo || CASES[0].lot;
               CASES[0].ct = d.contrato || CASES[0].ct;
               CASES[0].qd = d.quadra || CASES[0].qd;
               CASES[0].lt = d.lote || CASES[0].lt;
+              CASES[0].dt = d.dataContrato || "";
+              if (d.acordo && Array.isArray(d.acordo.parcelas)) CASES[0].parcVenc = d.acordo.parcelas.length;
+              if (d.valorHonorarios) agreementState.entradaValor = Number(String(d.valorHonorarios).replace(/\./g,'').replace(',','.')) || agreementState.entradaValor;
+              if (d.qtdParcelas) agreementState.qtdParcelas = Number(d.qtdParcelas) || agreementState.qtdParcelas;
               renderCaseList();
               selectCase(1);
               showToast("Dados do Trello sincronizados!");
@@ -543,7 +554,44 @@
       }
     }
 
+    function escapeHtmlRecebeOps(v) {
+      return String(v == null ? "" : v).replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+    }
+
+    function valorOuPendente(v) {
+      const t = String(v == null ? "" : v).trim();
+      return t ? escapeHtmlRecebeOps(t) : '<span class="text-amber-500 font-semibold">Não localizado</span>';
+    }
+
+    function renderPreviaOperacionalRecebeOps() {
+      const previa = window.recebeOpsLivePreview;
+      if (!previa || !previa.dados) return false;
+      const d = previa.dados;
+      const parcelas = d.acordo && Array.isArray(d.acordo.parcelas) ? d.acordo.parcelas : [];
+      const conjuge = d.conjuge || {};
+      const temConjuge = !!String(conjuge.nome || '').trim();
+      const pendencias = Array.isArray(d.pendencias) ? d.pendencias : [];
+      const printArea = document.getElementById('printArea');
+      const linhasParcelas = parcelas.length ? parcelas.map((p,i)=>`<tr class="border-t border-slate-200"><td class="py-2 pr-3">${i+1}ª</td><td class="py-2 pr-3 font-mono">R$ ${escapeHtmlRecebeOps(p.valor || p.valorFormatado || '')}</td><td class="py-2">${escapeHtmlRecebeOps(p.vencimento || '')}</td></tr>`).join('') : '<tr><td colspan="3" class="py-3 text-amber-600">Parcelas não localizadas</td></tr>';
+      printArea.innerHTML = `
+        <div class="space-y-5 text-slate-800">
+          <div class="border-b border-slate-200 pb-4 flex items-start justify-between gap-4">
+            <div><div class="text-[10px] uppercase tracking-[0.18em] text-emerald-700 font-bold">RecebeOps • Prévia Operacional</div><h2 class="text-lg font-extrabold mt-1">Dados para preenchimento do modelo oficial</h2><p class="text-xs text-slate-500 mt-1">Esta tela não é o termo jurídico. O texto oficial virá exclusivamente do Google Docs padronizado.</p></div>
+            <div class="text-right text-xs text-slate-500"><div>Contrato <strong class="text-slate-800">${valorOuPendente(d.contrato)}</strong></div><div>Qd. ${valorOuPendente(d.quadra)} • Lt. ${valorOuPendente(d.lote)}</div></div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-xl border border-slate-200 p-4"><h3 class="font-bold text-sm mb-3">Cliente</h3><div class="space-y-2 text-xs"><div><span class="text-slate-500">Nome:</span> <strong>${valorOuPendente(d.nomeComprador)}</strong></div><div><span class="text-slate-500">CPF:</span> ${valorOuPendente(d.cpfComprador)}</div><div><span class="text-slate-500">RG:</span> ${valorOuPendente(d.rgComprador)}</div><div><span class="text-slate-500">Estado civil:</span> ${valorOuPendente(d.estadoCivilComprador)}</div><div><span class="text-slate-500">Profissão:</span> ${valorOuPendente(d.profissaoComprador)}</div><div><span class="text-slate-500">Nascimento:</span> ${valorOuPendente(d.dataNascimentoComprador)}</div><div><span class="text-slate-500">E-mail:</span> ${valorOuPendente(d.emailComprador)}</div><div><span class="text-slate-500">Telefone:</span> ${valorOuPendente(d.telefoneComprador)}</div><div><span class="text-slate-500">Endereço:</span> ${valorOuPendente(d.enderecoComprador)}</div></div></div>
+            <div class="rounded-xl border border-slate-200 p-4"><h3 class="font-bold text-sm mb-3">Contrato e regras</h3><div class="space-y-2 text-xs"><div><span class="text-slate-500">Empreendimento:</span> <strong>${valorOuPendente(d.empreendimentoModelo)}</strong></div><div><span class="text-slate-500">Data do contrato:</span> ${valorOuPendente(d.dataContrato)}</div><div><span class="text-slate-500">Tipo:</span> ${valorOuPendente(d.tipoTermo)}</div><div><span class="text-slate-500">Entrada:</span> <strong>${valorOuPendente(d.valorHonorarios)}</strong> <span class="text-emerald-700">(honorários)</span></div><div><span class="text-slate-500">Origem das condições:</span> Trello</div><div><span class="text-slate-500">Extrato:</span> conferência documental</div><div><span class="text-slate-500">Cônjuge:</span> ${temConjuge ? escapeHtmlRecebeOps(conjuge.nome) : 'Não aplicável / não informado'}</div></div></div>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4"><h3 class="font-bold text-sm mb-3">Parcelamento</h3><table class="w-full text-xs"><thead><tr class="text-left text-slate-500"><th class="pb-2">Parcela</th><th class="pb-2">Valor</th><th class="pb-2">Vencimento</th></tr></thead><tbody>${linhasParcelas}</tbody></table></div>
+          <div class="rounded-xl ${pendencias.length ? 'border-amber-300 bg-amber-50' : 'border-emerald-200 bg-emerald-50'} p-4"><h3 class="font-bold text-sm ${pendencias.length ? 'text-amber-800' : 'text-emerald-800'}">Validação de dados</h3><div class="text-xs mt-2 ${pendencias.length ? 'text-amber-800' : 'text-emerald-800'}">${pendencias.length ? pendencias.map(x=>'• '+escapeHtmlRecebeOps(typeof x === 'string' ? x : (x.campo || x.motivo || JSON.stringify(x)))).join('<br>') : 'Dados estruturados preparados para conferência. Regras finas de obrigatoriedade serão ajustadas após a esteira completa.'}</div></div>
+          <div class="text-[11px] text-slate-500 border-t border-slate-200 pt-3">Após a padronização dos modelos, estes dados serão aplicados em uma cópia imutável do Google Docs oficial. Nenhuma cláusula será redigida por esta tela.</div>
+        </div>`;
+      return true;
+    }
+
     function renderDocumentContent() {
+      if (renderPreviaOperacionalRecebeOps()) return;
       const c = CASES.find(item => item.id === currentCaseId);
       const printArea = document.getElementById('printArea');
       const hoje = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
@@ -577,7 +625,7 @@
       if (!window.recebeOpsPreviewHash) return showToast("Hash da prévia não carregado. Atualize o caso.");
 
       try {
-        showToast("Aprovando prévia...");
+        showToast("Registrando aprovação dos dados...");
         const resp = await fetch(RECEBEOPS_API_URL, {
           method: "POST",
           headers: {"Content-Type":"application/json"},
@@ -590,9 +638,9 @@
         const data = await resp.json();
 
         if (data.status === "generated") {
-          showToast("Termo aprovado, gerado e anexado ao cartão.");
-        } else if (data.status === "approved_waiting_generator") {
-          showToast("Prévia aprovada. Gerador final ainda precisa ser conectado.");
+          showToast("Documento aprovado, gerado e anexado ao cartão.");
+        } else if (data.status === "approved_waiting_generator" || data.status === "approved_waiting_document_model") {
+          showToast("Dados aprovados. Aguardando módulo do modelo oficial do Google Docs.");
         } else {
           showToast(data.message || data.code || "Não foi possível aprovar.");
         }
