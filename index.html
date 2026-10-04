@@ -71,6 +71,26 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.05);
       border-radius: 12px;
       position: relative;
+      box-sizing: border-box;
+      height: auto !important;
+      min-height: 0;
+      overflow: hidden;
+      display: flow-root;
+    }
+
+    .paper-sheet > * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .paper-sheet table {
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .paper-sheet td,
+    .paper-sheet th {
+      overflow-wrap: anywhere;
     }
 
     .paper-sheet::before {
@@ -499,8 +519,8 @@
           </div>
         </div>
 
-        <div class="p-4 sm:p-8 overflow-y-auto max-h-[640px] bg-slate-950/70 flex justify-center">
-          <div id="printArea" class="paper-sheet p-8 sm:p-12 w-full max-w-[840px] text-sm leading-relaxed">
+        <div class="p-4 sm:p-8 bg-slate-950/70 flex justify-center items-start overflow-x-hidden">
+          <div id="printArea" class="paper-sheet p-8 sm:p-12 w-full max-w-[840px] min-w-0 text-sm leading-relaxed overflow-hidden">
             <!-- Conteúdo da minuta gerado via JS -->
           </div>
         </div>
@@ -1761,7 +1781,7 @@
         : '<tr><td colspan="3" class="py-3 text-amber-600">Parcelas não localizadas no Trello</td></tr>';
       
       printArea.innerHTML = `
-        <div class="space-y-6 text-slate-800">
+        <div class="space-y-6 text-slate-800 w-full min-w-0 overflow-hidden">
           <div class="border-b border-slate-200 pb-4 flex items-start justify-between gap-4">
             <div>
               <div class="text-[10px] uppercase tracking-[0.2em] text-emerald-700 font-extrabold">RecebeOps CRM • Prévia Operacional</div>
@@ -1800,19 +1820,64 @@
             </div>
           </div>
 
-          <div class="rounded-xl border border-slate-200 p-4">
+          <div class="rounded-xl border border-slate-200 p-4 w-full min-w-0 overflow-hidden">
             <h3 class="font-extrabold text-xs uppercase text-slate-700 mb-2 tracking-wider">Plano de Parcelas Concluído</h3>
-            <table class="w-full text-xs">
+            <div class="w-full overflow-x-auto">
+              <table class="w-full text-xs">
               <thead><tr class="text-left text-slate-500 border-b border-slate-200"><th class="pb-2">Parcela</th><th class="pb-2">Valor</th><th class="pb-2">Vencimento</th></tr></thead>
               <tbody>${linhasParcelas}</tbody>
-            </table>
+              </table>
+            </div>
           </div>
 
-          <div class="rounded-xl ${pendencias.length ? 'border-amber-300 bg-amber-50' : 'border-emerald-200 bg-emerald-50'} p-4">
-            <h3 class="font-bold text-xs uppercase tracking-wider ${pendencias.length ? 'text-amber-800' : 'text-emerald-800'}">Status da Auditoria Pré-Emissão</h3>
-            <div class="text-xs mt-1.5 ${pendencias.length ? 'text-amber-800' : 'text-emerald-800'}">
-              ${pendencias.length ? pendencias.map(x=>'• '+escapeHtmlRecebeOps(typeof x === 'string' ? x : (x.campo || x.motivo || JSON.stringify(x)))).join('<br>') : 'Conformidade validada. Pronto para mesclagem no modelo de Google Docs.'}
+          <div class="rounded-2xl border ${pendencias.length ? 'border-amber-900/60 bg-amber-950/20' : 'border-emerald-900/60 bg-emerald-950/20'} p-4">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div class="text-[10px] uppercase tracking-[0.14em] font-extrabold ${pendencias.length ? 'text-amber-300' : 'text-emerald-300'}">
+                  Auditoria Pré-Emissão
+                </div>
+                <div class="mt-1 text-xs text-slate-400">
+                  ${pendencias.length
+                    ? 'Existem dados que ainda precisam ser localizados ou conferidos.'
+                    : 'Nenhuma pendência operacional identificada nesta prévia.'}
+                </div>
+              </div>
+
+              <span class="inline-flex items-center px-2.5 py-1 rounded-lg border text-[9px] font-extrabold ${
+                pendencias.length
+                  ? 'border-amber-800/70 bg-amber-950/50 text-amber-300'
+                  : 'border-emerald-800/70 bg-emerald-950/50 text-emerald-300'
+              }">
+                ${pendencias.length
+                  ? `${pendencias.length} PENDÊNCIA${pendencias.length === 1 ? '' : 'S'}`
+                  : 'SEM PENDÊNCIAS'}
+              </span>
             </div>
+
+            ${
+              pendencias.length
+                ? `
+                  <div class="mt-3 flex flex-wrap gap-2">
+                    ${pendencias.map(function(x) {
+                      const nome = typeof x === 'string'
+                        ? x
+                        : (x.campo || x.motivo || 'Pendência');
+
+                      return `
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber-900/60 bg-slate-950/50 text-[10px] font-semibold text-amber-200">
+                          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                          ${escapeHtmlRecebeOps(nome)}
+                        </span>
+                      `;
+                    }).join('')}
+                  </div>
+                `
+                : `
+                  <div class="mt-3 text-[10px] text-slate-500">
+                    A liberação para geração do documento continuará obedecendo ao estado do processo e às regras do modelo oficial.
+                  </div>
+                `
+            }
           </div>
         </div>
       `;
