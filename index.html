@@ -265,13 +265,19 @@
           </div>
         </div>
 
-        <!-- Empreendimento Dropdown Badge -->
+        <!-- Filtro real por empreendimento -->
         <div class="hidden xl:flex items-center gap-2 pl-4 border-l soft-border">
-          <span class="text-[11px] text-slate-400">Empreendimento:</span>
-          <div class="px-2.5 py-1 rounded-lg bg-slate-900/90 border soft-border text-xs text-slate-200 font-semibold flex items-center gap-2 cursor-pointer hover:border-slate-700 transition-colors">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            <span id="currentProjectFilter">Todos os Loteamentos</span>
-            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          <label for="projectFilterSelect" class="text-[11px] text-slate-400">Empreendimento:</label>
+          <div class="relative">
+            <select
+              id="projectFilterSelect"
+              onchange="setProjectFilter(this.value)"
+              class="appearance-none pl-7 pr-8 py-1.5 rounded-lg bg-slate-900/90 border soft-border text-xs text-slate-200 font-semibold focus:outline-none focus:border-emerald-500/70"
+            >
+              <option value="ALL">Todos os empreendimentos</option>
+            </select>
+            <span class="absolute left-2.5 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 pointer-events-none"></span>
+            <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
           </div>
         </div>
       </div>
@@ -282,11 +288,14 @@
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </div>
-          <input type="text" id="globalSearchInput" placeholder="Buscar por cliente, CPF, contrato, loteamento..." 
-                 class="w-full bg-slate-950/70 border soft-border rounded-xl pl-9 pr-12 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/70 focus:ring-1 focus:ring-emerald-500/30 transition-all">
-          <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center">
-            <kbd class="px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-900 border soft-border rounded">⌘K</kbd>
-          </div>
+          <input
+            type="search"
+            id="globalSearchInput"
+            placeholder="Buscar por cliente, CPF, contrato ou empreendimento..."
+            oninput="sincronizarBuscaGlobalRecebeOps(this.value)"
+            aria-label="Buscar casos"
+            class="w-full bg-slate-950/70 border soft-border rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/70 focus:ring-1 focus:ring-emerald-500/30 transition-all"
+          >
         </div>
       </div>
 
@@ -322,6 +331,31 @@
         </div>
       </div>
 
+    </div>
+
+    <div class="md:hidden px-4 pb-3 pt-1 space-y-2 border-t soft-border">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <input
+          type="search"
+          id="globalSearchInputMobile"
+          placeholder="Buscar casos..."
+          oninput="sincronizarBuscaGlobalRecebeOps(this.value)"
+          aria-label="Buscar casos no celular"
+          class="w-full bg-slate-950/70 border soft-border rounded-xl pl-9 pr-3 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/70"
+        >
+      </div>
+
+      <select
+        id="projectFilterSelectMobile"
+        onchange="setProjectFilter(this.value)"
+        class="w-full bg-slate-950/70 border soft-border rounded-xl px-3 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500/70"
+        aria-label="Filtrar por empreendimento"
+      >
+        <option value="ALL">Todos os empreendimentos</option>
+      </select>
     </div>
   </header>
 
@@ -917,6 +951,7 @@
     let CASES = [];
     let currentCaseId = null;
     let currentFilter = 'ALL';
+    let currentProjectFilter = 'ALL';
     let currentDocMode = 'PARCELAMENTO';
     let currentDetailTab = 'MINUTA';
     let agreementState = { entradaValor: 0, qtdParcelas: 0, descontoJuros: 0 };
@@ -1024,8 +1059,25 @@
       }
     }
 
+    document.addEventListener("keydown", function(event) {
+      const teclaK = String(event.key || "").toLowerCase() === "k";
+      const modificador = event.ctrlKey || event.metaKey;
+
+      if (!teclaK || !modificador) return;
+
+      const alvo = document.getElementById("globalSearchInput") ||
+        document.getElementById("globalSearchInputMobile");
+
+      if (alvo) {
+        event.preventDefault();
+        alvo.focus();
+        if (typeof alvo.select === "function") alvo.select();
+      }
+    });
+
     async function init() {
       await verificarParametroCardIdNaUrl();
+      atualizarOpcoesEmpreendimentoRecebeOps();
       renderCaseList();
 
       if (CASES.length) {
@@ -2463,6 +2515,7 @@
           throw new Error("O caso foi localizado, mas não há dados suficientes para exibi-lo.");
         }
 
+        atualizarOpcoesEmpreendimentoRecebeOps();
         renderCaseList();
         showToast("Caso carregado com sucesso.");
       } catch (e) {
@@ -2477,6 +2530,68 @@
         renderCaseList();
         showToast(e.message || "Não foi possível carregar o caso.");
       }
+    }
+
+    function empreendimentoDoCasoRecebeOps(caso) {
+      return String(
+        (caso && (caso.lot || caso.empreendimento || caso.loteamento)) || ""
+      ).trim();
+    }
+
+    function atualizarOpcoesEmpreendimentoRecebeOps() {
+      const selects = [
+        document.getElementById("projectFilterSelect"),
+        document.getElementById("projectFilterSelectMobile")
+      ].filter(Boolean);
+
+      const empreendimentos = Array.from(
+        new Set(
+          CASES
+            .map(empreendimentoDoCasoRecebeOps)
+            .filter(Boolean)
+        )
+      ).sort(function(a, b) {
+        return a.localeCompare(b, "pt-BR");
+      });
+
+      selects.forEach(function(select) {
+        const valorAtual = currentProjectFilter || "ALL";
+        select.innerHTML =
+          '<option value="ALL">Todos os empreendimentos</option>' +
+          empreendimentos.map(function(nome) {
+            return `<option value="${escaparHtmlRecebeOps(nome)}">${escaparHtmlRecebeOps(nome)}</option>`;
+          }).join("");
+
+        if (empreendimentos.indexOf(valorAtual) >= 0 || valorAtual === "ALL") {
+          select.value = valorAtual;
+        } else {
+          select.value = "ALL";
+        }
+      });
+    }
+
+    function setProjectFilter(value) {
+      currentProjectFilter = String(value || "ALL");
+
+      const desktop = document.getElementById("projectFilterSelect");
+      const mobile = document.getElementById("projectFilterSelectMobile");
+
+      if (desktop && desktop.value !== currentProjectFilter) desktop.value = currentProjectFilter;
+      if (mobile && mobile.value !== currentProjectFilter) mobile.value = currentProjectFilter;
+
+      renderCaseList();
+    }
+
+    function sincronizarBuscaGlobalRecebeOps(value) {
+      const desktop = document.getElementById("globalSearchInput");
+      const mobile = document.getElementById("globalSearchInputMobile");
+      const lateral = document.getElementById("searchInput");
+
+      [desktop, mobile, lateral].forEach(function(input) {
+        if (input && input.value !== value) input.value = value;
+      });
+
+      renderCaseList();
     }
 
     function setFilter(filter) {
@@ -2596,17 +2711,32 @@
     }
 
     function renderCaseList() {
-      const search = (document.getElementById('searchInput').value || document.getElementById('globalSearchInput').value || "").toLowerCase();
+      const search = String(
+        (document.getElementById('searchInput') && document.getElementById('searchInput').value) ||
+        (document.getElementById('globalSearchInput') && document.getElementById('globalSearchInput').value) ||
+        (document.getElementById('globalSearchInputMobile') && document.getElementById('globalSearchInputMobile').value) ||
+        ""
+      ).toLowerCase();
       const container = document.getElementById('casesContainer');
       container.innerHTML = '';
       const filtered = CASES.filter(c => {
-        const matchesFilter = (currentFilter === 'ALL') || (c.st === currentFilter);
+        const matchesFilter =
+          (currentFilter === 'ALL') ||
+          (c.st === currentFilter);
+
+        const matchesProject =
+          (currentProjectFilter === 'ALL') ||
+          (empreendimentoDoCasoRecebeOps(c) === currentProjectFilter);
+
         const matchesSearch =
           String(c.nome || "").toLowerCase().includes(search) ||
           String(c.lot || "").toLowerCase().includes(search) ||
           String(c.cpf || "").includes(search) ||
-          String(c.ct || "").toLowerCase().includes(search);
-        return matchesFilter && matchesSearch;
+          String(c.ct || "").toLowerCase().includes(search) ||
+          String(c.qd || "").toLowerCase().includes(search) ||
+          String(c.lt || "").toLowerCase().includes(search);
+
+        return matchesFilter && matchesProject && matchesSearch;
       });
       document.getElementById('caseCountBadge').innerText =
         `${filtered.length} ${filtered.length === 1 ? "caso ativo" : "casos ativos"}`;
