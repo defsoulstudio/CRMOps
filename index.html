@@ -197,9 +197,9 @@
       <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
         <div>
           <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Carteira na Esteira</div>
-          <div class="text-lg font-extrabold text-white mt-0.5 font-mono" id="kpiValorCarteira">R$ 322.476,63</div>
+          <div class="text-lg font-extrabold text-white mt-0.5 font-mono" id="kpiValorCarteira">—</div>
           <div class="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
-            <span class="text-emerald-400 font-bold">5 casos</span> aguardando ou em acordo
+            <span class="text-slate-400 font-bold">A conectar</span> carteira consolidada
           </div>
         </div>
         <div class="w-9 h-9 rounded-xl bg-slate-900 border soft-border flex items-center justify-center text-slate-400">
@@ -211,10 +211,10 @@
       <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
         <div>
           <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Acordos / Parcelamentos</div>
-          <div class="text-lg font-extrabold text-emerald-400 mt-0.5 font-mono">02 Ativos</div>
+          <div class="text-lg font-extrabold text-emerald-400 mt-0.5 font-mono">—</div>
           <div class="text-[10px] text-emerald-500/80 mt-0.5 flex items-center gap-1 font-medium">
             <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-            Alçadas ≤ 6x em conformidade
+            Indicador geral ainda não conectado
           </div>
         </div>
         <div class="w-9 h-9 rounded-xl bg-emerald-950/40 border border-emerald-800/40 flex items-center justify-center text-emerald-400">
@@ -226,9 +226,9 @@
       <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
         <div>
           <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Honorários / Entradas Pix</div>
-          <div class="text-lg font-extrabold text-teal-300 mt-0.5 font-mono">R$ 2.913,99</div>
+          <div class="text-lg font-extrabold text-teal-300 mt-0.5 font-mono">—</div>
           <div class="text-[10px] text-slate-500 mt-0.5">
-            Beneficiário: <strong class="text-slate-300">L.G.T Gestão</strong>
+            Indicador financeiro geral ainda não conectado
           </div>
         </div>
         <div class="w-9 h-9 rounded-xl bg-teal-950/40 border border-teal-800/40 flex items-center justify-center text-teal-400">
@@ -241,11 +241,11 @@
         <div>
           <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Triagem de Documentos</div>
           <div class="text-lg font-extrabold text-white mt-0.5 flex items-center gap-2">
-            <span>100%</span>
+            <span>—</span>
             <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">Portal Lote 5</span>
           </div>
           <div class="text-[10px] text-slate-500 mt-0.5">
-            Ficha + Síntese + Extrato OK
+            Status geral ainda não conectado
           </div>
         </div>
         <div class="w-9 h-9 rounded-xl bg-slate-900 border soft-border flex items-center justify-center text-slate-400">
@@ -720,6 +720,24 @@
       return null;
     }
 
+    function parcelasReaisDoAcordoRecebeOps() {
+      const d = window.recebeOpsLivePreview && window.recebeOpsLivePreview.dados;
+      const acordo = d && d.acordo;
+      return acordo && Array.isArray(acordo.parcelas) ? acordo.parcelas : [];
+    }
+
+    function resumoParcelasReaisRecebeOps() {
+      const parcelas = parcelasReaisDoAcordoRecebeOps();
+      if (!parcelas.length) return "";
+
+      return parcelas
+        .map((p, i) => {
+          const valor = p.valor || p.valorFormatado || "";
+          return `${i + 1}ª R$ ${String(valor).replace(/^R\$\s*/i, "")}`;
+        })
+        .join(" • ");
+    }
+
     function aplicarDadosReaisNoCaso(data, cardId) {
       const d = normalizarDadosPreviewRecebeOps(data);
       if (!d) return false;
@@ -767,8 +785,14 @@
       agreementState.qtdParcelas = c.parcVenc || 1;
 
       c.honorarios = honorarios;
-      c.tot = numeroBRRecebeOps(d.valorAcordo || acordo.saldo || acordo.total || 0);
-      c.saldo = c.tot;
+
+      const totalParcelas = parcelas.reduce(
+        (soma, p) => soma + numeroBRRecebeOps(p.valor || p.valorFormatado || 0),
+        0
+      );
+
+      c.tot = totalParcelas || numeroBRRecebeOps(d.valorAcordo || acordo.total || acordo.saldo || 0);
+      c.saldo = numeroBRRecebeOps(acordo.saldo || d.saldo || 0);
 
       return true;
     }
@@ -996,7 +1020,12 @@
           </div>
         `;
       } else if (currentDocMode === 'PARCELAMENTO') {
-        const valParc = c.tot / agreementState.qtdParcelas;
+        const parcelasReais = parcelasReaisDoAcordoRecebeOps();
+        const valParc = c.tot / Math.max(1, agreementState.qtdParcelas);
+        const resumoParcelas = parcelasReais.length
+          ? resumoParcelasReaisRecebeOps()
+          : `${agreementState.qtdParcelas}x de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
         panel.innerHTML = `
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
             <div>
@@ -1004,8 +1033,8 @@
               <input type="number" value="${agreementState.entradaValor}" onchange="agreementState.entradaValor=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500">
             </div>
             <div>
-              <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Parcelas do Acordo (Alçada Dr. Leandro: Máx. 6x):</label>
-              <select onchange="agreementState.qtdParcelas=parseInt(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500">
+              <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Parcelas registradas no acordo:</label>
+              <select ${parcelasReais.length ? 'disabled' : ''} onchange="agreementState.qtdParcelas=parseInt(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed">
                 <option value="1" ${agreementState.qtdParcelas==1?'selected':''}>1x (À vista)</option>
                 <option value="2" ${agreementState.qtdParcelas==2?'selected':''}>2x mensais</option>
                 <option value="3" ${agreementState.qtdParcelas==3?'selected':''}>3x mensais</option>
@@ -1016,7 +1045,7 @@
             <div class="bg-slate-950/80 p-2.5 rounded-xl border soft-border flex items-center justify-between">
               <div>
                 <span class="text-[10px] uppercase font-bold text-slate-500">Saldo Repactuado:</span>
-                <div class="text-emerald-400 font-bold font-mono text-sm">${agreementState.qtdParcelas}x de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+                <div class="text-emerald-400 font-bold font-mono text-xs leading-relaxed">${resumoParcelas}</div>
               </div>
               <button onclick="openPixModal(${agreementState.entradaValor})" class="text-xs text-emerald-400 underline font-bold hover:text-emerald-300">Pix Entrada</button>
             </div>
@@ -1202,24 +1231,21 @@
           </div>
         `;
       } else if (currentDocMode === 'PARCELAMENTO') {
-        const valParc = c.tot / agreementState.qtdParcelas;
+        const parcelasReais = parcelasReaisDoAcordoRecebeOps();
+        const linhas = parcelasReais.length
+          ? parcelasReais.map((p, i) => `<li>${i + 1}ª parcela — R$ ${escapeHtmlRecebeOps(p.valor || p.valorFormatado || '')} — ${escapeHtmlRecebeOps(p.vencimento || '')}</li>`).join('')
+          : '<li>Condições não localizadas.</li>';
+
         printArea.innerHTML = `
           ${hdr}
-          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA E ACORDO DE PARCELAMENTO CURTO</h3>
-          <p class="mb-3 text-justify">DEVEDOR(A): <strong>${c.nome.toUpperCase()}</strong>, brasileiro(a), ${c.civ.toLowerCase()}, ${c.prof.toLowerCase()}, portador(a) do RG nº ${c.rg} e inscrito(a) no CPF/MF sob o nº <strong>${c.cpf}</strong> (sem inclusão de cônjuge, conforme regras do Dr. Leandro).</p>
-          <p class="mb-3 text-justify">1. O(A) Devedor(a) reconhece, confessa e assume formalmente o saldo devedor de parcelas vencidas no montante líquido de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao Lote ${c.lt}, Quadra ${c.qd} do empreendimento <em>${c.lot}</em>.</p>
-          <p class="mb-3 text-justify">2. O saldo confessado será adimplido em <strong>${agreementState.qtdParcelas} parcelas mensais e sucessivas de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>, vencendo a primeira no prazo pactuado e as demais em iguais dias dos meses subsequentes.</p>
-          <p class="mb-3 text-justify">3. DOS HONORÁRIOS ADVOCATÍCIOS: O(A) Devedor(a) ajusta a verba honorária/entrada no valor de <strong>R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> paga à L.G.T Gestão de Recebimentos LTDA via Pix (adm@gtadv.com.br), verba autônoma e não compensável com o saldo principal da dívida.</p>
-          <p class="mb-4 text-xs text-slate-600 text-justify">4. O atraso em qualquer parcela acarretará a rescisão imediata deste acordo e o vencimento antecipado do saldo integral, restabelecendo as penalidades previstas na Lei Federal 6.766/79.</p>
-          <div class="pt-10 border-t border-slate-300 grid grid-cols-2 text-center text-xs mt-8">
-            <div>
-              <strong>L.G.T Gestão de Recebimentos LTDA</strong><br>
-              <span class="text-slate-500">Validação Operacional: Everton Lanzilotti</span>
-            </div>
-            <div>
-              <strong>${c.nome.toUpperCase()}</strong><br>
-              <span class="text-slate-500">CPF: ${c.cpf}</span>
-            </div>
+          <h3 class="text-center font-extrabold text-sm mb-5 text-slate-900">PRÉVIA OPERACIONAL — PARCELAMENTO CURTO</h3>
+          <p class="mb-3 text-justify">Esta tela não substitui o modelo jurídico oficial. Ela apresenta somente os dados extraídos para conferência antes da futura mesclagem no Google Docs.</p>
+          <p class="mb-2"><strong>Cliente:</strong> ${escapeHtmlRecebeOps(c.nome)}</p>
+          <p class="mb-2"><strong>Contrato:</strong> ${escapeHtmlRecebeOps(c.ct)} — Quadra ${escapeHtmlRecebeOps(c.qd)} / Lote ${escapeHtmlRecebeOps(c.lt)}</p>
+          <p class="mb-2"><strong>Honorários/Entrada:</strong> R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+          <div class="mt-4">
+            <strong>Parcelas registradas no acordo:</strong>
+            <ul class="list-disc ml-6 mt-2">${linhas}</ul>
           </div>
         `;
       } else if (currentDocMode === 'CESSAO') {
