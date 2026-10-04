@@ -163,6 +163,70 @@
       }
     }
 
+  
+    @media (max-width: 640px) {
+      /* Mobile: prefer vertical stacking over squeezing content. */
+      .mobile-stack-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.25rem !important;
+      }
+
+      .mobile-no-word-break,
+      .mobile-no-word-break * {
+        word-break: normal !important;
+        overflow-wrap: normal !important;
+        hyphens: none !important;
+      }
+
+      /* Keep ordinary labels/values readable without splitting words. */
+      #viewDossieContainer .flex,
+      #viewAuditoriaContainer .flex,
+      #recebeOpsProvenienciaPanel .grid {
+        min-width: 0;
+      }
+
+      #viewDossieContainer span,
+      #viewDossieContainer strong,
+      #viewAuditoriaContainer span,
+      #viewAuditoriaContainer strong,
+      #recebeOpsProvenienciaPanel span,
+      #recebeOpsProvenienciaPanel div {
+        word-break: normal;
+        hyphens: none;
+      }
+
+      /* Long technical strings may wrap safely without forcing the whole page wider. */
+      .font-mono,
+      [id*="Email"],
+      [id*="email"],
+      [id*="Card"],
+      [id*="Contrato"] {
+        overflow-wrap: anywhere;
+        word-break: normal;
+      }
+
+      /* Chips and filter groups scroll rather than breaking words. */
+      .filter-btn,
+      #detailTabsBar button {
+        white-space: nowrap;
+      }
+
+      /* Buttons stack full-width where side-by-side causes clipping. */
+      #governancaOperacionalPanel button,
+      #retornoTrelloPanel button,
+      #complementosPanel button {
+        width: 100%;
+      }
+
+      /* Avoid narrow two-column labels on mobile. */
+      #recebeOpsProvenienciaPanel section > div.px-4 > div,
+      #viewDossieContainer .space-y-1\.5 > div {
+        width: 100%;
+      }
+    }
+
   </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
@@ -299,13 +363,13 @@
       <!-- KPI 4 -->
       <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
         <div>
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Triagem de Documentos</div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Documentos do Caso</div>
           <div class="text-lg font-extrabold text-white mt-0.5 flex items-center gap-2">
-            <span>—</span>
-            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">Portal Lote 5</span>
+            <span id="kpiDocumentosQuantidade">0</span>
+            <span id="kpiDocumentosStatus" class="text-[10px] font-bold text-slate-400 bg-slate-950/60 px-1.5 py-0.5 rounded border border-slate-700">Nenhum caso</span>
           </div>
           <div class="text-[10px] text-slate-500 mt-0.5">
-            Status geral ainda não conectado
+            <span id="kpiDocumentosDescricao">Abra um caso para visualizar os documentos</span>
           </div>
         </div>
         <div class="w-9 h-9 rounded-xl bg-slate-900 border soft-border flex items-center justify-center text-slate-400">
@@ -478,7 +542,7 @@
         <!-- Renderizado dinamicamente via JS de acordo com o termo -->
       </div>
       <div id="governancaOperacionalPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
-        <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-start sm:justify-between gap-3 sm:gap-4">
           <div class="min-w-0 flex-1">
             <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Controle do Processo</div>
             <div id="governancaTitulo" class="mt-1 text-sm font-extrabold text-white">Carregando estado do processo...</div>
@@ -553,7 +617,7 @@
       </div>
 
       <div id="retornoTrelloPanel" class="crm-card p-4 sm:p-5 rounded-2xl text-xs no-print min-w-0">
-        <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-start sm:justify-between gap-3 sm:gap-4">
           <div>
             <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Retorno ao Trello</div>
             <div class="mt-1 text-sm font-extrabold text-white">Preparação segura de ações</div>
@@ -606,7 +670,7 @@
             <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Histórico do Processo</div>
             <div class="text-xs text-slate-300 mt-1">Registro cronológico das principais etapas e ações deste caso.</div>
           </div>
-          <div class="text-right">
+          <div class="sm:text-right mt-1 sm:mt-0">
             <div class="text-[9px] uppercase tracking-[0.12em] text-slate-500 font-bold">Estado do processo</div>
             <div id="estadoProcessoRecebeOps" class="text-[11px] font-extrabold text-emerald-300 mt-1">Carregando...</div>
           </div>
@@ -614,7 +678,24 @@
         <div id="recebeOpsAuditTimeline"></div>
       </div>
 
-      <div id="recebeOpsProvenienciaPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+      <div id="documentosCasoPanel" class="crm-card p-4 sm:p-5 rounded-2xl text-xs no-print min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Documentos do Caso</div>
+            <div class="mt-1 text-sm font-extrabold text-white">Arquivos e etapas documentais</div>
+            <div class="mt-1 text-[11px] leading-relaxed text-slate-400">
+              Visão consolidada dos documentos localizados e das próximas etapas de geração.
+            </div>
+          </div>
+          <span id="documentosCasoResumo" class="px-2.5 py-1 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-[9px] font-extrabold shrink-0">
+            0 documentos
+          </span>
+        </div>
+
+        <div id="documentosCasoLista" class="space-y-2"></div>
+      </div>
+
+      <div id="recebeOpsProvenienciaPanel" class="crm-card mobile-no-word-break p-4 rounded-2xl text-xs no-print">
         <div class="flex items-center justify-between gap-3 mb-4">
           <div>
             <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Origem dos Dados</div>
@@ -658,8 +739,8 @@
       </div>
 
       <!-- SEÇÃO 3: ABA DE DOSSIÊ COMPLETO (inicialmente oculta) -->
-      <div id="viewDossieContainer" class="crm-card p-4 sm:p-6 rounded-2xl hidden flex-col gap-5 text-xs no-print min-w-0">
-        <div class="flex items-center justify-between pb-3 border-b soft-border">
+      <div id="viewDossieContainer" class="crm-card mobile-no-word-break p-4 sm:p-6 rounded-2xl hidden flex-col gap-5 text-xs no-print min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b soft-border">
           <div>
             <h3 class="text-sm font-bold text-white">Dossiê Cadastral & Imobiliário Unificado</h3>
             <p class="text-[11px] text-slate-400 mt-0.5">Cruzamento direto: Ficha Cadastral + Síntese do Contrato Lote 5.</p>
@@ -679,7 +760,7 @@
               <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">RG:</span> <span class="font-mono" id="dossieRg">-</span></div>
               <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Estado Civil:</span> <span id="dossieCiv">-</span></div>
               <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Profissão:</span> <span id="dossieProf">-</span></div>
-              <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Endereço:</span> <span class="text-right text-[11px] max-w-[200px]" id="dossieEnd">-</span></div>
+              <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Endereço:</span> <span class="text-left sm:text-right text-[11px] max-w-full sm:max-w-[200px] break-normal" id="dossieEnd">-</span></div>
               <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3 pt-2 border-t soft-border"><span class="text-slate-500">Cônjuge:</span> <span class="text-slate-400" id="dossieConjuge">Não informado / não aplicável</span></div>
             </div>
           </div>
@@ -693,7 +774,7 @@
               <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Metragem:</span> <span id="dossieM2">-</span></div>
               <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Contrato:</span> <span class="font-mono text-emerald-400" id="dossieContrato">-</span></div>
               <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Data de Assinatura:</span> <span id="dossieDataContrato">-</span></div>
-              <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Matrícula RI:</span> <span class="text-[11px] text-right max-w-[220px]" id="dossieMatricula">-</span></div>
+              <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3"><span class="text-slate-500">Matrícula RI:</span> <span class="text-[11px] text-left sm:text-right max-w-full sm:max-w-[220px] break-normal" id="dossieMatricula">-</span></div>
               <div class="flex flex-col sm:flex-row sm:justify-between gap-0.5 sm:gap-3 pt-2 border-t soft-border"><span class="text-slate-500">Origem:</span> <span class="text-emerald-400">Portal Lote 5 / RecebeOps</span></div>
             </div>
           </div>
@@ -702,7 +783,7 @@
 
       <!-- SEÇÃO 4: ABA DE TRILHA DE AUDITORIA & TRELLO (inicialmente oculta) -->
       <div id="viewAuditoriaContainer" class="crm-card p-4 sm:p-6 rounded-2xl hidden flex-col gap-4 text-xs no-print min-w-0">
-        <div class="flex items-center justify-between pb-3 border-b soft-border">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b soft-border">
           <div>
             <h3 class="text-sm font-bold text-white">Histórico do Processo e Trello</h3>
             <p class="text-[11px] text-slate-400 mt-0.5">Histórico de validação em conformidade com as regras operacionais.</p>
@@ -848,6 +929,17 @@
       const badge = document.getElementById("caseCountBadge");
 
       if (badge) badge.innerText = "0 casos ativos";
+
+      const kpiDocsQtd = document.getElementById("kpiDocumentosQuantidade");
+      const kpiDocsStatus = document.getElementById("kpiDocumentosStatus");
+      const kpiDocsDescricao = document.getElementById("kpiDocumentosDescricao");
+
+      if (kpiDocsQtd) kpiDocsQtd.textContent = "0";
+      if (kpiDocsStatus) {
+        kpiDocsStatus.textContent = "Nenhum caso";
+        kpiDocsStatus.className = "text-[10px] font-bold text-slate-400 bg-slate-950/60 px-1.5 py-0.5 rounded border border-slate-700";
+      }
+      if (kpiDocsDescricao) kpiDocsDescricao.textContent = "Abra um caso para visualizar os documentos";
 
       const financeiro = document.getElementById("detailTotal");
       if (financeiro) financeiro.innerText = "R$ 0,00";
@@ -1246,7 +1338,7 @@
         if (detalhes.complementoVersao) resumo.push("Versão complementar " + detalhes.complementoVersao);
 
         return `
-          <div class="relative pl-6 pb-5">
+          <div class="relative pl-6 pb-5 min-w-0">
             <div class="absolute left-[3px] top-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
             <div class="absolute left-[7px] top-4 bottom-0 w-px bg-slate-800"></div>
             <div class="text-xs font-extrabold text-slate-200">
@@ -1698,6 +1790,7 @@
           preencherComplementosNaTelaRecebeOps();
           atualizarStatusModeloNaTelaRecebeOps();
           renderizarProvenienciaRecebeOps();
+          renderizarDocumentosCasoRecebeOps();
           atualizarGovernancaRecebeOps();
           renderDocumentContent();
         }
@@ -1736,6 +1829,167 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+    }
+
+    function normalizarDocumentoFonteRecebeOps(chave, arquivo) {
+      if (!arquivo) return null;
+
+      const nomes = {
+        extrato: "Extrato Financeiro",
+        sintese: "Síntese do Contrato",
+        contrato: "Contrato",
+        cadastro: "Ficha Cadastral"
+      };
+
+      return {
+        tipo: chave,
+        nome: nomes[chave] || limparRotuloInterfaceRecebeOps(chave),
+        arquivoNome: arquivo.nome || "",
+        url: arquivo.url || "",
+        status: arquivo.id || arquivo.url ? "LOCALIZADO" : "NAO_DISPONIVEL",
+        origem: "Portal Lote 5"
+      };
+    }
+
+    function construirDocumentosCasoRecebeOps() {
+      const previa = window.recebeOpsLivePreview || {};
+      const dados = previa.dados || {};
+      const registro = previa.registro || {};
+      const fontes = dados.arquivosFonte || {};
+      const docs = [];
+
+      Object.keys(fontes).forEach(function(chave) {
+        const item = normalizarDocumentoFonteRecebeOps(chave, fontes[chave]);
+        if (item) docs.push(item);
+      });
+
+      docs.push({
+        tipo: "modelo_oficial",
+        nome: "Modelo Oficial",
+        arquivoNome: registro.modeloNome || "",
+        url: registro.modeloUrl || "",
+        status: registro.modeloStatus === "MODELO_LOCALIZADO"
+          ? "LOCALIZADO"
+          : "AGUARDANDO",
+        origem: "Google Docs"
+      });
+
+      docs.push({
+        tipo: "documento_oficial",
+        nome: "Documento Oficial",
+        arquivoNome: "",
+        url: "",
+        status: registro.documentoStatus === "DOC_GERADO"
+          ? "LOCALIZADO"
+          : "AGUARDANDO_GERACAO",
+        origem: "RecebeOps"
+      });
+
+      docs.push({
+        tipo: "pdf_final",
+        nome: "PDF Final",
+        arquivoNome: "",
+        url: "",
+        status: registro.documentoStatus === "PDF_GERADO"
+          ? "LOCALIZADO"
+          : "AGUARDANDO_GERACAO",
+        origem: "RecebeOps"
+      });
+
+      return docs;
+    }
+
+    function humanizarStatusDocumentoRecebeOps(status) {
+      const mapa = {
+        LOCALIZADO: "Localizado",
+        AGUARDANDO: "Aguardando",
+        AGUARDANDO_GERACAO: "Aguardando geração",
+        NAO_DISPONIVEL: "Não disponível"
+      };
+      return mapa[status] || limparRotuloInterfaceRecebeOps(status);
+    }
+
+    function renderizarDocumentosCasoRecebeOps() {
+      const lista = document.getElementById("documentosCasoLista");
+      const resumo = document.getElementById("documentosCasoResumo");
+      const kpiQtd = document.getElementById("kpiDocumentosQuantidade");
+      const kpiStatus = document.getElementById("kpiDocumentosStatus");
+      const kpiDescricao = document.getElementById("kpiDocumentosDescricao");
+
+      if (!lista) return;
+
+      const docs = construirDocumentosCasoRecebeOps();
+      const localizados = docs.filter(function(d) { return d.status === "LOCALIZADO"; });
+      const aguardando = docs.filter(function(d) { return d.status !== "LOCALIZADO"; });
+
+      if (resumo) {
+        resumo.textContent =
+          `${localizados.length} localizado${localizados.length === 1 ? "" : "s"} • ${aguardando.length} pendente${aguardando.length === 1 ? "" : "s"}`;
+      }
+
+      if (kpiQtd) kpiQtd.textContent = String(localizados.length);
+
+      if (kpiStatus) {
+        if (localizados.length) {
+          kpiStatus.textContent = "Disponíveis";
+          kpiStatus.className = "text-[10px] font-bold text-emerald-300 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/50";
+        } else {
+          kpiStatus.textContent = "Nenhum";
+          kpiStatus.className = "text-[10px] font-bold text-slate-400 bg-slate-950/60 px-1.5 py-0.5 rounded border border-slate-700";
+        }
+      }
+
+      if (kpiDescricao) {
+        kpiDescricao.textContent = localizados.length
+          ? `${localizados.length} arquivo${localizados.length === 1 ? "" : "s"} disponível${localizados.length === 1 ? "" : "eis"} neste caso`
+          : "Nenhum arquivo disponível neste caso";
+      }
+
+      lista.innerHTML = docs.map(function(doc) {
+        const localizado = doc.status === "LOCALIZADO";
+        const aguardandoGeracao = doc.status === "AGUARDANDO_GERACAO";
+
+        const statusClasses = localizado
+          ? "border-emerald-800/60 bg-emerald-950/30 text-emerald-300"
+          : aguardandoGeracao
+            ? "border-sky-800/60 bg-sky-950/30 text-sky-300"
+            : "border-amber-800/60 bg-amber-950/30 text-amber-300";
+
+        return `
+          <div class="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+              <div class="min-w-0">
+                <div class="text-[10px] uppercase tracking-wide text-slate-500 font-extrabold">
+                  ${escaparHtmlRecebeOps(doc.nome)}
+                </div>
+                <div class="mt-1 text-xs font-semibold text-slate-200">
+                  ${doc.arquivoNome ? escaparHtmlRecebeOps(doc.arquivoNome) : humanizarStatusDocumentoRecebeOps(doc.status)}
+                </div>
+                <div class="mt-1 text-[9px] text-slate-500">
+                  Origem: ${escaparHtmlRecebeOps(doc.origem || "-")}
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="px-2 py-1 rounded-lg border text-[8px] font-extrabold ${statusClasses}">
+                  ${humanizarStatusDocumentoRecebeOps(doc.status)}
+                </span>
+
+                ${doc.url ? `
+                  <a
+                    href="${escaparHtmlRecebeOps(doc.url)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-900 hover:bg-slate-800 text-[9px] font-bold text-slate-200"
+                  >
+                    Abrir
+                  </a>
+                ` : ""}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderizarProvenienciaRecebeOps() {
@@ -1800,7 +2054,7 @@
           : "Não localizado";
 
         return `
-          <div class="grid grid-cols-[minmax(150px,0.8fr)_minmax(220px,1.4fr)_auto] gap-3 items-center py-2.5 border-b border-slate-800/70 last:border-b-0">
+          <div class="grid grid-cols-1 sm:grid-cols-[minmax(150px,0.8fr)_minmax(220px,1.4fr)_auto] gap-1.5 sm:gap-3 items-start sm:items-center py-3 border-b border-slate-800/70 last:border-b-0">
             <div class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">
               ${escaparHtmlRecebeOps(item.rotulo)}
             </div>
@@ -1889,7 +2143,7 @@
                 }
 
                 return `
-                  <div class="grid grid-cols-[minmax(180px,0.9fr)_minmax(260px,1.5fr)] gap-3 items-center py-2.5 border-b border-slate-800/70 last:border-b-0">
+                  <div class="grid grid-cols-1 sm:grid-cols-[minmax(180px,0.9fr)_minmax(260px,1.5fr)] gap-1.5 sm:gap-3 items-start sm:items-center py-3 border-b border-slate-800/70 last:border-b-0">
                     <div class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">
                       ${escaparHtmlRecebeOps(nome)}
                     </div>
@@ -2000,6 +2254,7 @@
       preencherComplementosNaTelaRecebeOps();
       atualizarEstadoProcessoRecebeOps();
       renderizarProvenienciaRecebeOps();
+      renderizarDocumentosCasoRecebeOps();
       atualizarGovernancaRecebeOps();
       carregarAuditoriaRecebeOps();
       carregarFilaRetornoTrelloRecebeOps();
@@ -2105,6 +2360,7 @@
       // Dossiê e origem das informações
       [
         "viewDossieContainer",
+        "documentosCasoPanel",
         "recebeOpsProvenienciaPanel"
       ].forEach(function(id) {
         const el = document.getElementById(id);
