@@ -447,6 +447,7 @@
 
             <button
               id="btnGerarDocumentoOficial"
+              aria-label="Gerar documento oficial"
               onclick="acionarGeracaoDocumentoOficialRecebeOps()"
               disabled
               class="px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-500 text-xs font-extrabold cursor-not-allowed transition-all"
@@ -459,8 +460,8 @@
       <div id="complementosPanel" class="crm-card p-4 rounded-2xl text-xs no-print hidden">
         <div class="flex items-center justify-between gap-3 mb-3">
           <div>
-            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Complementos auditáveis</div>
-            <div class="text-xs text-slate-300 mt-1">Preencha somente dados ausentes. O snapshot original não é alterado.</div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Dados complementares</div>
+            <div class="text-xs text-slate-300 mt-1">Preencha apenas dados ausentes. A prévia aprovada permanece preservada.</div>
           </div>
           <span id="complementosStatusBadge" class="px-2 py-1 rounded-lg border border-amber-800/60 bg-amber-950/50 text-amber-300 text-[10px] font-bold">PENDENTE</span>
         </div>
@@ -499,17 +500,17 @@
 
         <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-slate-800">
           <div id="complementosPendenciasTexto" class="text-[11px] text-amber-300">Pendências não carregadas.</div>
-          <button id="btnSalvarComplementos" onclick="salvarComplementosRecebeOps()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition-all">
+          <button id="btnSalvarComplementos" aria-label="Salvar dados complementares" onclick="salvarComplementosRecebeOps()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition-all">
             Salvar complementos
           </button>
         </div>
       </div>
 
-      <div id="recebeOpsAuditPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+      <div id="recebeOpsAuditPanel" class="crm-card p-5 rounded-2xl text-xs no-print">
         <div class="flex items-center justify-between gap-3 mb-4">
           <div>
-            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Trilha de Auditoria RecebeOps</div>
-            <div class="text-xs text-slate-300 mt-1">Eventos reais registrados pelo backend para este caso.</div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Histórico do Processo</div>
+            <div class="text-xs text-slate-300 mt-1">Registro cronológico das principais etapas e ações deste caso.</div>
           </div>
           <div class="text-right">
             <div class="text-[9px] uppercase tracking-[0.12em] text-slate-500 font-bold">Estado do processo</div>
@@ -523,7 +524,7 @@
         <div class="flex items-center justify-between gap-3 mb-4">
           <div>
             <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Origem dos Dados</div>
-            <div class="text-xs text-slate-300 mt-1">Dados organizados pela fonte real de onde foram obtidos.</div>
+            <div class="text-xs text-slate-300 mt-1">Dados organizados conforme a fonte em que foram localizados.</div>
           </div>
           <span class="px-2 py-1 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-[9px] font-bold">PROVENIÊNCIA</span>
         </div>
@@ -537,7 +538,7 @@
           <div class="flex items-center gap-2.5">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
             <span class="text-slate-200 font-bold">Prévia Operacional • Dados do Caso</span>
-            <span id="modeloStatusHeader" class="text-[10px] text-slate-500 font-mono">| Modelo jurídico será conectado depois</span>
+            <span id="modeloStatusHeader" class="text-[10px] text-slate-500 font-mono">| Modelo oficial ainda não conectado</span>
           </div>
           <div class="text-slate-400 text-[11px]">
             Responsável Técnico: <strong class="text-slate-200 font-semibold">Everton Lanzilotti (Operações Lote 5)</strong>
@@ -555,7 +556,7 @@
             <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>Conferência dos dados antes da futura mesclagem com o modelo jurídico oficial.</span>
           </div>
-          <button id="btnConfirmarPrevia" onclick="approveAndSave()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all">
+          <button id="btnConfirmarPrevia" aria-label="Confirmar dados da prévia" onclick="approveAndSave()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             Confirmar Dados da Prévia
           </button>
@@ -961,27 +962,77 @@
       }
     }
 
+    function humanizarAutorRecebeOps(valor) {
+      const v = String(valor || "").trim();
+
+      const mapa = {
+        "Sistema RecebeOps": "Sistema RecebeOps",
+        "EVERTON": "Everton Lanzilotti",
+        "USUARIO_RECEBEOPS": "Usuário RecebeOps",
+        "RecebeOps": "RecebeOps"
+      };
+
+      if (mapa[v]) return mapa[v];
+
+      return v
+        .replace(/_/g, " ")
+        .replace(/\s+/g, " ")
+        .replace(/\b\w/g, function(m) { return m.toUpperCase(); });
+    }
+
+    function humanizarStatusTecnicoRecebeOps(valor) {
+      const v = String(valor || "").trim();
+
+      const mapa = {
+        "PREVIA_PENDENTE_REVISAO": "Prévia pendente de revisão",
+        "SNAPSHOT_APROVADO": "Dados da prévia aprovados",
+        "AGUARDANDO_MODELO_E_COMPLEMENTOS": "Aguardando modelo e dados complementares",
+        "AGUARDANDO_MODELO_OFICIAL": "Aguardando modelo oficial",
+        "AGUARDANDO_COMPLEMENTOS": "Aguardando dados complementares",
+        "PRONTO_PARA_GERACAO_CONTROLADA": "Pronto para geração controlada",
+        "MODELO_LOCALIZADO": "Modelo oficial localizado",
+        "MODELO_NAO_MAPEADO": "Modelo oficial não mapeado",
+        "BLOQUEADA": "Validação bloqueada",
+        "PENDENCIA_DADOS": "Dados pendentes",
+        "PREVIA_PENDENTE_REVISÃO": "Prévia pendente de revisão"
+      };
+
+      if (mapa[v]) return mapa[v];
+
+      return v
+        .replace(/_/g, " ")
+        .toLowerCase()
+        .replace(/^\w/, function(m) { return m.toUpperCase(); });
+    }
+
+    function limparRotuloInterfaceRecebeOps(valor) {
+      return String(valor || "")
+        .replace(/_/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
     function traduzirEstadoProcessoRecebeOps(status) {
       const mapa = {
-        SEM_SNAPSHOT: "Sem snapshot",
+        SEM_SNAPSHOT: "Prévia ainda não criada",
         PREVIA_PENDENTE_REVISAO: "Prévia pendente de revisão",
-        SNAPSHOT_APROVADO: "Snapshot aprovado",
-        AGUARDANDO_MODELO_E_COMPLEMENTOS: "Aguardando modelo e complementos",
+        SNAPSHOT_APROVADO: "Dados da prévia aprovados",
+        AGUARDANDO_MODELO_E_COMPLEMENTOS: "Aguardando modelo e dados complementares",
         AGUARDANDO_MODELO_OFICIAL: "Aguardando modelo oficial",
-        AGUARDANDO_COMPLEMENTOS: "Aguardando complementos",
+        AGUARDANDO_COMPLEMENTOS: "Aguardando dados complementares",
         PRONTO_PARA_GERACAO_CONTROLADA: "Pronto para geração controlada",
-        DOCUMENTO_GERADO: "Documento gerado",
-        PDF_GERADO: "PDF gerado"
+        DOCUMENTO_GERADO: "Documento oficial gerado",
+        PDF_GERADO: "PDF final gerado"
       };
       return mapa[status] || status || "Estado não informado";
     }
 
     function traduzirEventoAuditoriaRecebeOps(evento) {
       const mapa = {
-        SNAPSHOT_CRIADO: "Snapshot criado",
-        SNAPSHOT_APROVADO: "Snapshot aprovado",
-        FILA_GERACAO_CRIADA: "Fila de geração criada",
-        COMPLEMENTOS_SALVOS: "Complementos salvos"
+        SNAPSHOT_CRIADO: "Prévia registrada",
+        SNAPSHOT_APROVADO: "Dados da prévia aprovados",
+        FILA_GERACAO_CRIADA: "Preparação para geração iniciada",
+        COMPLEMENTOS_SALVOS: "Dados complementares salvos"
       };
       return mapa[evento] || evento || "Evento";
     }
@@ -1032,10 +1083,10 @@
         const detalhes = item.detalhes || {};
         const resumo = [];
 
-        if (detalhes.status) resumo.push(detalhes.status);
-        if (detalhes.generationStatus) resumo.push(detalhes.generationStatus);
-        if (detalhes.modeloStatus) resumo.push(detalhes.modeloStatus);
-        if (detalhes.complementoVersao) resumo.push("Complemento v" + detalhes.complementoVersao);
+        if (detalhes.status) resumo.push(humanizarStatusTecnicoRecebeOps(detalhes.status));
+        if (detalhes.generationStatus) resumo.push(humanizarStatusTecnicoRecebeOps(detalhes.generationStatus));
+        if (detalhes.modeloStatus) resumo.push(humanizarStatusTecnicoRecebeOps(detalhes.modeloStatus));
+        if (detalhes.complementoVersao) resumo.push("Versão complementar " + detalhes.complementoVersao);
 
         return `
           <div class="relative pl-6 pb-5">
@@ -1046,7 +1097,7 @@
             </div>
             <div class="mt-1 text-[10px] text-slate-500">
               ${formatarDataAuditoriaRecebeOps(item.criadoEm)}
-              ${item.autor ? " • " + item.autor : ""}
+              ${item.autor ? " • " + humanizarAutorRecebeOps(item.autor) : ""}
             </div>
             ${resumo.length ? `
               <div class="mt-2 text-[11px] text-slate-400">
@@ -1139,7 +1190,7 @@
       const bloqueios = [];
 
       if (!snapshotAprovado) {
-        bloqueios.push("Snapshot ainda não aprovado");
+        bloqueios.push("Dados da prévia ainda não aprovados");
       }
 
       if (snapshotAprovado && modeloStatus !== "MODELO_LOCALIZADO") {
@@ -1191,10 +1242,10 @@
       if (motivo) {
         if (g.snapshotAprovado) {
           motivo.textContent =
-            "O snapshot já está aprovado. As próximas ações são controladas pelo estado real do processo.";
+            "Os dados da prévia já foram aprovados. As próximas ações dependem do estado atual do processo.";
         } else {
           motivo.textContent =
-            "Revise os dados da prévia antes de confirmar o snapshot.";
+            "Revise os dados da prévia antes de confirmar a aprovação.";
         }
       }
 
@@ -1268,7 +1319,7 @@
       }
 
       if (!window.recebeOpsPreviewHash) {
-        return showToast("Snapshot sem hash de validação.");
+        return showToast("Não foi possível validar esta prévia. Recarregue o caso.");
       }
 
       const complementos = {
@@ -1373,7 +1424,7 @@
       } else if (window.recebeOpsModeloStatus === "MODELO_NAO_MAPEADO") {
         el.innerText = "| Modelo não mapeado";
       } else {
-        el.innerText = "| Modelo jurídico será conectado depois";
+        el.innerText = "| Modelo oficial ainda não conectado";
       }
     }
 
