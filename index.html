@@ -392,13 +392,13 @@
           </div>
           
           <div class="flex items-center gap-2">
-            <button onclick="copyDocumentText()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-all">
+            <button id="btnCopiarPrevia" onclick="copyDocumentText()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-all">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-              Copiar Minuta
+              Copiar Prévia
             </button>
-            <button onclick="printDocument()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-700/60 flex items-center gap-1.5 shadow-sm transition-all">
+            <button id="btnImprimirPrevia" onclick="printDocument()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-700/60 flex items-center gap-1.5 shadow-sm transition-all">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-              Imprimir / PDF
+              Imprimir Prévia
             </button>
           </div>
         </div>
@@ -430,6 +430,31 @@
       <!-- SEÇÃO 1: PAINEL DE SIMULAÇÃO DE ALÇADA & CONDIÇÕES (no-print) -->
       <div id="actionControlsPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
         <!-- Renderizado dinamicamente via JS de acordo com o termo -->
+      </div>
+      <div id="governancaOperacionalPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Governança Operacional</div>
+            <div id="governancaTitulo" class="mt-1 text-sm font-extrabold text-white">Carregando estado do processo...</div>
+            <div id="governancaMotivo" class="mt-1.5 text-[11px] leading-relaxed text-slate-400"></div>
+            <div id="governancaBloqueios" class="mt-3 flex flex-wrap gap-2"></div>
+          </div>
+
+          <div class="flex flex-col items-end gap-2">
+            <span id="governancaBadge" class="px-2.5 py-1 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-[9px] font-extrabold">
+              VERIFICANDO
+            </span>
+
+            <button
+              id="btnGerarDocumentoOficial"
+              onclick="acionarGeracaoDocumentoOficialRecebeOps()"
+              disabled
+              class="px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-500 text-xs font-extrabold cursor-not-allowed transition-all"
+            >
+              Gerar Documento Oficial
+            </button>
+          </div>
+        </div>
       </div>
       <div id="complementosPanel" class="crm-card p-4 rounded-2xl text-xs no-print hidden">
         <div class="flex items-center justify-between gap-3 mb-3">
@@ -474,7 +499,7 @@
 
         <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-slate-800">
           <div id="complementosPendenciasTexto" class="text-[11px] text-amber-300">Pendências não carregadas.</div>
-          <button onclick="salvarComplementosRecebeOps()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition-all">
+          <button id="btnSalvarComplementos" onclick="salvarComplementosRecebeOps()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition-all">
             Salvar complementos
           </button>
         </div>
@@ -530,7 +555,7 @@
             <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>Conferência dos dados antes da futura mesclagem com o modelo jurídico oficial.</span>
           </div>
-          <button onclick="approveAndSave()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all">
+          <button id="btnConfirmarPrevia" onclick="approveAndSave()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             Confirmar Dados da Prévia
           </button>
@@ -1058,6 +1083,7 @@
 
         renderizarAuditoriaRecebeOps();
         atualizarEstadoProcessoRecebeOps();
+        atualizarGovernancaRecebeOps();
       } catch (e) {
         console.error("Falha ao carregar auditoria:", e);
         const alvo = document.getElementById("recebeOpsAuditTimeline");
@@ -1069,6 +1095,169 @@
           `;
         }
       }
+    }
+
+    function bloquearBotaoRecebeOps(el, bloqueado, textoAlternativo) {
+      if (!el) return;
+
+      el.disabled = !!bloqueado;
+
+      if (bloqueado) {
+        el.classList.add("opacity-50", "cursor-not-allowed");
+        el.classList.remove("hover:from-emerald-500", "hover:to-teal-400", "hover:bg-emerald-500");
+      } else {
+        el.classList.remove("opacity-50", "cursor-not-allowed");
+      }
+
+      if (textoAlternativo) {
+        const textoNode = Array.from(el.childNodes).find(function(n) {
+          return n.nodeType === Node.TEXT_NODE && String(n.textContent || "").trim();
+        });
+        if (textoNode) textoNode.textContent = " " + textoAlternativo + " ";
+      }
+    }
+
+    function calcularGovernancaRecebeOps() {
+      const previa = window.recebeOpsLivePreview || {};
+      const registro = previa.registro || {};
+
+      const snapshotAprovado = !!previa.snapshotAprovado;
+      const estado =
+        registro.estadoProcesso ||
+        previa.estadoProcesso ||
+        registro.geracaoStatus ||
+        registro.status ||
+        "";
+
+      const modeloStatus = registro.modeloStatus || window.recebeOpsModeloStatus || "";
+      const geracaoStatus = registro.geracaoStatus || window.recebeOpsGenerationStatus || "";
+
+      const pendencias = Array.isArray(previa.dados && previa.dados.pendencias)
+        ? previa.dados.pendencias
+        : [];
+
+      const bloqueios = [];
+
+      if (!snapshotAprovado) {
+        bloqueios.push("Snapshot ainda não aprovado");
+      }
+
+      if (snapshotAprovado && modeloStatus !== "MODELO_LOCALIZADO") {
+        bloqueios.push("Modelo oficial não localizado");
+      }
+
+      if (geracaoStatus === "AGUARDANDO_COMPLEMENTOS" || pendencias.length) {
+        bloqueios.push("Existem dados pendentes");
+      }
+
+      if (geracaoStatus !== "PRONTO_PARA_GERACAO_CONTROLADA") {
+        bloqueios.push("Caso ainda não liberado para geração");
+      }
+
+      // Mesmo quando o caso atingir o estado correto, a geração real ainda não
+      // está conectada nesta fase do projeto.
+      bloqueios.push("Módulo de geração do Google Docs ainda não conectado");
+
+      return {
+        snapshotAprovado: snapshotAprovado,
+        estado: estado,
+        modeloStatus: modeloStatus,
+        geracaoStatus: geracaoStatus,
+        pendencias: pendencias,
+        bloqueios: Array.from(new Set(bloqueios)),
+        podeGerar:
+          snapshotAprovado &&
+          modeloStatus === "MODELO_LOCALIZADO" &&
+          geracaoStatus === "PRONTO_PARA_GERACAO_CONTROLADA" &&
+          false
+      };
+    }
+
+    function atualizarGovernancaRecebeOps() {
+      const g = calcularGovernancaRecebeOps();
+
+      const titulo = document.getElementById("governancaTitulo");
+      const motivo = document.getElementById("governancaMotivo");
+      const bloqueios = document.getElementById("governancaBloqueios");
+      const badge = document.getElementById("governancaBadge");
+      const btnGerar = document.getElementById("btnGerarDocumentoOficial");
+      const btnConfirmar = document.getElementById("btnConfirmarPrevia");
+      const btnComplementos = document.getElementById("btnSalvarComplementos");
+
+      if (titulo) {
+        titulo.textContent = traduzirEstadoProcessoRecebeOps(g.estado);
+      }
+
+      if (motivo) {
+        if (g.snapshotAprovado) {
+          motivo.textContent =
+            "O snapshot já está aprovado. As próximas ações são controladas pelo estado real do processo.";
+        } else {
+          motivo.textContent =
+            "Revise os dados da prévia antes de confirmar o snapshot.";
+        }
+      }
+
+      if (bloqueios) {
+        bloqueios.innerHTML = g.bloqueios.map(function(texto) {
+          return `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber-900/60 bg-amber-950/25 text-[9px] font-semibold text-amber-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              ${escaparHtmlRecebeOps(texto)}
+            </span>
+          `;
+        }).join("");
+      }
+
+      if (badge) {
+        if (g.podeGerar) {
+          badge.textContent = "LIBERADO";
+          badge.className = "px-2.5 py-1 rounded-lg border border-emerald-800 bg-emerald-950/50 text-emerald-300 text-[9px] font-extrabold";
+        } else if (g.snapshotAprovado) {
+          badge.textContent = "BLOQUEADO";
+          badge.className = "px-2.5 py-1 rounded-lg border border-amber-800 bg-amber-950/50 text-amber-300 text-[9px] font-extrabold";
+        } else {
+          badge.textContent = "REVISÃO";
+          badge.className = "px-2.5 py-1 rounded-lg border border-sky-800 bg-sky-950/50 text-sky-300 text-[9px] font-extrabold";
+        }
+      }
+
+      if (btnGerar) {
+        btnGerar.disabled = !g.podeGerar;
+        btnGerar.className = g.podeGerar
+          ? "px-4 py-2.5 rounded-xl border border-emerald-700 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition-all"
+          : "px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-500 text-xs font-extrabold cursor-not-allowed transition-all";
+      }
+
+      if (btnConfirmar) {
+        bloquearBotaoRecebeOps(
+          btnConfirmar,
+          g.snapshotAprovado,
+          g.snapshotAprovado ? "Dados já aprovados" : "Confirmar Dados da Prévia"
+        );
+      }
+
+      if (btnComplementos) {
+        bloquearBotaoRecebeOps(
+          btnComplementos,
+          !g.snapshotAprovado,
+          "Salvar complementos"
+        );
+      }
+    }
+
+    function acionarGeracaoDocumentoOficialRecebeOps() {
+      const g = calcularGovernancaRecebeOps();
+
+      if (!g.podeGerar) {
+        showToast(
+          "Geração bloqueada: " +
+          (g.bloqueios[0] || "o caso ainda não está liberado.")
+        );
+        return;
+      }
+
+      showToast("Módulo de geração oficial ainda não conectado.");
     }
 
     async function salvarComplementosRecebeOps() {
@@ -1157,6 +1346,7 @@
           preencherComplementosNaTelaRecebeOps();
           atualizarStatusModeloNaTelaRecebeOps();
           renderizarProvenienciaRecebeOps();
+          atualizarGovernancaRecebeOps();
           renderDocumentContent();
         }
 
@@ -1453,6 +1643,7 @@
       preencherComplementosNaTelaRecebeOps();
       atualizarEstadoProcessoRecebeOps();
       renderizarProvenienciaRecebeOps();
+      atualizarGovernancaRecebeOps();
       carregarAuditoriaRecebeOps();
 
       return true;
@@ -2068,6 +2259,7 @@
           window.recebeOpsModeloStatus = data.modeloStatus || window.recebeOpsModeloStatus || "";
           window.recebeOpsGenerationStatus = data.generationStatus || window.recebeOpsGenerationStatus || "";
           atualizarStatusModeloNaTelaRecebeOps();
+          atualizarGovernancaRecebeOps();
 
           try {
             const refreshResp = await fetch(
