@@ -1830,24 +1830,25 @@
             </div>
           </div>
 
-          <div class="rounded-2xl border ${pendencias.length ? 'border-amber-900/60 bg-amber-950/20' : 'border-emerald-900/60 bg-emerald-950/20'} p-4">
+          <div class="rounded-2xl border ${pendencias.length ? 'border-amber-800/70 bg-slate-950/95' : 'border-emerald-800/70 bg-slate-950/95'} p-4 shadow-sm">
             <div class="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <div class="text-[10px] uppercase tracking-[0.14em] font-extrabold ${pendencias.length ? 'text-amber-300' : 'text-emerald-300'}">
+              <div class="min-w-0">
+                <div class="text-[10px] uppercase tracking-[0.16em] font-extrabold ${pendencias.length ? 'text-amber-300' : 'text-emerald-300'}">
                   Auditoria Pré-Emissão
                 </div>
-                <div class="mt-1 text-xs text-slate-400">
+                <div class="mt-1.5 text-[11px] leading-relaxed text-slate-300">
                   ${pendencias.length
-                    ? 'Existem dados que ainda precisam ser localizados ou conferidos.'
+                    ? 'Dados pendentes que ainda precisam ser localizados ou conferidos antes da liberação.'
                     : 'Nenhuma pendência operacional identificada nesta prévia.'}
                 </div>
               </div>
 
-              <span class="inline-flex items-center px-2.5 py-1 rounded-lg border text-[9px] font-extrabold ${
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[9px] font-extrabold ${
                 pendencias.length
-                  ? 'border-amber-800/70 bg-amber-950/50 text-amber-300'
-                  : 'border-emerald-800/70 bg-emerald-950/50 text-emerald-300'
+                  ? 'border-amber-700/70 bg-amber-950/70 text-amber-200'
+                  : 'border-emerald-700/70 bg-emerald-950/70 text-emerald-200'
               }">
+                <span class="w-1.5 h-1.5 rounded-full ${pendencias.length ? 'bg-amber-400' : 'bg-emerald-400'}"></span>
                 ${pendencias.length
                   ? `${pendencias.length} PENDÊNCIA${pendencias.length === 1 ? '' : 'S'}`
                   : 'SEM PENDÊNCIAS'}
@@ -1857,24 +1858,26 @@
             ${
               pendencias.length
                 ? `
-                  <div class="mt-3 flex flex-wrap gap-2">
+                  <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                     ${pendencias.map(function(x) {
                       const nome = typeof x === 'string'
                         ? x
                         : (x.campo || x.motivo || 'Pendência');
 
                       return `
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber-900/60 bg-slate-950/50 text-[10px] font-semibold text-amber-200">
-                          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                          ${escapeHtmlRecebeOps(nome)}
-                        </span>
+                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-700/80 bg-slate-900/80">
+                          <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                          <span class="text-[10px] font-bold text-slate-200">
+                            ${escapeHtmlRecebeOps(nome)}
+                          </span>
+                        </div>
                       `;
                     }).join('')}
                   </div>
                 `
                 : `
-                  <div class="mt-3 text-[10px] text-slate-500">
-                    A liberação para geração do documento continuará obedecendo ao estado do processo e às regras do modelo oficial.
+                  <div class="mt-3 text-[10px] text-slate-400">
+                    A geração continuará condicionada ao estado do processo e às regras do modelo oficial.
                   </div>
                 `
             }
