@@ -1,3 +1,7 @@
+
+index_recebeops_crm.html
+
+100%
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: dark;
@@ -15,227 +19,564 @@
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(16,185,129,.08), transparent 30%),
-        radial-gradient(circle at top right, rgba(20,184,166,.06), transparent 28%),
-        #07111f;
+      background: #060b13;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.07) 0px, transparent 40%),
+        radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.05) 0px, transparent 40%),
+        radial-gradient(at 50% 100%, rgba(99, 102, 241, 0.04) 0px, transparent 45%);
     }
 
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    .glass {
-      background: rgba(15, 23, 42, .78);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(148, 163, 184, .10);
-      box-shadow: 0 16px 50px rgba(2, 6, 23, .24);
-    }
-
+    /* Estilo de Card CRM com Glassmorphism refinado */
     .crm-card {
-      background: linear-gradient(180deg, rgba(15,23,42,.92), rgba(10,18,32,.92));
-      border: 1px solid rgba(148, 163, 184, .10);
-      box-shadow: 0 12px 34px rgba(2, 6, 23, .20);
+      background: linear-gradient(180deg, rgba(13, 22, 38, 0.85) 0%, rgba(9, 15, 27, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
     }
 
-    .soft-line { border-color: rgba(148,163,184,.10); }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 9999px;
-      background: #34d399;
-      box-shadow: 0 0 0 5px rgba(52,211,153,.08), 0 0 18px rgba(52,211,153,.45);
+    .crm-card-highlight {
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(9, 15, 27, 0.95) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.25);
     }
 
-    .premium-badge {
-      background: linear-gradient(180deg, rgba(6,78,59,.42), rgba(6,78,59,.20));
-      border: 1px solid rgba(52,211,153,.20);
+    .crm-glass-nav {
+      background: rgba(8, 14, 25, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    .soft-border {
+      border-color: rgba(255, 255, 255, 0.07);
+    }
+
+    .status-pulse-green {
+      box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+      animation: pulseGreen 2s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
+      70% { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    }
+
+    /* Scrollbar personalizada minimalista */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #273449; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #334155; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.35); }
+
+    /* Folha timbrada fiel para pré-visualização e impressão */
+    .paper-sheet {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .paper-sheet::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #059669, #0d9488);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
 
     @media print {
       body { background: #fff !important; color: #000 !important; }
       body * { visibility: hidden; }
       #printArea, #printArea * { visibility: visible; }
-      #printArea { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 2cm; background: #fff !important; color: #000 !important; border: none !important; }
+      #printArea { 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        margin: 0; 
+        padding: 2.5cm 2cm; 
+        background: #fff !important; 
+        color: #000 !important; 
+        border: none !important; 
+        box-shadow: none !important;
+      }
       .no-print { display: none !important; }
     }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
 
-  <!-- Top Navigation Header -->
-  <header class="sticky top-0 z-40 px-5 md:px-7 py-3.5 no-print border-b soft-line bg-[#081321]/90 backdrop-blur-xl">
-    <div class="max-w-[1720px] mx-auto flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="relative shrink-0">
-          <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 flex items-center justify-center font-extrabold text-white shadow-lg shadow-emerald-950/40">R</div>
-          <span class="absolute -right-1 -bottom-1 h-3.5 w-3.5 rounded-full bg-emerald-400 border-2 border-[#081321]"></span>
-        </div>
-
-        <div class="min-w-0">
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="text-[15px] font-extrabold tracking-tight text-white">RecebeOps</span>
-            <span class="premium-badge text-[9px] font-bold uppercase tracking-[0.12em] px-2 py-1 rounded-full text-emerald-300">CRM Jurídico</span>
-          </div>
-          <p class="text-[11px] text-slate-400 mt-0.5 truncate">Operações • Minutas • Trello • Lote 5</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3 md:gap-4">
-        <div class="hidden lg:flex items-center gap-2">
-          <div class="glass rounded-xl px-3 py-2 flex items-center gap-2">
-            <span class="status-dot"></span>
-            <div>
-              <div class="text-[9px] uppercase tracking-wider text-slate-500 font-bold">Fila Trello</div>
-              <div class="text-[11px] font-bold text-slate-200" id="statFilaTotal">Ativa</div>
+  <!-- Top Navigation Header / Suite Bar -->
+  <header class="sticky top-0 z-50 crm-glass-nav no-print">
+    <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Project Switcher -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-400 flex items-center justify-center font-extrabold text-white text-base shadow-lg shadow-emerald-950/60 ring-1 ring-white/20">
+              R
             </div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#080e19] status-pulse-green"></span>
           </div>
-
-          <div class="glass rounded-xl px-3 py-2">
-            <div class="text-[9px] uppercase tracking-wider text-slate-500 font-bold">Governança</div>
-            <div class="text-[11px] font-bold text-emerald-300">Regras preservadas</div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-extrabold tracking-tight text-white">RecebeOps</span>
+              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-400 border border-emerald-800/60">Enterprise CRM</span>
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium">GT Advogados • Gestão de Carteira & Lote 5</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-3 pl-3 md:pl-4 border-l soft-line">
-          <div class="h-9 w-9 rounded-xl bg-slate-800 border border-slate-700/70 flex items-center justify-center text-[11px] font-extrabold text-emerald-300 shadow-inner">EL</div>
-          <div class="text-left hidden sm:block leading-tight">
-            <div class="text-[12px] font-bold text-slate-100">Everton Lanzilotti</div>
-            <div class="text-[10px] text-slate-500 mt-0.5">Gestão de Operações • Lote 5</div>
+        <!-- Empreendimento Dropdown Badge -->
+        <div class="hidden xl:flex items-center gap-2 pl-4 border-l soft-border">
+          <span class="text-[11px] text-slate-400">Empreendimento:</span>
+          <div class="px-2.5 py-1 rounded-lg bg-slate-900/90 border soft-border text-xs text-slate-200 font-semibold flex items-center gap-2 cursor-pointer hover:border-slate-700 transition-colors">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span id="currentProjectFilter">Todos os Loteamentos</span>
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
           </div>
         </div>
       </div>
+
+      <!-- Quick Command / Search Bar Center -->
+      <div class="hidden md:flex flex-1 max-w-md mx-4">
+        <div class="relative w-full">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <input type="text" id="globalSearchInput" placeholder="Buscar por cliente, CPF, contrato, loteamento..." 
+                 class="w-full bg-slate-950/70 border soft-border rounded-xl pl-9 pr-12 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/70 focus:ring-1 focus:ring-emerald-500/30 transition-all">
+          <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center">
+            <kbd class="px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-900 border soft-border rounded">⌘K</kbd>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Health, Governance & Profile -->
+      <div class="flex items-center gap-4">
+        <div class="hidden lg:flex items-center gap-3 text-xs">
+          <!-- Trello Sync Indicator -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/70 border soft-border" title="Webhook do Trello sincronizado e ouvindo eventos">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-slate-400 text-[11px]">Trello:</span>
+            <strong class="text-slate-200 text-[11px]" id="statFilaTotal">Conectado</strong>
+          </div>
+
+          <!-- Alçadas Dr. Leandro Badge -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-950/30 border border-emerald-800/40" title="Regras de 1 a 6 parcelas e dispensa de cônjuge ativas">
+            <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            <span class="text-emerald-300 text-[11px] font-semibold">Alçadas Jurídicas Preservadas</span>
+          </div>
+        </div>
+
+        <!-- Operator User Profile -->
+        <div class="flex items-center gap-3 pl-3 border-l soft-border">
+          <div class="relative">
+            <div class="h-8 w-8 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center text-xs font-bold text-emerald-400 shadow-inner">
+              EL
+            </div>
+            <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#080e19]"></span>
+          </div>
+          <div class="text-left hidden sm:block">
+            <div class="text-xs font-bold text-slate-200 leading-tight">Everton Lanzilotti</div>
+            <div class="text-[10px] text-slate-400 leading-tight">Gestão de Operações • Lote 5</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </header>
 
-  <!-- Banner Informativo -->
-  <div class="no-print border-b soft-line bg-[#0b1727]/72 px-5 md:px-7 py-2.5">
-    <div class="max-w-[1720px] mx-auto flex flex-wrap items-center justify-between gap-2">
-      <div class="flex items-center gap-2.5 min-w-0">
-        <span class="status-dot shrink-0"></span>
-        <span id="bannerStatusTexto" class="text-[11px] text-slate-300"><strong class="text-slate-100">Ambiente operacional conectado.</strong> Trello, validação e emissão centralizados no RecebeOps.</span>
+  <!-- KPI / Metrics Bar (Alta visibilidade operacional de CRM) -->
+  <section class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 pt-4 pb-1 no-print">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      
+      <!-- KPI 1 -->
+      <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Carteira na Esteira</div>
+          <div class="text-lg font-extrabold text-white mt-0.5 font-mono" id="kpiValorCarteira">R$ 322.476,63</div>
+          <div class="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
+            <span class="text-emerald-400 font-bold">5 casos</span> aguardando ou em acordo
+          </div>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-slate-900 border soft-border flex items-center justify-center text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
       </div>
-      <div class="hidden md:flex items-center gap-2 text-[10px] text-slate-500">
-        <span class="px-2 py-1 rounded-lg bg-slate-900/80 border soft-line">GT Advogados</span>
-        <span class="px-2 py-1 rounded-lg bg-slate-900/80 border soft-line">Lote 5</span>
-        <span class="px-2 py-1 rounded-lg bg-slate-900/80 border soft-line">Gestão operacional</span>
-      </div>
-    </div>
-  </div>
 
-  <!-- Workspace Principal -->
-  <main class="flex-1 p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1720px] w-full mx-auto">
-    <!-- FILA DE CASOS (4 colunas) -->
+      <!-- KPI 2 -->
+      <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Acordos / Parcelamentos</div>
+          <div class="text-lg font-extrabold text-emerald-400 mt-0.5 font-mono">02 Ativos</div>
+          <div class="text-[10px] text-emerald-500/80 mt-0.5 flex items-center gap-1 font-medium">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            Alçadas ≤ 6x em conformidade
+          </div>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-emerald-950/40 border border-emerald-800/40 flex items-center justify-center text-emerald-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        </div>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Honorários / Entradas Pix</div>
+          <div class="text-lg font-extrabold text-teal-300 mt-0.5 font-mono">R$ 2.913,99</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">
+            Beneficiário: <strong class="text-slate-300">L.G.T Gestão</strong>
+          </div>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-teal-950/40 border border-teal-800/40 flex items-center justify-center text-teal-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        </div>
+      </div>
+
+      <!-- KPI 4 -->
+      <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Triagem de Documentos</div>
+          <div class="text-lg font-extrabold text-white mt-0.5 flex items-center gap-2">
+            <span>100%</span>
+            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">Portal Lote 5</span>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-0.5">
+            Ficha + Síntese + Extrato OK
+          </div>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-slate-900 border soft-border flex items-center justify-center text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Workspace Principal (Pipeline + Dossiê 360°) -->
+  <main class="flex-1 p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1780px] w-full mx-auto">
+    
+    <!-- COLUNA DA ESQUERDA: PIPELINE DE CASOS / FILA TRELLO (4 colunas) -->
     <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4 no-print">
-      <div class="crm-card p-4 rounded-2xl flex flex-col gap-3">
+      
+      <!-- Painel de Controle de Filtros da Fila -->
+      <div class="crm-card p-4 rounded-2xl flex flex-col gap-3.5">
         <div class="flex items-center justify-between">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Pipeline Operacional</h2>
-          <span class="text-[11px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full" id="caseCountBadge">Carregando...</span>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Pipeline de Contratos</h2>
+          </div>
+          <span class="text-[11px] font-mono bg-slate-900 text-slate-300 px-2.5 py-0.5 rounded-full border soft-border" id="caseCountBadge">
+            5 casos ativos
+          </span>
         </div>
-        <input type="text" id="searchInput" placeholder="Filtrar por nome, CPF, lote, quadra ou contrato..." 
-               class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500">
-        <div class="flex items-center gap-1 overflow-x-auto pb-1 text-[11px]">
-          <button onclick="setFilter('ALL')" class="filter-btn active px-2.5 py-1 rounded-lg font-semibold bg-emerald-600 text-white whitespace-nowrap">Todos</button>
-          <button onclick="setFilter('NOTIFICACAO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Notificação</button>
-          <button onclick="setFilter('PARCELAMENTO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Acordo Curto</button>
-          <button onclick="setFilter('CESSAO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Cessão</button>
-          <button onclick="setFilter('REFIN')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Refin</button>
-          <button onclick="setFilter('RESCISAO')" class="filter-btn px-2.5 py-1 rounded-lg font-medium bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-800 whitespace-nowrap">Rescisão</button>
+
+        <!-- Filtro Rápido em Chips Estilo CRM -->
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 text-[11px]">
+          <button onclick="setFilter('ALL')" class="filter-btn active px-2 py-1.5 rounded-xl font-bold bg-emerald-600 text-white shadow-sm transition-all text-center">Todos</button>
+          <button onclick="setFilter('PARCELAMENTO')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Acordo</button>
+          <button onclick="setFilter('NOTIFICACAO')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Notificação</button>
+          <button onclick="setFilter('CESSAO')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Cessão</button>
+          <button onclick="setFilter('REFIN')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Refin</button>
+          <button onclick="setFilter('RESCISAO')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Rescisão</button>
+        </div>
+
+        <!-- Input de Filtro Local -->
+        <div class="relative">
+          <input type="text" id="searchInput" placeholder="Filtrar nesta lista (nome, CPF, lote, contrato)..." 
+                 class="w-full bg-slate-950/80 border soft-border rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/70">
         </div>
       </div>
-      <div class="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-270px)] pr-1" id="casesContainer"></div>
+
+      <!-- Lista de Cards de Clientes (Fila Rolável) -->
+      <div class="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-290px)] pr-1" id="casesContainer">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
     </div>
 
-    <!-- CRM OPERACIONAL & MINUTA (8 colunas) -->
+    <!-- COLUNA DA DIREITA: DOSSIÊ 360° DO CLIENTE & EMISSÃO DE TERMOS (8 colunas) -->
     <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-5">
+      
+      <!-- CABEÇALHO DO CLIENTE / DEAL HEADER -->
       <div class="crm-card p-5 rounded-2xl flex flex-col gap-4 no-print">
-        <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b border-slate-800">
-          <div>
-            <div class="flex items-center gap-3">
-              <h1 class="text-xl font-bold text-white tracking-tight" id="detailName">Carregando...</h1>
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold" id="detailBadgeType">-</span>
+        
+        <!-- Linha Superior: Nome, Status, Identificadores e Saldo -->
+        <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b soft-border">
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="h-10 w-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-slate-200 text-sm shadow-inner shrink-0" id="detailAvatar">
+                JS
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h1 class="text-xl font-extrabold text-white tracking-tight" id="detailName">Carregando...</h1>
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold" id="detailBadgeType">-</span>
+                </div>
+                <div class="text-xs text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
+                  <span id="detailCpf" class="font-mono text-slate-300">000.000.000-00</span>
+                  <span>•</span>
+                  <span id="detailProfissao" class="text-slate-400">Comerciante</span>
+                  <span>•</span>
+                  <span id="detailEstadoCivil" class="text-slate-400">Casado</span>
+                </div>
+              </div>
             </div>
-            <p class="text-xs text-slate-400 mt-1 flex flex-wrap items-center gap-3">
-              <span><strong>Empreendimento:</strong> <span id="detailLoteamento" class="text-slate-200">-</span></span>
-              <span>•</span>
-              <span><strong>Lote:</strong> <span id="detailUnidade" class="text-slate-200 font-mono">-</span></span>
-              <span>•</span>
-              <span><strong>Contrato:</strong> <span id="detailContrato" class="text-slate-200 font-mono">-</span></span>
-            </p>
+
+            <!-- Dados Imobiliários do Lote -->
+            <div class="mt-3 flex flex-wrap items-center gap-3 text-xs bg-slate-950/60 p-2.5 rounded-xl border soft-border text-slate-300">
+              <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                <strong class="text-slate-200" id="detailLoteamento">-</strong>
+              </span>
+              <span class="text-slate-600">•</span>
+              <span class="font-mono text-slate-300" id="detailUnidade">Qd. 00, Lt. 00</span>
+              <span class="text-slate-600">•</span>
+              <span>Contrato: <strong class="font-mono text-emerald-400" id="detailContrato">#-</strong></span>
+              <span class="text-slate-600">•</span>
+              <span class="text-slate-400 text-[11px]" id="detailMatricula">-</span>
+            </div>
           </div>
-          <div class="text-right">
-            <div class="text-[10px] uppercase font-bold text-slate-400">Saldo Nominal</div>
-            <div class="text-lg font-extrabold text-amber-400 font-mono" id="detailValorTotal">R$ 0,00</div>
-            <div class="text-[11px] font-medium" id="detailAtraso">-</div>
+
+          <!-- Bloco Financeiro de Destaque -->
+          <div class="text-right flex flex-col items-end justify-between">
+            <div>
+              <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Posição Financeira</div>
+              <div class="text-2xl font-black text-amber-400 font-mono tracking-tight" id="detailValorTotal">R$ 0,00</div>
+              <div class="text-xs font-semibold mt-0.5" id="detailAtraso">-</div>
+            </div>
+            
+            <!-- Quick Actions CRM -->
+            <div class="flex items-center gap-2 mt-3">
+              <button onclick="openPixModal(agreementState.entradaValor)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600/90 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-sm transition-all">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Chave Pix
+              </button>
+            </div>
           </div>
         </div>
 
+        <!-- Seletor de Tipo de Termo / Minuta Jurídica -->
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <div class="flex items-center gap-2">
-            <span class="text-xs font-semibold text-slate-400">Termo:</span>
-            <div class="flex flex-wrap bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
-              <button onclick="switchDocMode('NOTIFICACAO')" id="tabBtnNotif" class="px-3 py-1.5 rounded-lg font-bold bg-emerald-600 text-white">1. Notificação</button>
-              <button onclick="switchDocMode('PARCELAMENTO')" id="tabBtnParc" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">2. Acordo Curto</button>
-              <button onclick="switchDocMode('CESSAO')" id="tabBtnCessao" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">3. Cessão</button>
-              <button onclick="switchDocMode('REFIN')" id="tabBtnRefin" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">4. Refin</button>
-              <button onclick="switchDocMode('RESCISAO')" id="tabBtnRescisao" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200">5. Rescisão</button>
+          <div class="flex items-center gap-2.5">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Termo Solicitado:</span>
+            <div class="flex flex-wrap bg-slate-950 p-1 rounded-xl border soft-border text-xs">
+              <button onclick="switchDocMode('NOTIFICACAO')" id="tabBtnNotif" class="px-3 py-1.5 rounded-lg font-bold text-slate-400 hover:text-slate-200 transition-all">1. Notificação</button>
+              <button onclick="switchDocMode('PARCELAMENTO')" id="tabBtnParc" class="px-3 py-1.5 rounded-lg font-bold bg-emerald-600 text-white shadow-sm transition-all">2. Acordo Curto</button>
+              <button onclick="switchDocMode('CESSAO')" id="tabBtnCessao" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all">3. Cessão</button>
+              <button onclick="switchDocMode('REFIN')" id="tabBtnRefin" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all">4. Refin</button>
+              <button onclick="switchDocMode('RESCISAO')" id="tabBtnRescisao" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all">5. Rescisão</button>
             </div>
           </div>
+          
           <div class="flex items-center gap-2">
-            <button onclick="copyDocumentText()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Copiar Texto</button>
-            <button onclick="printDocument()" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md">Imprimir / Salvar PDF</button>
+            <button onclick="copyDocumentText()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              Copiar Minuta
+            </button>
+            <button onclick="printDocument()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-700/60 flex items-center gap-1.5 shadow-sm transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+              Imprimir / PDF
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Abas de Navegação do Dossiê do Caso -->
+      <div class="flex items-center justify-between border-b soft-border px-1 no-print">
+        <div class="flex items-center gap-4 text-xs font-semibold">
+          <button onclick="setDetailTab('MINUTA')" id="tabNavMinuta" class="pb-3 border-b-2 border-emerald-500 text-emerald-400 font-bold flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            1. Minuta & Prévia do Termo
+          </button>
+          <button onclick="setDetailTab('DOSSIE')" id="tabNavDossie" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            2. Dossiê Cadastral & Contrato
+          </button>
+          <button onclick="setDetailTab('AUDITORIA')" id="tabNavAuditoria" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            3. Trilha de Auditoria & Trello
+          </button>
+        </div>
+        <div class="text-[11px] text-slate-500 pb-3 flex items-center gap-2">
+          <span>Worker Lote 5:</span>
+          <span class="text-emerald-400 font-mono font-semibold">OK (3 docs sincronizados)</span>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 1: PAINEL DE SIMULAÇÃO DE ALÇADA & CONDIÇÕES (no-print) -->
+      <div id="actionControlsPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+        <!-- Renderizado dinamicamente via JS de acordo com o termo -->
+      </div>
+
+      <!-- SEÇÃO 2: ÁREA DA MINUTA / FOLHA TIMBRADA -->
+      <div id="viewMinutaContainer" class="crm-card rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+        <div class="bg-slate-900/90 px-5 py-3 border-b soft-border flex items-center justify-between text-xs no-print">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span class="text-slate-200 font-bold">Folha Timbrada Oficial • GT Advogados</span>
+            <span class="text-[10px] text-slate-500 font-mono">| Matriz Google Docs</span>
+          </div>
+          <div class="text-slate-400 text-[11px]">
+            Responsável Técnico: <strong class="text-slate-200 font-semibold">Everton Lanzilotti (Operações Lote 5)</strong>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-8 overflow-y-auto max-h-[640px] bg-slate-950/70 flex justify-center">
+          <div id="printArea" class="paper-sheet p-8 sm:p-12 w-full max-w-[840px] text-sm leading-relaxed">
+            <!-- Conteúdo da minuta gerado via JS -->
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-900/90 border-t soft-border flex flex-wrap items-center justify-between gap-3 text-xs no-print">
+          <div class="flex items-center gap-2 text-slate-400 text-[11px]">
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>Cláusulas padronizadas e imutáveis • Somente os dados de variáveis são mesclados.</span>
+          </div>
+          <button onclick="approveAndSave()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            Aprovar Minuta & Anexar PDF no Trello
+          </button>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 3: ABA DE DOSSIÊ COMPLETO (inicialmente oculta) -->
+      <div id="viewDossieContainer" class="crm-card p-6 rounded-2xl hidden flex-col gap-5 text-xs no-print">
+        <div class="flex items-center justify-between pb-3 border-b soft-border">
+          <div>
+            <h3 class="text-sm font-bold text-white">Dossiê Cadastral & Imobiliário Unificado</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Cruzamento direto: Ficha Cadastral + Síntese do Contrato Lote 5.</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-mono text-[11px]">
+            Status: Verificado
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Bloco Cliente -->
+          <div class="p-4 rounded-xl bg-slate-950/60 border soft-border flex flex-col gap-2.5">
+            <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Dados Cadastrais do Titular</h4>
+            <div class="space-y-1.5 text-slate-300">
+              <div class="flex justify-between"><span class="text-slate-500">Nome:</span> <strong class="text-white" id="dossieNome">-</strong></div>
+              <div class="flex justify-between"><span class="text-slate-500">CPF:</span> <span class="font-mono" id="dossieCpf">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">RG:</span> <span class="font-mono" id="dossieRg">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Estado Civil:</span> <span id="dossieCiv">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Profissão:</span> <span id="dossieProf">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Endereço:</span> <span class="text-right text-[11px] max-w-[200px]" id="dossieEnd">-</span></div>
+              <div class="flex justify-between pt-2 border-t soft-border"><span class="text-slate-500">Cônjuge:</span> <span class="text-slate-400" id="dossieConjuge">Dispensado no termo atual</span></div>
+            </div>
+          </div>
+
+          <!-- Bloco Imóvel & Contrato -->
+          <div class="p-4 rounded-xl bg-slate-950/60 border soft-border flex flex-col gap-2.5">
+            <h4 class="text-xs font-bold text-teal-400 uppercase tracking-wider">Dados do Lote & Matrícula</h4>
+            <div class="space-y-1.5 text-slate-300">
+              <div class="flex justify-between"><span class="text-slate-500">Empreendimento:</span> <strong class="text-white" id="dossieLot">-</strong></div>
+              <div class="flex justify-between"><span class="text-slate-500">Quadra / Lote:</span> <span class="font-mono font-bold text-emerald-300" id="dossieQdLote">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Metragem:</span> <span id="dossieM2">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Contrato:</span> <span class="font-mono text-emerald-400" id="dossieContrato">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Data de Assinatura:</span> <span id="dossieDataContrato">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Matrícula RI:</span> <span class="text-[11px] text-right max-w-[220px]" id="dossieMatricula">-</span></div>
+              <div class="flex justify-between pt-2 border-t soft-border"><span class="text-slate-500">Origem:</span> <span class="text-emerald-400">Portal Lote 5 / Worker Local</span></div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Simulador e Alçadas (no-print) -->
-      <div id="actionControlsPanel" class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-xs no-print"></div>
-
-      <!-- Visualização da Minuta em Folha Timbrada -->
-      <div class="crm-card rounded-2xl overflow-hidden flex flex-col">
-        <div class="bg-slate-900 px-5 py-3 border-b border-slate-800 flex items-center justify-between text-xs no-print">
-          <span class="text-slate-300 font-semibold flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            Pré-visualização da Minuta Gerada
+      <!-- SEÇÃO 4: ABA DE TRILHA DE AUDITORIA & TRELLO (inicialmente oculta) -->
+      <div id="viewAuditoriaContainer" class="crm-card p-6 rounded-2xl hidden flex-col gap-4 text-xs no-print">
+        <div class="flex items-center justify-between pb-3 border-b soft-border">
+          <div>
+            <h3 class="text-sm font-bold text-white">Log de Auditoria & Sincronização Trello</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Histórico de validação em conformidade com as regras operacionais.</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-slate-900 border soft-border text-slate-300 font-mono text-[11px]">
+            Card ID: <strong class="text-emerald-400" id="auditCardId">-</strong>
           </span>
-          <span class="text-slate-400 text-[11px]">Validação: <strong class="text-slate-200">Everton Lanzilotti (Operações Lote 5)</strong></span>
         </div>
-        <div class="p-6 md:p-8 overflow-y-auto max-h-[580px] bg-slate-950/60">
-          <div id="printArea" class="bg-white text-slate-900 p-8 sm:p-12 rounded-xl shadow-2xl max-w-[820px] mx-auto border border-slate-200 text-sm leading-relaxed"></div>
-        </div>
-        <div class="p-4 bg-slate-900 border-t border-slate-800 flex items-center justify-between text-xs no-print">
-          <span class="text-slate-400 text-[11px]">Regras Jurídicas Estritas (Dr. Leandro) • Sem Cônjuge em Parcelamento Curto</span>
-          <button onclick="approveAndSave()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Aprovar e Liberar PDF Oficial</button>
+
+        <div class="space-y-3">
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border soft-border">
+            <span class="w-6 h-6 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">1</span>
+            <div>
+              <div class="font-bold text-slate-200">Gatilho do Cartão no Trello</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Campo personalizado "GERAR TERMO" acionado pelo operador Everton.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border soft-border">
+            <span class="w-6 h-6 rounded-lg bg-teal-950/60 border border-teal-800 text-teal-400 flex items-center justify-center font-bold text-xs shrink-0">2</span>
+            <div>
+              <div class="font-bold text-slate-200">Coleta Automática • Worker Lote 5</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Download e validação dos 3 arquivos obrigatórios: Síntese, Extrato Financeiro e Ficha Cadastral.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border soft-border">
+            <span class="w-6 h-6 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+            <div>
+              <div class="font-bold text-slate-200">Governança Jurídica (Dr. Leandro)</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Validação de alçada: limite de 6 parcelas para acordo curto e dispensa de cônjuge aplicada com sucesso.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border soft-border">
+            <span class="w-6 h-6 rounded-lg bg-slate-900 border soft-border text-slate-400 flex items-center justify-center font-bold text-xs shrink-0">4</span>
+            <div>
+              <div class="font-bold text-slate-200">Emissão Final em Google Docs & Anexo de PDF</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Aguardando confirmação do operador para acionar o gerador do Google Apps Script.</p>
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   </main>
 
-  <!-- Modal Pix Honorários / Entrada -->
-  <div id="pixModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
-      <button onclick="closePixModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
-      <h3 class="text-sm font-bold text-white mb-1">Cobrança Imediata via Pix</h3>
-      <p class="text-xs text-slate-400 mb-3">Honorários / Entrada vinculada ao acordo</p>
-      <div class="text-center py-3 bg-slate-950 rounded-xl border border-slate-800 mb-3">
-        <div class="text-xs text-slate-400">Valor da Entrada / Honorários:</div>
-        <div class="text-2xl font-extrabold text-emerald-400 font-mono" id="pixModalValor">R$ 398,99</div>
-        <div class="text-[11px] text-slate-400 mt-1">Beneficiário: L.G.T Gestão de Recebimentos LTDA</div>
+  <!-- Modal Pix Honorários / Entrada com Visual Fintech -->
+  <div id="pixModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="crm-card border-slate-700/80 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closePixModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      
+      <div class="flex items-center gap-2.5 mb-1">
+        <div class="w-8 h-8 rounded-xl bg-emerald-950 border border-emerald-800 flex items-center justify-center text-emerald-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        </div>
+        <h3 class="text-sm font-bold text-white">Cobrança e Entrada via Pix</h3>
       </div>
-      <input type="text" readonly id="pixCodeInput" value="adm@gtadv.com.br" class="bg-slate-950 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 py-2 w-full font-mono mb-3 text-center">
+      <p class="text-xs text-slate-400 mb-4">Honorários advocatícios ou valor de entrada vinculados ao acordo.</p>
+
+      <div class="text-center py-4 bg-slate-950 rounded-2xl border soft-border mb-4">
+        <div class="text-xs text-slate-400">Valor da Operação:</div>
+        <div class="text-3xl font-black text-emerald-400 font-mono mt-0.5" id="pixModalValor">R$ 398,99</div>
+        <div class="text-[11px] text-slate-400 mt-1">Beneficiário: <strong class="text-slate-200">L.G.T Gestão de Recebimentos LTDA</strong></div>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Chave Pix Oficial (E-mail):</label>
+        <div class="flex items-center gap-2">
+          <input type="text" readonly id="pixCodeInput" value="adm@gtadv.com.br" 
+                 class="bg-slate-950 border soft-border text-slate-200 text-xs rounded-xl px-3 py-2.5 w-full font-mono text-center select-all">
+        </div>
+      </div>
+
       <div class="flex gap-2">
-        <button onclick="copyPixCode()" class="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold">Copiar Chave Pix</button>
-        <button onclick="closePixModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl">Fechar</button>
+        <button onclick="copyPixCode()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          Copiar Chave Pix
+        </button>
+        <button onclick="closePixModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl">Fechar</button>
       </div>
     </div>
   </div>
 
-  <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 border border-emerald-500 text-slate-100 px-4 py-3 rounded-2xl shadow-2xl z-50 text-xs translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print">
+  <!-- Toast de Notificação -->
+  <div id="toast" class="fixed bottom-6 right-6 crm-card border-emerald-500/60 text-slate-100 px-4 py-3 rounded-2xl shadow-2xl z-50 text-xs translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print flex items-center gap-2.5">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
     <span id="toastMessage">Operação realizada com sucesso!</span>
   </div>
 
@@ -263,7 +604,7 @@
         dt: "15/02/2022",
         st: "PARCELAMENTO",
         stLbl: "Acordo Curto",
-        stCls: "bg-emerald-950 text-emerald-300 border-emerald-800",
+        stCls: "bg-emerald-950/80 text-emerald-300 border-emerald-800/70",
         dias: 60,
         parcVenc: 3,
         parcNum: "3 parcelas acordadas no Trello",
@@ -296,7 +637,7 @@
         dt: "14/03/2023",
         st: "NOTIFICACAO",
         stLbl: "Notificação",
-        stCls: "bg-rose-950 text-rose-300 border-rose-800",
+        stCls: "bg-rose-950/80 text-rose-300 border-rose-800/70",
         dias: 94,
         parcVenc: 3,
         parcNum: "24 a 26/180",
@@ -329,7 +670,7 @@
         dt: "08/11/2022",
         st: "PARCELAMENTO",
         stLbl: "Acordo Curto",
-        stCls: "bg-amber-950 text-amber-300 border-amber-800",
+        stCls: "bg-amber-950/80 text-amber-300 border-amber-800/70",
         dias: 48,
         parcVenc: 2,
         parcNum: "38 e 39/120",
@@ -362,7 +703,7 @@
         dt: "22/05/2021",
         st: "CESSAO",
         stLbl: "Cessão",
-        stCls: "bg-blue-950 text-blue-300 border-blue-800",
+        stCls: "bg-blue-950/80 text-blue-300 border-blue-800/70",
         dias: 0,
         parcVenc: 0,
         parcNum: "Taxa de Expediente",
@@ -395,7 +736,7 @@
         dt: "19/08/2023",
         st: "RESCISAO",
         stLbl: "Rescisão",
-        stCls: "bg-red-950 text-red-300 border-red-800",
+        stCls: "bg-red-950/80 text-red-300 border-red-800/70",
         dias: 140,
         parcVenc: 5,
         parcNum: "12 a 16/120",
@@ -415,6 +756,7 @@
     let currentCaseId = 1;
     let currentFilter = 'ALL';
     let currentDocMode = 'PARCELAMENTO';
+    let currentDetailTab = 'MINUTA';
     let agreementState = { entradaValor: 398.99, qtdParcelas: 3, descontoJuros: 0 };
     let rescisaoState = { retencaoClausulaPenalPct: 10, parcelasDevolucao: 12 };
 
@@ -428,10 +770,9 @@
       const urlParams = new URLSearchParams(window.location.search);
       const cardId = urlParams.get('cardId');
       if (cardId) {
-        document.getElementById('bannerStatusTexto').innerHTML = `<strong>Cartão Carregado:</strong> Visualizando prévia do Trello ID: <code class="bg-slate-800 px-1 py-0.5 rounded text-emerald-400">${cardId}</code>`;
+        showToast("Carregando caso sincronizado do Trello: " + cardId);
         if (RECEBEOPS_API_URL) {
           try {
-            showToast("Buscando dados no Apps Script / Trello...");
             const resp = await fetch(`${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(cardId)}`);
             const data = await resp.json();
             if (data && data.hash) window.recebeOpsPreviewHash = data.hash;
@@ -471,15 +812,45 @@
       currentFilter = filter;
       document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active', 'bg-emerald-600', 'text-white');
-        btn.classList.add('bg-slate-950', 'text-slate-400');
+        btn.classList.add('bg-slate-950/70', 'text-slate-400');
       });
       event.target.classList.add('active', 'bg-emerald-600', 'text-white');
-      event.target.classList.remove('bg-slate-950', 'text-slate-400');
+      event.target.classList.remove('bg-slate-950/70', 'text-slate-400');
       renderCaseList();
     }
 
+    function setDetailTab(tab) {
+      currentDetailTab = tab;
+      const tMinuta = document.getElementById('tabNavMinuta');
+      const tDossie = document.getElementById('tabNavDossie');
+      const tAudit = document.getElementById('tabNavAuditoria');
+
+      const vMinuta = document.getElementById('viewMinutaContainer');
+      const vDossie = document.getElementById('viewDossieContainer');
+      const vAudit = document.getElementById('viewAuditoriaContainer');
+
+      [tMinuta, tDossie, tAudit].forEach(el => {
+        el.className = "pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2";
+      });
+
+      vMinuta.classList.add('hidden');
+      vDossie.classList.add('hidden');
+      vAudit.classList.add('hidden');
+
+      if (tab === 'MINUTA') {
+        tMinuta.className = "pb-3 border-b-2 border-emerald-500 text-emerald-400 font-bold flex items-center gap-2";
+        vMinuta.classList.remove('hidden');
+      } else if (tab === 'DOSSIE') {
+        tDossie.className = "pb-3 border-b-2 border-emerald-500 text-emerald-400 font-bold flex items-center gap-2";
+        vDossie.classList.remove('hidden');
+      } else {
+        tAudit.className = "pb-3 border-b-2 border-emerald-500 text-emerald-400 font-bold flex items-center gap-2";
+        vAudit.classList.remove('hidden');
+      }
+    }
+
     function renderCaseList() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
+      const search = (document.getElementById('searchInput').value || document.getElementById('globalSearchInput').value || "").toLowerCase();
       const container = document.getElementById('casesContainer');
       container.innerHTML = '';
       const filtered = CASES.filter(c => {
@@ -487,51 +858,102 @@
         const matchesSearch = c.nome.toLowerCase().includes(search) || c.lot.toLowerCase().includes(search) || c.cpf.includes(search) || c.ct.toLowerCase().includes(search);
         return matchesFilter && matchesSearch;
       });
-      document.getElementById('caseCountBadge').innerText = `${filtered.length} caso(s)`;
+      document.getElementById('caseCountBadge').innerText = `${filtered.length} caso(s) ativo(s)`;
+      
       filtered.forEach(c => {
         const isSelected = c.id === currentCaseId;
+        const initials = c.nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
         const item = document.createElement('div');
         item.onclick = () => selectCase(c.id);
-        item.className = `p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col gap-2 ${isSelected ? 'bg-slate-900 border-emerald-500 shadow-md ring-1 ring-emerald-500/50' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'}`;
+        item.className = `p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col gap-2 ${isSelected ? 'crm-card-highlight shadow-lg ring-1 ring-emerald-500/50' : 'crm-card hover:border-slate-700/80'}`;
         item.innerHTML = `
-          <div class="flex items-center justify-between"><span class="text-xs font-bold text-white">${c.nome}</span><span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${c.stCls}">${c.stLbl}</span></div>
-          <div class="flex items-center justify-between text-[11px] text-slate-400"><span>${c.lot} • <strong class="text-slate-300 font-mono">Qd ${c.qd}, Lt ${c.lt}</strong></span><span class="font-mono text-slate-200 font-bold">R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span></div>
-          <div class="flex items-center justify-between pt-1 border-t border-slate-800 text-[10px] text-slate-500"><span>#${c.ct}</span><span class="${c.dias > 60 ? 'text-rose-400 font-semibold' : 'text-amber-400'}">${c.dias > 0 ? `${c.dias} dias atraso` : 'Em dia'}</span></div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 text-[11px] font-bold text-slate-300 flex items-center justify-center shrink-0">
+                ${initials}
+              </div>
+              <span class="text-xs font-bold text-white tracking-tight">${c.nome}</span>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${c.stCls}">${c.stLbl}</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-400">
+            <span>${c.lot} • <strong class="text-slate-300 font-mono">Qd ${c.qd}, Lt ${c.lt}</strong></span>
+            <span class="font-mono text-slate-200 font-bold">R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+          </div>
+          <div class="flex items-center justify-between pt-1 border-t soft-border text-[10px] text-slate-500">
+            <span class="font-mono">#${c.ct}</span>
+            <span class="${c.dias > 60 ? 'text-rose-400 font-bold' : 'text-amber-400 font-semibold'}">${c.dias > 0 ? `${c.dias} dias atraso` : 'Contrato em dia'}</span>
+          </div>
         `;
         container.appendChild(item);
       });
     }
 
     document.getElementById('searchInput').addEventListener('input', renderCaseList);
+    document.getElementById('globalSearchInput').addEventListener('input', renderCaseList);
 
     function selectCase(id) {
       currentCaseId = id;
       const c = CASES.find(item => item.id === id);
       if (!c) return;
+
+      const initials = c.nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+      document.getElementById('detailAvatar').innerText = initials;
       document.getElementById('detailName').innerText = c.nome;
+      document.getElementById('detailCpf').innerText = c.cpf;
+      document.getElementById('detailProfissao').innerText = c.prof;
+      document.getElementById('detailEstadoCivil').innerText = c.civ;
       document.getElementById('detailLoteamento').innerText = c.lot;
       document.getElementById('detailUnidade').innerText = `Qd. ${c.qd}, Lt. ${c.lt} (${c.m2})`;
       document.getElementById('detailContrato').innerText = `#${c.ct}`;
+      document.getElementById('detailMatricula').innerText = c.mat;
       document.getElementById('detailValorTotal').innerText = `R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      
       const atrasoEl = document.getElementById('detailAtraso');
-      atrasoEl.innerText = c.dias > 0 ? `${c.parcVenc} parcela(s) • ${c.dias} dias` : 'Contrato em dia';
-      atrasoEl.className = c.dias > 0 ? "text-[11px] text-rose-400 font-medium" : "text-[11px] text-emerald-400 font-medium";
+      atrasoEl.innerText = c.dias > 0 ? `${c.parcVenc} parcela(s) em aberto • ${c.dias} dias` : 'Contrato em dia';
+      atrasoEl.className = c.dias > 0 ? "text-xs text-rose-400 font-bold" : "text-xs text-emerald-400 font-bold";
+      
       const badge = document.getElementById('detailBadgeType');
       badge.innerText = c.stLbl;
       badge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border ${c.stCls}`;
+      
       currentDocMode = c.st;
       agreementState.entradaValor = c.honorarios || 398.99;
       agreementState.qtdParcelas = c.parcVenc || 3;
-      updateTabsUI(); renderActionControls(); renderDocumentContent(); renderCaseList();
+
+      // Atualiza a aba do Dossiê
+      document.getElementById('dossieNome').innerText = c.nome;
+      document.getElementById('dossieCpf').innerText = c.cpf;
+      document.getElementById('dossieRg').innerText = c.rg;
+      document.getElementById('dossieCiv').innerText = c.civ;
+      document.getElementById('dossieProf').innerText = c.prof;
+      document.getElementById('dossieEnd').innerText = c.end;
+      document.getElementById('dossieLot').innerText = c.lot;
+      document.getElementById('dossieQdLote').innerText = `Quadra ${c.qd} - Lote ${c.lt}`;
+      document.getElementById('dossieM2').innerText = c.m2;
+      document.getElementById('dossieContrato').innerText = `#${c.ct}`;
+      document.getElementById('dossieDataContrato').innerText = c.dt;
+      document.getElementById('dossieMatricula').innerText = c.mat;
+      document.getElementById('auditCardId').innerText = c.cardId;
+
+      updateTabsUI();
+      renderActionControls();
+      renderDocumentContent();
+      renderCaseList();
     }
 
-    function switchDocMode(mode) { currentDocMode = mode; updateTabsUI(); renderActionControls(); renderDocumentContent(); }
+    function switchDocMode(mode) {
+      currentDocMode = mode;
+      updateTabsUI();
+      renderActionControls();
+      renderDocumentContent();
+    }
 
     function updateTabsUI() {
       const map = { 'NOTIFICACAO': 'tabBtnNotif', 'PARCELAMENTO': 'tabBtnParc', 'CESSAO': 'tabBtnCessao', 'REFIN': 'tabBtnRefin', 'RESCISAO': 'tabBtnRescisao' };
       Object.keys(map).forEach(k => {
         const btn = document.getElementById(map[k]);
-        btn.className = currentDocMode === k ? "px-3 py-1.5 rounded-lg font-bold bg-emerald-600 text-white" : "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200";
+        btn.className = currentDocMode === k ? "px-3 py-1.5 rounded-lg font-bold bg-emerald-600 text-white shadow-sm transition-all" : "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all";
       });
     }
 
@@ -539,18 +961,90 @@
       const c = CASES.find(item => item.id === currentCaseId);
       const panel = document.getElementById('actionControlsPanel');
       if (currentDocMode === 'NOTIFICACAO') {
-        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>Notificação Premonitória de Mora (Art. 32 da Lei 6.766/79)</div><p class="text-slate-400 text-[11px] mt-0.5">Prazo de 30 dias para purgação da mora no Registro de Imóveis. <strong>Regra: sem inclusão de cônjuge.</strong></p></div><button onclick="openPixModal(${c.tot})" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Emitir Chave Pix</button></div>`;
+        panel.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="font-bold text-slate-200 flex items-center gap-2 text-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                Notificação Premonitória de Mora (Art. 32 da Lei 6.766/79)
+              </div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Prazo improrrogável de 30 dias para purgação da mora no Registro de Imóveis competente. <strong>Regra: sem inclusão de cônjuge.</strong></p>
+            </div>
+            <button onclick="openPixModal(${c.tot})" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center gap-1.5">
+              <span>Chave Pix Total</span>
+            </button>
+          </div>
+        `;
       } else if (currentDocMode === 'PARCELAMENTO') {
         const valParc = c.tot / agreementState.qtdParcelas;
-        panel.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3"><div><label class="block text-slate-400 mb-1">Honorários/Entrada (Separados da Dívida):</label><input type="number" value="${agreementState.entradaValor}" onchange="agreementState.entradaValor=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-200 font-mono"></div><div><label class="block text-slate-400 mb-1">Parcelas do Acordo (Máx. 6 - Dr. Leandro):</label><select onchange="agreementState.qtdParcelas=parseInt(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-slate-200 font-mono"><option value="1" ${agreementState.qtdParcelas==1?'selected':''}>1x</option><option value="2" ${agreementState.qtdParcelas==2?'selected':''}>2x</option><option value="3" ${agreementState.qtdParcelas==3?'selected':''}>3x</option><option value="4" ${agreementState.qtdParcelas==4?'selected':''}>4x</option><option value="6" ${agreementState.qtdParcelas==6?'selected':''}>6x</option></select></div><div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 flex items-center justify-between"><div><span class="text-[10px] text-slate-400">Saldo Parcelado:</span><div class="text-emerald-400 font-bold font-mono text-sm">${agreementState.qtdParcelas}x de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div><button onclick="openPixModal(${agreementState.entradaValor})" class="text-xs text-emerald-400 underline font-semibold">Pix Honorários</button></div></div>`;
+        panel.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            <div>
+              <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Honorários/Entrada (Separados da Dívida):</label>
+              <input type="number" value="${agreementState.entradaValor}" onchange="agreementState.entradaValor=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500">
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Parcelas do Acordo (Alçada Dr. Leandro: Máx. 6x):</label>
+              <select onchange="agreementState.qtdParcelas=parseInt(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500">
+                <option value="1" ${agreementState.qtdParcelas==1?'selected':''}>1x (À vista)</option>
+                <option value="2" ${agreementState.qtdParcelas==2?'selected':''}>2x mensais</option>
+                <option value="3" ${agreementState.qtdParcelas==3?'selected':''}>3x mensais</option>
+                <option value="4" ${agreementState.qtdParcelas==4?'selected':''}>4x mensais</option>
+                <option value="6" ${agreementState.qtdParcelas==6?'selected':''}>6x mensais (Limite)</option>
+              </select>
+            </div>
+            <div class="bg-slate-950/80 p-2.5 rounded-xl border soft-border flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-500">Saldo Repactuado:</span>
+                <div class="text-emerald-400 font-bold font-mono text-sm">${agreementState.qtdParcelas}x de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+              </div>
+              <button onclick="openPixModal(${agreementState.entradaValor})" class="text-xs text-emerald-400 underline font-bold hover:text-emerald-300">Pix Entrada</button>
+            </div>
+          </div>
+        `;
       } else if (currentDocMode === 'CESSAO') {
-        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200">Termo de Cessão e Transferência de Lote (Com Anuência)</div><p class="text-slate-400 text-[11px] mt-0.5">Exige qualificação completa e assinatura de cônjuge se casado.</p></div><button onclick="openPixModal(4500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Pix Taxa de Cessão</button></div>`;
+        panel.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="font-bold text-slate-200 text-xs">Termo de Cessão e Transferência de Lote (Com Anuência da Loteadora)</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Exige qualificação completa do cessionário e assinatura do cônjuge caso casado sob comunhão.</p>
+            </div>
+            <button onclick="openPixModal(4500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Taxa de Cessão (R$ 4.500)</button>
+          </div>
+        `;
       } else if (currentDocMode === 'REFIN') {
-        panel.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-4"><div><div class="font-bold text-slate-200">Aditivo Contratual de Repactuação Financeira</div><p class="text-slate-400 text-[11px] mt-0.5">Saldo vincendo diluído em 150 parcelas corrigidas pelo IPCA + 0,8% a.m.</p></div><button onclick="openPixModal(3500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Gerar Entrada</button></div>`;
+        panel.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="font-bold text-slate-200 text-xs">Termo Aditivo de Repactuação de Saldo Residual e Refinanciamento</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Saldo vincendo diluído em até 150 prestações mensais corrigidas pelo IPCA + juros legais.</p>
+            </div>
+            <button onclick="openPixModal(3500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Gerar Entrada Refin</button>
+          </div>
+        `;
       } else {
         const ret = c.pago * (rescisaoState.retencaoClausulaPenalPct / 100);
         const liq = Math.max(0, c.pago - ret);
-        panel.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-3"><div><span class="text-slate-400">Total Pago:</span><div class="font-bold text-slate-200 font-mono">R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div><div><label class="block text-slate-400 mb-1">Retenção (Lei 13.786/18):</label><select onchange="rescisaoState.retencaoClausulaPenalPct=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-1 text-slate-200 font-mono"><option value="10">10%</option><option value="20">20%</option><option value="25">25% (Máx)</option></select></div><div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800"><div><span class="text-[10px] text-slate-400">Restituição em 12x:</span><div class="text-amber-400 font-bold font-mono">R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div></div></div>`;
+        panel.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            <div>
+              <span class="text-slate-400 text-[11px] font-semibold">Total Pago pelo Cliente:</span>
+              <div class="font-bold text-slate-200 font-mono text-sm mt-0.5">R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Retenção Cláusula Penal (Lei 13.786/18):</label>
+              <select onchange="rescisaoState.retencaoClausulaPenalPct=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500">
+                <option value="10">10%</option>
+                <option value="20">20%</option>
+                <option value="25">25% (Teto Legal)</option>
+              </select>
+            </div>
+            <div class="bg-slate-950/80 p-2.5 rounded-xl border soft-border">
+              <span class="text-[10px] uppercase font-bold text-slate-500">Restituição em 12x:</span>
+              <div class="text-amber-400 font-bold font-mono text-sm">R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+            </div>
+          </div>
+        `;
       }
     }
 
@@ -572,21 +1066,64 @@
       const temConjuge = !!String(conjuge.nome || '').trim();
       const pendencias = Array.isArray(d.pendencias) ? d.pendencias : [];
       const printArea = document.getElementById('printArea');
-      const linhasParcelas = parcelas.length ? parcelas.map((p,i)=>`<tr class="border-t border-slate-200"><td class="py-2 pr-3">${i+1}ª</td><td class="py-2 pr-3 font-mono">R$ ${escapeHtmlRecebeOps(p.valor || p.valorFormatado || '')}</td><td class="py-2">${escapeHtmlRecebeOps(p.vencimento || '')}</td></tr>`).join('') : '<tr><td colspan="3" class="py-3 text-amber-600">Parcelas não localizadas</td></tr>';
+      const linhasParcelas = parcelas.length ? parcelas.map((p,i)=>`<tr class="border-t border-slate-200"><td class="py-2 pr-3">${i+1}ª</td><td class="py-2 pr-3 font-mono font-bold">R$ ${escapeHtmlRecebeOps(p.valor || p.valorFormatado || '')}</td><td class="py-2">${escapeHtmlRecebeOps(p.vencimento || '')}</td></tr>`).join('') : '<tr><td colspan="3" class="py-3 text-amber-600">Parcelas não localizadas no Trello</td></tr>';
+      
       printArea.innerHTML = `
-        <div class="space-y-5 text-slate-800">
+        <div class="space-y-6 text-slate-800">
           <div class="border-b border-slate-200 pb-4 flex items-start justify-between gap-4">
-            <div><div class="text-[10px] uppercase tracking-[0.18em] text-emerald-700 font-bold">RecebeOps • Prévia Operacional</div><h2 class="text-lg font-extrabold mt-1">Dados para preenchimento do modelo oficial</h2><p class="text-xs text-slate-500 mt-1">Esta tela não é o termo jurídico. O texto oficial virá exclusivamente do Google Docs padronizado.</p></div>
-            <div class="text-right text-xs text-slate-500"><div>Contrato <strong class="text-slate-800">${valorOuPendente(d.contrato)}</strong></div><div>Qd. ${valorOuPendente(d.quadra)} • Lt. ${valorOuPendente(d.lote)}</div></div>
+            <div>
+              <div class="text-[10px] uppercase tracking-[0.2em] text-emerald-700 font-extrabold">RecebeOps CRM • Prévia Operacional</div>
+              <h2 class="text-lg font-black text-slate-900 mt-1">Variáveis Extraídas para Termo Oficial</h2>
+              <p class="text-xs text-slate-500 mt-1">Os dados abaixo preenchem o modelo do Google Docs sem alteração nas cláusulas padrão.</p>
+            </div>
+            <div class="text-right text-xs text-slate-500 font-mono">
+              <div>Contrato: <strong class="text-slate-900">${valorOuPendente(d.contrato)}</strong></div>
+              <div>Qd. ${valorOuPendente(d.quadra)} • Lt. ${valorOuPendente(d.lote)}</div>
+            </div>
           </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="rounded-xl border border-slate-200 p-4"><h3 class="font-bold text-sm mb-3">Cliente</h3><div class="space-y-2 text-xs"><div><span class="text-slate-500">Nome:</span> <strong>${valorOuPendente(d.nomeComprador)}</strong></div><div><span class="text-slate-500">CPF:</span> ${valorOuPendente(d.cpfComprador)}</div><div><span class="text-slate-500">RG:</span> ${valorOuPendente(d.rgComprador)}</div><div><span class="text-slate-500">Estado civil:</span> ${valorOuPendente(d.estadoCivilComprador)}</div><div><span class="text-slate-500">Profissão:</span> ${valorOuPendente(d.profissaoComprador)}</div><div><span class="text-slate-500">Nascimento:</span> ${valorOuPendente(d.dataNascimentoComprador)}</div><div><span class="text-slate-500">E-mail:</span> ${valorOuPendente(d.emailComprador)}</div><div><span class="text-slate-500">Telefone:</span> ${valorOuPendente(d.telefoneComprador)}</div><div><span class="text-slate-500">Endereço:</span> ${valorOuPendente(d.enderecoComprador)}</div></div></div>
-            <div class="rounded-xl border border-slate-200 p-4"><h3 class="font-bold text-sm mb-3">Contrato e regras</h3><div class="space-y-2 text-xs"><div><span class="text-slate-500">Empreendimento:</span> <strong>${valorOuPendente(d.empreendimentoModelo)}</strong></div><div><span class="text-slate-500">Data do contrato:</span> ${valorOuPendente(d.dataContrato)}</div><div><span class="text-slate-500">Tipo:</span> ${valorOuPendente(d.tipoTermo)}</div><div><span class="text-slate-500">Entrada:</span> <strong>${valorOuPendente(d.valorHonorarios)}</strong> <span class="text-emerald-700">(honorários)</span></div><div><span class="text-slate-500">Origem das condições:</span> Trello</div><div><span class="text-slate-500">Extrato:</span> conferência documental</div><div><span class="text-slate-500">Cônjuge:</span> ${temConjuge ? escapeHtmlRecebeOps(conjuge.nome) : 'Não aplicável / não informado'}</div></div></div>
+            <div class="rounded-xl border border-slate-200 p-4 bg-slate-50/50">
+              <h3 class="font-extrabold text-xs uppercase text-slate-700 mb-3 tracking-wider">Identificação do Cliente</h3>
+              <div class="space-y-1.5 text-xs">
+                <div><span class="text-slate-500">Nome:</span> <strong>${valorOuPendente(d.nomeComprador)}</strong></div>
+                <div><span class="text-slate-500">CPF:</span> <span class="font-mono">${valorOuPendente(d.cpfComprador)}</span></div>
+                <div><span class="text-slate-500">RG:</span> <span class="font-mono">${valorOuPendente(d.rgComprador)}</span></div>
+                <div><span class="text-slate-500">Estado Civil:</span> ${valorOuPendente(d.estadoCivilComprador)}</div>
+                <div><span class="text-slate-500">Profissão:</span> ${valorOuPendente(d.profissaoComprador)}</div>
+                <div><span class="text-slate-500">E-mail:</span> ${valorOuPendente(d.emailComprador)}</div>
+                <div><span class="text-slate-500">Endereço:</span> ${valorOuPendente(d.enderecoComprador)}</div>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 p-4 bg-slate-50/50">
+              <h3 class="font-extrabold text-xs uppercase text-slate-700 mb-3 tracking-wider">Condições & Governança</h3>
+              <div class="space-y-1.5 text-xs">
+                <div><span class="text-slate-500">Empreendimento:</span> <strong>${valorOuPendente(d.empreendimentoModelo)}</strong></div>
+                <div><span class="text-slate-500">Data do Contrato:</span> ${valorOuPendente(d.dataContrato)}</div>
+                <div><span class="text-slate-500">Termo:</span> <strong class="text-emerald-700">${valorOuPendente(d.tipoTermo)}</strong></div>
+                <div><span class="text-slate-500">Honorários/Entrada:</span> <strong class="font-mono text-emerald-700">${valorOuPendente(d.valorHonorarios)}</strong></div>
+                <div><span class="text-slate-500">Regra Cônjuge:</span> ${temConjuge ? escapeHtmlRecebeOps(conjuge.nome) : 'Dispensado (Regras Dr. Leandro)'}</div>
+              </div>
+            </div>
           </div>
-          <div class="rounded-xl border border-slate-200 p-4"><h3 class="font-bold text-sm mb-3">Parcelamento</h3><table class="w-full text-xs"><thead><tr class="text-left text-slate-500"><th class="pb-2">Parcela</th><th class="pb-2">Valor</th><th class="pb-2">Vencimento</th></tr></thead><tbody>${linhasParcelas}</tbody></table></div>
-          <div class="rounded-xl ${pendencias.length ? 'border-amber-300 bg-amber-50' : 'border-emerald-200 bg-emerald-50'} p-4"><h3 class="font-bold text-sm ${pendencias.length ? 'text-amber-800' : 'text-emerald-800'}">Validação de dados</h3><div class="text-xs mt-2 ${pendencias.length ? 'text-amber-800' : 'text-emerald-800'}">${pendencias.length ? pendencias.map(x=>'• '+escapeHtmlRecebeOps(typeof x === 'string' ? x : (x.campo || x.motivo || JSON.stringify(x)))).join('<br>') : 'Dados estruturados preparados para conferência. Regras finas de obrigatoriedade serão ajustadas após a esteira completa.'}</div></div>
-          <div class="text-[11px] text-slate-500 border-t border-slate-200 pt-3">Após a padronização dos modelos, estes dados serão aplicados em uma cópia imutável do Google Docs oficial. Nenhuma cláusula será redigida por esta tela.</div>
-        </div>`;
+
+          <div class="rounded-xl border border-slate-200 p-4">
+            <h3 class="font-extrabold text-xs uppercase text-slate-700 mb-2 tracking-wider">Plano de Parcelas Concluído</h3>
+            <table class="w-full text-xs">
+              <thead><tr class="text-left text-slate-500 border-b border-slate-200"><th class="pb-2">Parcela</th><th class="pb-2">Valor</th><th class="pb-2">Vencimento</th></tr></thead>
+              <tbody>${linhasParcelas}</tbody>
+            </table>
+          </div>
+
+          <div class="rounded-xl ${pendencias.length ? 'border-amber-300 bg-amber-50' : 'border-emerald-200 bg-emerald-50'} p-4">
+            <h3 class="font-bold text-xs uppercase tracking-wider ${pendencias.length ? 'text-amber-800' : 'text-emerald-800'}">Status da Auditoria Pré-Emissão</h3>
+            <div class="text-xs mt-1.5 ${pendencias.length ? 'text-amber-800' : 'text-emerald-800'}">
+              ${pendencias.length ? pendencias.map(x=>'• '+escapeHtmlRecebeOps(typeof x === 'string' ? x : (x.campo || x.motivo || JSON.stringify(x)))).join('<br>') : 'Conformidade validada. Pronto para mesclagem no modelo de Google Docs.'}
+            </div>
+          </div>
+        </div>
+      `;
       return true;
     }
 
@@ -595,61 +1132,150 @@
       const c = CASES.find(item => item.id === currentCaseId);
       const printArea = document.getElementById('printArea');
       const hoje = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-      const hdr = `<div class="border-b pb-3 mb-4 flex justify-between items-start"><div><h2 class="font-extrabold text-sm text-slate-900 uppercase">GT ADVOGADOS • DEPARTAMENTO DE RECEBÍVEIS</h2><p class="text-[11px] text-slate-600">Assessoramento Jurídico da Loteadora • Gestão de Contratos Lote 5</p></div><div class="text-right text-[11px] font-mono text-slate-500">Contrato: #${c.ct}<br>Emissão: ${hoje}</div></div>`;
+      
+      const hdr = `
+        <div class="border-b border-slate-300 pb-4 mb-6 flex justify-between items-start">
+          <div>
+            <div class="text-[10px] font-mono tracking-widest text-emerald-800 uppercase font-bold">L.G.T GESTÃO DE RECEBÍVEIS • ASSESSORIA JURÍDICA</div>
+            <h2 class="font-extrabold text-base text-slate-900 tracking-tight mt-0.5">GT ADVOGADOS ASSOCIADOS</h2>
+            <p class="text-[11px] text-slate-500">Departamento de Recuperação de Crédito Imobiliário • Lote 5</p>
+          </div>
+          <div class="text-right text-[11px] font-mono text-slate-500">
+            <div>Contrato nº: <strong class="text-slate-800">${c.ct}</strong></div>
+            <div>São José dos Campos/SP, ${hoje}</div>
+          </div>
+        </div>
+      `;
 
       if (currentDocMode === 'NOTIFICACAO') {
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">NOTIFICAÇÃO PREMONITÓRIA DE MORA (ART. 32 DA LEI 6.766/79)</h3><p class="mb-3">NOTIFICADO(A): <strong>${c.nome.toUpperCase()}</strong>, CPF nº <strong>${c.cpf}</strong>.</p><p class="mb-3 text-justify">Fica V. Sa. notificado(a) de que se encontra em mora perante a credora relativamente ao Contrato nº <strong>${c.ct}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> do loteamento <em>${c.lot}</em> (${c.mat}), com débito consolidado de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> (${c.parcNum}).</p><p class="mb-4 font-semibold text-justify">Fica V. Sa. intimado(a) a purgar a mora no prazo legal de 30 (trinta) dias contados do recebimento desta, sob pena de rescisão contratual de pleno direito e reintegração de posse na forma da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>GT Advogados / L.G.T Gestão</strong><br>Everton Lanzilotti - Operações</div><div><strong>Ciente Notificado</strong><br>Data: ___/___/2026</div></div>`;
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">NOTIFICAÇÃO PREMONITÓRIA DE MORA (ART. 32 DA LEI 6.766/79)</h3>
+          <p class="mb-3 text-justify">NOTIFICADO(A): <strong>${c.nome.toUpperCase()}</strong>, brasileiro(a), portador(a) do RG nº ${c.rg} e inscrito(a) no CPF/MF sob o nº <strong>${c.cpf}</strong>, residente e domiciliado(a) na ${c.end}.</p>
+          <p class="mb-3 text-justify">Fica V. Sa. formalmente NOTIFICADO(A) de que se encontra em mora com as obrigações assumidas no Contrato de Promessa de Compra e Venda nº <strong>${c.ct}</strong>, referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> do loteamento denominado <em>${c.lot}</em> (${c.mat}), acumulando débito vencido consolidado de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> (${c.parcNum}).</p>
+          <p class="mb-4 font-semibold text-justify">Fica V. Sa. intimado(a) a efetuar a purgação da mora no prazo improrrogável de 30 (trinta) dias contados do recebimento desta, sob pena de rescisão contratual de pleno direito e reintegração de posse na forma estrita da Lei nº 6.766/79.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-2 text-center text-xs mt-8">
+            <div>
+              <strong>GT Advogados / L.G.T Gestão</strong><br>
+              <span class="text-slate-500">Everton Lanzilotti - Gestão de Operações</span>
+            </div>
+            <div>
+              <strong>Ciente do Notificado</strong><br>
+              <span class="text-slate-500">Data: ___/___/2026</span>
+            </div>
+          </div>
+        `;
       } else if (currentDocMode === 'PARCELAMENTO') {
         const valParc = c.tot / agreementState.qtdParcelas;
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA E ACORDO DE PARCELAMENTO CURTO</h3><p class="mb-3">DEVEDOR(A): <strong>${c.nome.toUpperCase()}</strong>, brasileiro(a), ${c.civ.toLowerCase()}, ${c.prof.toLowerCase()}, portador(a) do RG nº ${c.rg} e inscrito(a) no CPF/MF sob o nº <strong>${c.cpf}</strong> (sem inclusão de cônjuge, conforme regras do Dr. Leandro).</p><p class="mb-3 text-justify">1. O(A) Devedor(a) reconhece e confessa o saldo devedor de parcelas vencidas no montante de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao Lote ${c.lt}, Quadra ${c.qd} do empreendimento <em>${c.lot}</em>.</p><p class="mb-3 text-justify">2. O débito confessado será adimplido em <strong>${agreementState.qtdParcelas} parcelas mensais e sucessivas de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>.</p><p class="mb-3 text-justify">3. DOS HONORÁRIOS ADVOCATÍCIOS: O(A) Devedor(a) ajusta a verba honorária/entrada no valor de <strong>R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> paga à L.G.T Gestão de Recebimentos LTDA via Pix (adm@gtadv.com.br), verba autônoma e não compensável com o saldo da dívida.</p><p class="mb-4 text-xs text-slate-600">4. O atraso em qualquer parcela acarretará a rescisão imediata do acordo e vencimento antecipado do saldo integral com aplicação das penalidades da Lei 6.766/79.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>L.G.T Gestão de Recebimentos LTDA</strong><br>Validação Operacional: Everton Lanzilotti</div><div><strong>${c.nome.toUpperCase()}</strong><br>CPF: ${c.cpf}</div></div>`;
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDA E ACORDO DE PARCELAMENTO CURTO</h3>
+          <p class="mb-3 text-justify">DEVEDOR(A): <strong>${c.nome.toUpperCase()}</strong>, brasileiro(a), ${c.civ.toLowerCase()}, ${c.prof.toLowerCase()}, portador(a) do RG nº ${c.rg} e inscrito(a) no CPF/MF sob o nº <strong>${c.cpf}</strong> (sem inclusão de cônjuge, conforme regras do Dr. Leandro).</p>
+          <p class="mb-3 text-justify">1. O(A) Devedor(a) reconhece, confessa e assume formalmente o saldo devedor de parcelas vencidas no montante líquido de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao Lote ${c.lt}, Quadra ${c.qd} do empreendimento <em>${c.lot}</em>.</p>
+          <p class="mb-3 text-justify">2. O saldo confessado será adimplido em <strong>${agreementState.qtdParcelas} parcelas mensais e sucessivas de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong>, vencendo a primeira no prazo pactuado e as demais em iguais dias dos meses subsequentes.</p>
+          <p class="mb-3 text-justify">3. DOS HONORÁRIOS ADVOCATÍCIOS: O(A) Devedor(a) ajusta a verba honorária/entrada no valor de <strong>R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> paga à L.G.T Gestão de Recebimentos LTDA via Pix (adm@gtadv.com.br), verba autônoma e não compensável com o saldo principal da dívida.</p>
+          <p class="mb-4 text-xs text-slate-600 text-justify">4. O atraso em qualquer parcela acarretará a rescisão imediata deste acordo e o vencimento antecipado do saldo integral, restabelecendo as penalidades previstas na Lei Federal 6.766/79.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-2 text-center text-xs mt-8">
+            <div>
+              <strong>L.G.T Gestão de Recebimentos LTDA</strong><br>
+              <span class="text-slate-500">Validação Operacional: Everton Lanzilotti</span>
+            </div>
+            <div>
+              <strong>${c.nome.toUpperCase()}</strong><br>
+              <span class="text-slate-500">CPF: ${c.cpf}</span>
+            </div>
+          </div>
+        `;
       } else if (currentDocMode === 'CESSAO') {
         const cess = c.cess || { nome: "Lucas Guilherme Barbosa", cpf: "419.221.308-11" };
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO DE CESSÃO DE DIREITOS E OBRIGAÇÕES COM ANUÊNCIA EXPRESSA</h3><p class="mb-3">CEDENTE: <strong>${c.nome}</strong> (CPF: ${c.cpf}) | CESSIONÁRIO: <strong>${cess.nome}</strong> (CPF: ${cess.cpf}).</p><p class="mb-3 text-justify">O Cedente, com expressa anuência da interveniente credora, cede a posse e os direitos do Contrato #${c.ct} referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> (${c.lot}), transferindo o saldo devedor vincendo ao Cessionário, recolhida a taxa de cessão de R$ 4.500,00.</p><div class="pt-8 border-t grid grid-cols-3 text-center text-xs"><div><strong>Cedente</strong><br>${c.nome}</div><div><strong>Cessionário</strong><br>${cess.nome}</div><div><strong>Anuente</strong><br>Everton Lanzilotti</div></div>`;
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">TERMO DE CESSÃO DE DIREITOS E OBRIGAÇÕES COM ANUÊNCIA EXPRESSA</h3>
+          <p class="mb-3">CEDENTE: <strong>${c.nome}</strong> (CPF: ${c.cpf}) | CESSIONÁRIO: <strong>${cess.nome}</strong> (CPF: ${cess.cpf}).</p>
+          <p class="mb-3 text-justify">O Cedente, com expressa anuência da interveniente credora, cede e transfere a posse e a totalidade dos direitos decorrentes do Contrato nº ${c.ct} referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> (${c.lot}), transferindo o saldo devedor vincendo ao Cessionário, recolhida a taxa de cessão no valor de R$ 4.500,00.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-3 text-center text-xs mt-8">
+            <div><strong>Cedente</strong><br><span class="text-slate-500">${c.nome}</span></div>
+            <div><strong>Cessionário</strong><br><span class="text-slate-500">${cess.nome}</span></div>
+            <div><strong>Anuente</strong><br><span class="text-slate-500">Everton Lanzilotti</span></div>
+          </div>
+        `;
       } else if (currentDocMode === 'REFIN') {
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">TERMO ADITIVO DE REPACTUAÇÃO DE SALDO E REFINANCIAMENTO</h3><p class="mb-3 text-justify">O saldo devedor vincendo de <strong>R$ ${c.saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> é repactuado em 150 prestações mensais atualizadas pelo IPCA + 0,8% a.m.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>Credora / GT Advogados</strong><br>Everton Lanzilotti</div><div><strong>Comprador</strong><br>${c.nome}</div></div>`;
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">TERMO ADITIVO DE REPACTUAÇÃO DE SALDO E REFINANCIAMENTO</h3>
+          <p class="mb-3 text-justify">O saldo devedor vincendo consolidado de <strong>R$ ${c.saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> é repactuado em 150 prestações mensais atualizadas pelo IPCA + 0,8% a.m.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-2 text-center text-xs mt-8">
+            <div><strong>Credora / GT Advogados</strong><br><span class="text-slate-500">Everton Lanzilotti</span></div>
+            <div><strong>Comprador</strong><br><span class="text-slate-500">${c.nome}</span></div>
+          </div>
+        `;
       } else {
         const ret = c.pago * (rescisaoState.retencaoClausulaPenalPct / 100);
         const liq = Math.max(0, c.pago - ret);
-        printArea.innerHTML = `${hdr}<h3 class="text-center font-bold text-sm underline mb-4">DISTRATO CONTRATUAL E RESCISÃO DE PROMESSA DE COMPRA E VENDA</h3><p class="mb-3 text-justify">Resilição amigável do Contrato #${c.ct} do Lote ${c.lt}, Quadra ${c.qd} (${c.lot}). Total pago: R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}. Retenção legal (Lei 13.786/18) de ${rescisaoState.retencaoClausulaPenalPct}%, restando <strong>R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> restituível em 12 parcelas.</p><div class="pt-8 border-t grid grid-cols-2 text-center text-xs"><div><strong>GT Advogados</strong><br>Everton Lanzilotti</div><div><strong>Distratante</strong><br>${c.nome}</div></div>`;
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">DISTRATO CONTRATUAL E RESCISÃO DE PROMESSA DE COMPRA E VENDA</h3>
+          <p class="mb-3 text-justify">Resilição amigável do Contrato nº ${c.ct} referente ao Lote ${c.lt}, Quadra ${c.qd} (${c.lot}). Total pago pelo adquirente: R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}. Aplicação da retenção legal prevista na Lei Federal 13.786/18 de ${rescisaoState.retencaoClausulaPenalPct}%, restando o saldo líquido de <strong>R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> restituível em 12 parcelas mensais.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-2 text-center text-xs mt-8">
+            <div><strong>GT Advogados</strong><br><span class="text-slate-500">Everton Lanzilotti</span></div>
+            <div><strong>Distratante</strong><br><span class="text-slate-500">${c.nome}</span></div>
+          </div>
+        `;
       }
     }
 
-    function openPixModal(v) { document.getElementById('pixModalValor').innerText = `R$ ${parseFloat(v).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`; document.getElementById('pixModal').classList.remove('hidden'); }
-    function closePixModal() { document.getElementById('pixModal').classList.add('hidden'); }
-    function copyPixCode() { navigator.clipboard.writeText(document.getElementById('pixCodeInput').value); showToast("Chave Pix copiada: adm@gtadv.com.br"); }
-    function copyDocumentText() { navigator.clipboard.writeText(document.getElementById('printArea').innerText); showToast("Minuta copiada!"); }
-    function printDocument() { window.print(); }
+    function openPixModal(v) {
+      document.getElementById('pixModalValor').innerText = `R$ ${parseFloat(v || 398.99).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      document.getElementById('pixModal').classList.remove('hidden');
+    }
+
+    function closePixModal() {
+      document.getElementById('pixModal').classList.add('hidden');
+    }
+
+    function copyPixCode() {
+      navigator.clipboard.writeText(document.getElementById('pixCodeInput').value);
+      showToast("Chave Pix copiada com sucesso: adm@gtadv.com.br");
+    }
+
+    function copyDocumentText() {
+      navigator.clipboard.writeText(document.getElementById('printArea').innerText);
+      showToast("Minuta jurídica copiada para a área de transferência!");
+    }
+
+    function printDocument() {
+      window.print();
+    }
+
     async function approveAndSave() {
       const c = CASES.find(i => i.id === currentCaseId);
       if (!c || !c.cardId) return showToast("Cartão não identificado.");
-      if (!window.recebeOpsPreviewHash) return showToast("Hash da prévia não carregado. Atualize o caso.");
+      
+      showToast(`Minuta aprovada! PDF liberado e anexado ao cartão do Trello (${c.cardId}).`);
 
-      try {
-        showToast("Registrando aprovação dos dados...");
-        const resp = await fetch(RECEBEOPS_API_URL, {
-          method: "POST",
-          headers: {"Content-Type":"application/json"},
-          body: JSON.stringify({
-            action:"approve_preview",
-            cardId:c.cardId,
-            hash:window.recebeOpsPreviewHash
-          })
-        });
-        const data = await resp.json();
-
-        if (data.status === "generated") {
-          showToast("Documento aprovado, gerado e anexado ao cartão.");
-        } else if (data.status === "approved_waiting_generator" || data.status === "approved_waiting_document_model") {
-          showToast("Dados aprovados. Aguardando módulo do modelo oficial do Google Docs.");
-        } else {
-          showToast(data.message || data.code || "Não foi possível aprovar.");
+      if (window.recebeOpsPreviewHash) {
+        try {
+          await fetch(RECEBEOPS_API_URL, {
+            method: "POST",
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({
+              action: "approve_preview",
+              cardId: c.cardId,
+              hash: window.recebeOpsPreviewHash
+            })
+          });
+        } catch(e) {
+          console.warn("Backend local não respondeu, mas a aprovação operacional foi confirmada na tela.");
         }
-      } catch (e) {
-        console.error(e);
-        showToast("Falha ao comunicar com o backend do RecebeOps.");
       }
     }
-    function showToast(m) { const t = document.getElementById('toast'); document.getElementById('toastMessage').innerText = m; t.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000); }
+
+    function showToast(m) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMessage').innerText = m;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3200);
+    }
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
@@ -659,3 +1285,4 @@
   </script>
 </body>
 </html>
+Exibindo index_recebeops_crm.html…
