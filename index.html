@@ -411,6 +411,54 @@
       <div id="actionControlsPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
         <!-- Renderizado dinamicamente via JS de acordo com o termo -->
       </div>
+      <div id="complementosPanel" class="crm-card p-4 rounded-2xl text-xs no-print hidden">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Complementos auditáveis</div>
+            <div class="text-xs text-slate-300 mt-1">Preencha somente dados ausentes. O snapshot original não é alterado.</div>
+          </div>
+          <span id="complementosStatusBadge" class="px-2 py-1 rounded-lg border border-amber-800/60 bg-amber-950/50 text-amber-300 text-[10px] font-bold">PENDENTE</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">RG</span>
+            <input id="compRg" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="RG do comprador">
+          </label>
+
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Órgão expedidor</span>
+            <input id="compOrgaoRg" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="Ex.: SSP/SP">
+          </label>
+
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Profissão</span>
+            <input id="compProfissao" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="Profissão do comprador">
+          </label>
+
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Telefone</span>
+            <input id="compTelefone" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="Telefone">
+          </label>
+
+          <label class="block md:col-span-2">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Endereço completo</span>
+            <input id="compEndereco" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="Logradouro, nº, complemento, bairro, cidade/UF, CEP">
+          </label>
+
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Data do contrato</span>
+            <input id="compDataContrato" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="DD/MM/AAAA">
+          </label>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-slate-800">
+          <div id="complementosPendenciasTexto" class="text-[11px] text-amber-300">Pendências não carregadas.</div>
+          <button onclick="salvarComplementosRecebeOps()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition-all">
+            Salvar complementos
+          </button>
+        </div>
+      </div>
 
       <!-- SEÇÃO 2: ÁREA DA MINUTA / FOLHA TIMBRADA -->
       <div id="viewMinutaContainer" class="crm-card rounded-2xl overflow-hidden flex flex-col shadow-2xl">
@@ -418,7 +466,7 @@
           <div class="flex items-center gap-2.5">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
             <span class="text-slate-200 font-bold">Prévia Operacional • Dados do Caso</span>
-            <span class="text-[10px] text-slate-500 font-mono">| Modelo jurídico será conectado depois</span>
+            <span id="modeloStatusHeader" class="text-[10px] text-slate-500 font-mono">| Modelo jurídico será conectado depois</span>
           </div>
           <div class="text-slate-400 text-[11px]">
             Responsável Técnico: <strong class="text-slate-200 font-semibold">Everton Lanzilotti (Operações Lote 5)</strong>
@@ -580,6 +628,9 @@
     const RECEBEOPS_API_URL = "/api/recebeops";
     window.recebeOpsLivePreview = null;
     window.recebeOpsPreviewHash = null;
+
+    window.recebeOpsComplementos = {};
+    window.recebeOpsPendenciasRestantes = [];
 
     const CASES = [
       {
@@ -757,6 +808,184 @@
         .join(" • ");
     }
 
+    function valorCampoComplementoRecebeOps(id) {
+      const el = document.getElementById(id);
+      return el ? String(el.value || "").trim() : "";
+    }
+
+    function preencherComplementosNaTelaRecebeOps() {
+      const painel = document.getElementById("complementosPanel");
+      if (!painel) return;
+
+      const previa = window.recebeOpsLivePreview;
+
+      if (!previa || !previa.snapshotAprovado) {
+        painel.classList.add("hidden");
+        return;
+      }
+
+      painel.classList.remove("hidden");
+
+      const c = previa.complementos || {};
+      window.recebeOpsComplementos = c;
+
+      const mapa = {
+        compRg: "rgComprador",
+        compOrgaoRg: "orgaoExpedidorRgComprador",
+        compProfissao: "profissaoComprador",
+        compTelefone: "telefoneComprador",
+        compEndereco: "enderecoComprador",
+        compDataContrato: "dataContrato"
+      };
+
+      Object.keys(mapa).forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.value = c[mapa[id]] || "";
+      });
+
+      const registro = previa.registro || {};
+      const pendencias = Array.isArray(registro.pendenciasRestantes)
+        ? registro.pendenciasRestantes
+        : [];
+
+      window.recebeOpsPendenciasRestantes = pendencias;
+
+      const statusBadge = document.getElementById("complementosStatusBadge");
+      const texto = document.getElementById("complementosPendenciasTexto");
+
+      const completo =
+        registro.geracaoStatus === "PRONTO_PARA_GERACAO_CONTROLADA" &&
+        pendencias.length === 0;
+
+      if (completo) {
+        if (statusBadge) {
+          statusBadge.textContent = "COMPLETO";
+          statusBadge.className =
+            "px-2 py-1 rounded-lg border border-emerald-800/60 bg-emerald-950/50 text-emerald-300 text-[10px] font-bold";
+        }
+        if (texto) {
+          texto.textContent = "Sem pendências. Caso pronto para geração controlada.";
+          texto.className = "text-[11px] text-emerald-300";
+        }
+      } else {
+        if (statusBadge) {
+          statusBadge.textContent = "PENDENTE";
+          statusBadge.className =
+            "px-2 py-1 rounded-lg border border-amber-800/60 bg-amber-950/50 text-amber-300 text-[10px] font-bold";
+        }
+
+        if (texto) {
+          texto.className = "text-[11px] text-amber-300";
+          texto.textContent = pendencias.length
+            ? "Pendências restantes: " + pendencias.map(function(p) {
+                return typeof p === "string"
+                  ? p
+                  : (p.campo || p.motivo || p.nome || "pendência");
+              }).join(", ")
+            : "Complementos ainda não validados.";
+        }
+      }
+    }
+
+    async function salvarComplementosRecebeOps() {
+      const c = CASES.find(i => i.id === currentCaseId);
+
+      if (!c || !c.cardId) {
+        return showToast("Cartão não identificado.");
+      }
+
+      if (!window.recebeOpsPreviewHash) {
+        return showToast("Snapshot sem hash de validação.");
+      }
+
+      const complementos = {
+        rgComprador: valorCampoComplementoRecebeOps("compRg"),
+        orgaoExpedidorRgComprador: valorCampoComplementoRecebeOps("compOrgaoRg"),
+        profissaoComprador: valorCampoComplementoRecebeOps("compProfissao"),
+        telefoneComprador: valorCampoComplementoRecebeOps("compTelefone"),
+        enderecoComprador: valorCampoComplementoRecebeOps("compEndereco"),
+        dataContrato: valorCampoComplementoRecebeOps("compDataContrato")
+      };
+
+      Object.keys(complementos).forEach(function(k) {
+        if (!complementos[k]) delete complementos[k];
+      });
+
+      if (!Object.keys(complementos).length) {
+        return showToast("Preencha ao menos um complemento.");
+      }
+
+      try {
+        showToast("Salvando complementos...");
+
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action: "save_complements",
+            cardId: c.cardId,
+            hash: window.recebeOpsPreviewHash,
+            complementos: complementos,
+            autor: "Everton Lanzilotti"
+          })
+        });
+
+        let data = null;
+        try {
+          data = await resp.json();
+        } catch (_) {
+          throw new Error("Resposta inválida do backend.");
+        }
+
+        if (!resp.ok || data.status === "error") {
+          throw new Error(data.message || data.code || "Erro ao salvar complementos.");
+        }
+
+        const novoResp = await fetch(
+          `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
+          {cache:"no-store"}
+        );
+
+        if (novoResp.ok) {
+          const novoData = await novoResp.json();
+
+          window.recebeOpsLivePreview = novoData;
+          window.recebeOpsPreviewHash =
+            novoData.hash ||
+            (novoData.registro && novoData.registro.hash) ||
+            window.recebeOpsPreviewHash;
+
+          window.recebeOpsModeloNome =
+            (novoData.registro && novoData.registro.modeloNome) ||
+            window.recebeOpsModeloNome ||
+            "";
+
+          window.recebeOpsModeloStatus =
+            (novoData.registro && novoData.registro.modeloStatus) ||
+            window.recebeOpsModeloStatus ||
+            "";
+
+          window.recebeOpsGenerationStatus =
+            (novoData.registro && novoData.registro.geracaoStatus) ||
+            window.recebeOpsGenerationStatus ||
+            "";
+
+          preencherComplementosNaTelaRecebeOps();
+          atualizarStatusModeloNaTelaRecebeOps();
+          renderDocumentContent();
+        }
+
+        if (data.generationStatus === "PRONTO_PARA_GERACAO_CONTROLADA") {
+          showToast("Complementos salvos. Caso pronto para geração controlada.");
+        } else {
+          showToast("Complementos salvos. Ainda existem pendências.");
+        }
+      } catch (e) {
+        console.error("Falha ao salvar complementos:", e);
+        showToast(e.message || "Não foi possível salvar os complementos.");
+      }
+    }
+
     function atualizarStatusModeloNaTelaRecebeOps() {
       const el = document.getElementById("modeloStatusHeader");
       if (!el) return;
@@ -848,6 +1077,7 @@
         : numeroBRRecebeOps(d.valorPago || 0);
 
       atualizarStatusModeloNaTelaRecebeOps();
+      preencherComplementosNaTelaRecebeOps();
 
       return true;
     }
@@ -1414,6 +1644,23 @@
           window.recebeOpsModeloStatus = data.modeloStatus || window.recebeOpsModeloStatus || "";
           window.recebeOpsGenerationStatus = data.generationStatus || window.recebeOpsGenerationStatus || "";
           atualizarStatusModeloNaTelaRecebeOps();
+
+          try {
+            const refreshResp = await fetch(
+              `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
+              {cache:"no-store"}
+            );
+
+            if (refreshResp.ok) {
+              const refreshData = await refreshResp.json();
+              window.recebeOpsLivePreview = refreshData;
+              window.recebeOpsPreviewHash =
+                refreshData.hash ||
+                (refreshData.registro && refreshData.registro.hash) ||
+                window.recebeOpsPreviewHash;
+              preencherComplementosNaTelaRecebeOps();
+            }
+          } catch (_) {}
 
           const modeloNome = data.modeloNome || "";
           const modeloStatus = data.modeloStatus || "";
