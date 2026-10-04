@@ -460,6 +460,20 @@
         </div>
       </div>
 
+      <div id="recebeOpsAuditPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Trilha de Auditoria RecebeOps</div>
+            <div class="text-xs text-slate-300 mt-1">Eventos reais registrados pelo backend para este caso.</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[9px] uppercase tracking-[0.12em] text-slate-500 font-bold">Estado do processo</div>
+            <div id="estadoProcessoRecebeOps" class="text-[11px] font-extrabold text-emerald-300 mt-1">Carregando...</div>
+          </div>
+        </div>
+        <div id="recebeOpsAuditTimeline"></div>
+      </div>
+
       <!-- SEÇÃO 2: ÁREA DA MINUTA / FOLHA TIMBRADA -->
       <div id="viewMinutaContainer" class="crm-card rounded-2xl overflow-hidden flex flex-col shadow-2xl">
         <div class="bg-slate-900/90 px-5 py-3 border-b soft-border flex items-center justify-between text-xs no-print">
@@ -631,6 +645,9 @@
 
     window.recebeOpsComplementos = {};
     window.recebeOpsPendenciasRestantes = [];
+
+    window.recebeOpsAuditEvents = [];
+    window.recebeOpsEstadoProcesso = "";
 
     const CASES = [
       {
@@ -887,6 +904,141 @@
       }
     }
 
+    function traduzirEstadoProcessoRecebeOps(status) {
+      const mapa = {
+        SEM_SNAPSHOT: "Sem snapshot",
+        PREVIA_PENDENTE_REVISAO: "Prévia pendente de revisão",
+        SNAPSHOT_APROVADO: "Snapshot aprovado",
+        AGUARDANDO_MODELO_E_COMPLEMENTOS: "Aguardando modelo e complementos",
+        AGUARDANDO_MODELO_OFICIAL: "Aguardando modelo oficial",
+        AGUARDANDO_COMPLEMENTOS: "Aguardando complementos",
+        PRONTO_PARA_GERACAO_CONTROLADA: "Pronto para geração controlada",
+        DOCUMENTO_GERADO: "Documento gerado",
+        PDF_GERADO: "PDF gerado"
+      };
+      return mapa[status] || status || "Estado não informado";
+    }
+
+    function traduzirEventoAuditoriaRecebeOps(evento) {
+      const mapa = {
+        SNAPSHOT_CRIADO: "Snapshot criado",
+        SNAPSHOT_APROVADO: "Snapshot aprovado",
+        FILA_GERACAO_CRIADA: "Fila de geração criada",
+        COMPLEMENTOS_SALVOS: "Complementos salvos"
+      };
+      return mapa[evento] || evento || "Evento";
+    }
+
+    function formatarDataAuditoriaRecebeOps(valor) {
+      if (!valor) return "";
+      try {
+        return new Intl.DateTimeFormat("pt-BR", {
+          dateStyle: "short",
+          timeStyle: "medium"
+        }).format(new Date(valor));
+      } catch (_) {
+        return valor;
+      }
+    }
+
+    function atualizarEstadoProcessoRecebeOps() {
+      const el = document.getElementById("estadoProcessoRecebeOps");
+      if (!el) return;
+
+      const status =
+        window.recebeOpsEstadoProcesso ||
+        (window.recebeOpsLivePreview && window.recebeOpsLivePreview.estadoProcesso) ||
+        (window.recebeOpsLivePreview &&
+         window.recebeOpsLivePreview.registro &&
+         window.recebeOpsLivePreview.registro.estadoProcesso) ||
+        "";
+
+      el.textContent = traduzirEstadoProcessoRecebeOps(status);
+    }
+
+    function renderizarAuditoriaRecebeOps() {
+      const alvo = document.getElementById("recebeOpsAuditTimeline");
+      if (!alvo) return;
+
+      const eventos = window.recebeOpsAuditEvents || [];
+
+      if (!eventos.length) {
+        alvo.innerHTML = `
+          <div class="text-xs text-slate-500 border border-slate-800 rounded-xl p-4">
+            Nenhum evento de auditoria registrado para este caso ainda.
+          </div>
+        `;
+        return;
+      }
+
+      alvo.innerHTML = eventos.slice().reverse().map(function(item) {
+        const detalhes = item.detalhes || {};
+        const resumo = [];
+
+        if (detalhes.status) resumo.push(detalhes.status);
+        if (detalhes.generationStatus) resumo.push(detalhes.generationStatus);
+        if (detalhes.modeloStatus) resumo.push(detalhes.modeloStatus);
+        if (detalhes.complementoVersao) resumo.push("Complemento v" + detalhes.complementoVersao);
+
+        return `
+          <div class="relative pl-6 pb-5">
+            <div class="absolute left-[3px] top-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+            <div class="absolute left-[7px] top-4 bottom-0 w-px bg-slate-800"></div>
+            <div class="text-xs font-extrabold text-slate-200">
+              ${traduzirEventoAuditoriaRecebeOps(item.evento)}
+            </div>
+            <div class="mt-1 text-[10px] text-slate-500">
+              ${formatarDataAuditoriaRecebeOps(item.criadoEm)}
+              ${item.autor ? " • " + item.autor : ""}
+            </div>
+            ${resumo.length ? `
+              <div class="mt-2 text-[11px] text-slate-400">
+                ${resumo.join(" • ")}
+              </div>
+            ` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function carregarAuditoriaRecebeOps() {
+      const c = CASES.find(i => i.id === currentCaseId);
+      if (!c || !c.cardId) return;
+
+      try {
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action: "get_audit",
+            cardId: c.cardId
+          })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || data.status === "error") {
+          throw new Error(data.message || data.code || "Falha ao carregar auditoria.");
+        }
+
+        window.recebeOpsAuditEvents = Array.isArray(data.eventos) ? data.eventos : [];
+        window.recebeOpsEstadoProcesso = data.estadoProcesso || "";
+
+        renderizarAuditoriaRecebeOps();
+        atualizarEstadoProcessoRecebeOps();
+      } catch (e) {
+        console.error("Falha ao carregar auditoria:", e);
+        const alvo = document.getElementById("recebeOpsAuditTimeline");
+        if (alvo) {
+          alvo.innerHTML = `
+            <div class="text-xs text-amber-400 border border-amber-900/60 rounded-xl p-4">
+              Não foi possível carregar a trilha de auditoria.
+            </div>
+          `;
+        }
+      }
+    }
+
     async function salvarComplementosRecebeOps() {
       const c = CASES.find(i => i.id === currentCaseId);
 
@@ -1017,6 +1169,14 @@
         window.recebeOpsGenerationStatus = data.registro.geracaoStatus || "";
         window.recebeOpsModeloStatus = data.registro.modeloStatus || "";
         window.recebeOpsModeloNome = data.registro.modeloNome || "";
+        window.recebeOpsEstadoProcesso =
+          data.registro.estadoProcesso ||
+          data.estadoProcesso ||
+          data.registro.geracaoStatus ||
+          data.registro.status ||
+          "";
+      } else {
+        window.recebeOpsEstadoProcesso = data.estadoProcesso || "";
       }
 
       const c = CASES[0];
@@ -1078,6 +1238,8 @@
 
       atualizarStatusModeloNaTelaRecebeOps();
       preencherComplementosNaTelaRecebeOps();
+      atualizarEstadoProcessoRecebeOps();
+      carregarAuditoriaRecebeOps();
 
       return true;
     }
