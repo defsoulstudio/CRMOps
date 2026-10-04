@@ -1365,7 +1365,10 @@
         SNAPSHOT_CRIADO: "Prévia registrada",
         SNAPSHOT_APROVADO: "Dados da prévia aprovados",
         FILA_GERACAO_CRIADA: "Preparação para geração iniciada",
-        COMPLEMENTOS_SALVOS: "Dados complementares salvos"
+        COMPLEMENTOS_SALVOS: "Dados complementares salvos",
+        RETORNO_TRELLO_PREPARADO: "Ação para o Trello preparada",
+        RETORNO_TRELLO_APROVADO: "Ação para o Trello aprovada",
+        RETORNO_TRELLO_CANCELADO: "Ação para o Trello cancelada"
       };
       return mapa[evento] || evento || "Evento";
     }
@@ -1494,9 +1497,32 @@
                 </div>
               </div>
 
-              <span class="shrink-0 px-2 py-1 rounded-lg border border-amber-800/70 bg-amber-950/30 text-amber-300 text-[8px] font-extrabold">
-                ${humanizarStatusFilaTrelloRecebeOps(item.status)}
-              </span>
+              <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+                <span class="px-2 py-1 rounded-lg border text-[8px] font-extrabold ${
+                  item.status === "APROVADO"
+                    ? "border-emerald-800/70 bg-emerald-950/30 text-emerald-300"
+                    : item.status === "CANCELADO"
+                      ? "border-rose-800/70 bg-rose-950/30 text-rose-300"
+                      : "border-amber-800/70 bg-amber-950/30 text-amber-300"
+                }">
+                  ${humanizarStatusFilaTrelloRecebeOps(item.status)}
+                </span>
+
+                ${item.status === "AGUARDANDO_REVISAO" ? `
+                  <button
+                    onclick="revisarRetornoTrelloRecebeOps('${escaparHtmlRecebeOps(item.retornoId)}','APROVAR')"
+                    class="px-2.5 py-1.5 rounded-lg border border-emerald-800/70 bg-emerald-950/30 hover:bg-emerald-900/40 text-emerald-300 text-[9px] font-bold"
+                  >
+                    Aprovar
+                  </button>
+                  <button
+                    onclick="revisarRetornoTrelloRecebeOps('${escaparHtmlRecebeOps(item.retornoId)}','CANCELAR')"
+                    class="px-2.5 py-1.5 rounded-lg border border-rose-800/70 bg-rose-950/30 hover:bg-rose-900/40 text-rose-300 text-[9px] font-bold"
+                  >
+                    Cancelar
+                  </button>
+                ` : ""}
+              </div>
             </div>
           </div>
         `;
@@ -1529,6 +1555,54 @@
         renderizarFilaRetornoTrelloRecebeOps(data.itens || []);
       } catch (e) {
         console.error("Falha ao carregar fila de retorno ao Trello:", e);
+      }
+    }
+
+    async function revisarRetornoTrelloRecebeOps(retornoId, decisao) {
+      const c = casoAtualRecebeOps();
+
+      if (!c || !c.cardId) {
+        return showToast("Nenhum cartão carregado.");
+      }
+
+      const acao = decisao === "APROVAR" ? "aprovar" : "cancelar";
+
+      try {
+        showToast(
+          decisao === "APROVAR"
+            ? "Aprovando ação para revisão futura..."
+            : "Cancelando ação..."
+        );
+
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action: "review_trello_return",
+            cardId: c.cardId,
+            retornoId: retornoId,
+            decisao: decisao,
+            autor: "Everton Lanzilotti"
+          })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || data.status === "error") {
+          throw new Error(data.message || data.code || "Falha ao revisar a ação.");
+        }
+
+        await carregarFilaRetornoTrelloRecebeOps();
+        await carregarAuditoriaRecebeOps();
+
+        showToast(
+          decisao === "APROVAR"
+            ? "Ação aprovada. Nada foi enviado ao Trello."
+            : "Ação cancelada. Nada foi enviado ao Trello."
+        );
+      } catch (e) {
+        console.error("Falha ao revisar retorno ao Trello:", e);
+        showToast(e.message || "Não foi possível revisar a ação.");
       }
     }
 
