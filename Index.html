@@ -1,0 +1,2439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecebeOps CRM • GT Advogados & Lote 5</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #060b13;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.07) 0px, transparent 40%),
+        radial-gradient(at 100% 0%, rgba(14, 165, 233, 0.05) 0px, transparent 40%),
+        radial-gradient(at 50% 100%, rgba(99, 102, 241, 0.04) 0px, transparent 45%);
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Estilo de Card CRM com Glassmorphism refinado */
+    .crm-card {
+      background: linear-gradient(180deg, rgba(13, 22, 38, 0.85) 0%, rgba(9, 15, 27, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    }
+
+    .crm-card-highlight {
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(9, 15, 27, 0.95) 100%);
+      border: 1px solid rgba(52, 211, 153, 0.25);
+    }
+
+    .crm-glass-nav {
+      background: rgba(8, 14, 25, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .soft-border {
+      border-color: rgba(255, 255, 255, 0.07);
+    }
+
+    .status-pulse-green {
+      box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.6);
+      animation: pulseGreen 2s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
+      70% { box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    }
+
+    /* Scrollbar personalizada minimalista */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.35); }
+
+    /* Folha timbrada fiel para pré-visualização e impressão */
+    .paper-sheet {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      position: relative;
+      box-sizing: border-box;
+      height: auto !important;
+      min-height: 0;
+      overflow: hidden;
+      display: flow-root;
+    }
+
+    .paper-sheet > * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .paper-sheet table {
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .paper-sheet td,
+    .paper-sheet th {
+      overflow-wrap: anywhere;
+    }
+
+    .paper-sheet::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #059669, #0d9488);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+    }
+
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea { 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        margin: 0; 
+        padding: 2.5cm 2cm; 
+        background: #fff !important; 
+        color: #000 !important; 
+        border: none !important; 
+        box-shadow: none !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- Top Navigation Header / Suite Bar -->
+  <header class="sticky top-0 z-50 crm-glass-nav no-print">
+    <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Project Switcher -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-emerald-400 flex items-center justify-center font-extrabold text-white text-base shadow-lg shadow-emerald-950/60 ring-1 ring-white/20">
+              R
+            </div>
+            <span class="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#080e19] status-pulse-green"></span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-extrabold tracking-tight text-white">RecebeOps</span>
+              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-950/80 text-emerald-400 border border-emerald-800/60">Enterprise CRM</span>
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium">GT Advogados • Gestão de Carteira & Lote 5</p>
+          </div>
+        </div>
+
+        <!-- Empreendimento Dropdown Badge -->
+        <div class="hidden xl:flex items-center gap-2 pl-4 border-l soft-border">
+          <span class="text-[11px] text-slate-400">Empreendimento:</span>
+          <div class="px-2.5 py-1 rounded-lg bg-slate-900/90 border soft-border text-xs text-slate-200 font-semibold flex items-center gap-2 cursor-pointer hover:border-slate-700 transition-colors">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span id="currentProjectFilter">Todos os Loteamentos</span>
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Command / Search Bar Center -->
+      <div class="hidden md:flex flex-1 max-w-md mx-4">
+        <div class="relative w-full">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+          <input type="text" id="globalSearchInput" placeholder="Buscar por cliente, CPF, contrato, loteamento..." 
+                 class="w-full bg-slate-950/70 border soft-border rounded-xl pl-9 pr-12 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/70 focus:ring-1 focus:ring-emerald-500/30 transition-all">
+          <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center">
+            <kbd class="px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-900 border soft-border rounded">⌘K</kbd>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Health, Governance & Profile -->
+      <div class="flex items-center gap-4">
+        <div class="hidden lg:flex items-center gap-3 text-xs">
+          <!-- Trello Sync Indicator -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/70 border soft-border" title="Webhook do Trello sincronizado e ouvindo eventos">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-slate-400 text-[11px]">Trello:</span>
+            <strong class="text-slate-200 text-[11px]" id="statFilaTotal">Conectado</strong>
+          </div>
+
+          <!-- Alçadas Dr. Leandro Badge -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-950/30 border border-emerald-800/40" title="Regras jurídicas e operacionais validadas pelo fluxo">
+            <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            <span class="text-emerald-300 text-[11px] font-semibold">Alçadas Jurídicas Preservadas</span>
+          </div>
+        </div>
+
+        <!-- Operator User Profile -->
+        <div class="flex items-center gap-3 pl-3 border-l soft-border">
+          <div class="relative">
+            <div class="h-8 w-8 rounded-xl bg-slate-800 border border-slate-700/80 flex items-center justify-center text-xs font-bold text-emerald-400 shadow-inner">
+              EL
+            </div>
+            <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#080e19]"></span>
+          </div>
+          <div class="text-left hidden sm:block">
+            <div class="text-xs font-bold text-slate-200 leading-tight">Everton Lanzilotti</div>
+            <div class="text-[10px] text-slate-400 leading-tight">Gestão de Operações • Lote 5</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- KPI / Metrics Bar (Alta visibilidade operacional de CRM) -->
+  <section class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 pt-4 pb-1 no-print">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      
+      <!-- KPI 1 -->
+      <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Carteira na Esteira</div>
+          <div class="text-lg font-extrabold text-white mt-0.5 font-mono" id="kpiValorCarteira">—</div>
+          <div class="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
+            <span class="text-slate-400 font-bold">A conectar</span> carteira consolidada
+          </div>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-slate-900 border soft-border flex items-center justify-center text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+      </div>
+
+      <!-- KPI 2 -->
+      <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Acordos / Parcelamentos</div>
+          <div class="text-lg font-extrabold text-emerald-400 mt-0.5 font-mono">—</div>
+          <div class="text-[10px] text-emerald-500/80 mt-0.5 flex items-center gap-1 font-medium">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            Indicador geral ainda não conectado
+          </div>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-emerald-950/40 border border-emerald-800/40 flex items-center justify-center text-emerald-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        </div>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Honorários / Entradas Pix</div>
+          <div class="text-lg font-extrabold text-teal-300 mt-0.5 font-mono">—</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">
+            Indicador financeiro geral ainda não conectado
+          </div>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-teal-950/40 border border-teal-800/40 flex items-center justify-center text-teal-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        </div>
+      </div>
+
+      <!-- KPI 4 -->
+      <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
+        <div>
+          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Triagem de Documentos</div>
+          <div class="text-lg font-extrabold text-white mt-0.5 flex items-center gap-2">
+            <span>—</span>
+            <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/40">Portal Lote 5</span>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-0.5">
+            Status geral ainda não conectado
+          </div>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-slate-900 border soft-border flex items-center justify-center text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Workspace Principal (Pipeline + Dossiê 360°) -->
+  <main class="flex-1 p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-[1780px] w-full mx-auto">
+    
+    <!-- COLUNA DA ESQUERDA: PIPELINE DE CASOS / FILA TRELLO (4 colunas) -->
+    <div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-4 no-print">
+      
+      <!-- Painel de Controle de Filtros da Fila -->
+      <div class="crm-card p-4 rounded-2xl flex flex-col gap-3.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Pipeline de Contratos</h2>
+          </div>
+          <span class="text-[11px] font-mono bg-slate-900 text-slate-300 px-2.5 py-0.5 rounded-full border soft-border" id="caseCountBadge">
+            5 casos ativos
+          </span>
+        </div>
+
+        <!-- Filtro Rápido em Chips Estilo CRM -->
+        <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 text-[11px]">
+          <button onclick="setFilter('ALL')" class="filter-btn active px-2 py-1.5 rounded-xl font-bold bg-emerald-600 text-white shadow-sm transition-all text-center">Todos</button>
+          <button onclick="setFilter('PARCELAMENTO')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Acordo</button>
+          <button onclick="setFilter('NOTIFICACAO')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Notificação</button>
+          <button onclick="setFilter('CESSAO')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Cessão</button>
+          <button onclick="setFilter('REFIN')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Refin</button>
+          <button onclick="setFilter('RESCISAO')" class="filter-btn px-2 py-1.5 rounded-xl font-medium bg-slate-950/70 text-slate-400 hover:text-slate-200 border soft-border transition-all text-center">Rescisão</button>
+        </div>
+
+        <!-- Input de Filtro Local -->
+        <div class="relative">
+          <input type="text" id="searchInput" placeholder="Filtrar nesta lista (nome, CPF, lote, contrato)..." 
+                 class="w-full bg-slate-950/80 border soft-border rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/70">
+        </div>
+      </div>
+
+      <!-- Lista de Cards de Clientes (Fila Rolável) -->
+      <div class="flex flex-col gap-2.5 overflow-y-auto max-h-[calc(100vh-290px)] pr-1" id="casesContainer">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </div>
+
+    <!-- COLUNA DA DIREITA: DOSSIÊ 360° DO CLIENTE & EMISSÃO DE TERMOS (8 colunas) -->
+    <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-5">
+      
+      <!-- CABEÇALHO DO CLIENTE / DEAL HEADER -->
+      <div class="crm-card p-5 rounded-2xl flex flex-col gap-4 no-print">
+        
+        <!-- Linha Superior: Nome, Status, Identificadores e Saldo -->
+        <div class="flex flex-wrap items-start justify-between gap-4 pb-4 border-b soft-border">
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-3">
+              <div class="h-10 w-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-slate-200 text-sm shadow-inner shrink-0" id="detailAvatar">
+                JS
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h1 class="text-xl font-extrabold text-white tracking-tight" id="detailName">Carregando...</h1>
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold" id="detailBadgeType">-</span>
+                </div>
+                <div class="text-xs text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
+                  <span id="detailCpf" class="font-mono text-slate-300">000.000.000-00</span>
+                  <span>•</span>
+                  <span id="detailProfissao" class="text-slate-400">Comerciante</span>
+                  <span>•</span>
+                  <span id="detailEstadoCivil" class="text-slate-400">Casado</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dados Imobiliários do Lote -->
+            <div class="mt-3 flex flex-wrap items-center gap-3 text-xs bg-slate-950/60 p-2.5 rounded-xl border soft-border text-slate-300">
+              <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                <strong class="text-slate-200" id="detailLoteamento">-</strong>
+              </span>
+              <span class="text-slate-600">•</span>
+              <span class="font-mono text-slate-300" id="detailUnidade">Qd. 00, Lt. 00</span>
+              <span class="text-slate-600">•</span>
+              <span>Contrato: <strong class="font-mono text-emerald-400" id="detailContrato">#-</strong></span>
+              <span class="text-slate-600">•</span>
+              <span class="text-slate-400 text-[11px]" id="detailMatricula">-</span>
+            </div>
+          </div>
+
+          <!-- Bloco Financeiro de Destaque -->
+          <div class="text-right flex flex-col items-end justify-between">
+            <div>
+              <div class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Posição Financeira</div>
+              <div class="text-2xl font-black text-amber-400 font-mono tracking-tight" id="detailValorTotal">R$ 0,00</div>
+              <div class="text-xs font-semibold mt-0.5" id="detailAtraso">-</div>
+            </div>
+            
+            <!-- Quick Actions CRM -->
+            <div class="flex items-center gap-2 mt-3">
+              <button onclick="openPixModal(agreementState.entradaValor)" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-600/90 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-sm transition-all">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Chave Pix
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seletor de Tipo de Termo / Minuta Jurídica -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2.5">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Termo Solicitado:</span>
+            <div class="flex flex-wrap bg-slate-950 p-1 rounded-xl border soft-border text-xs">
+              <button onclick="switchDocMode('NOTIFICACAO')" id="tabBtnNotif" class="px-3 py-1.5 rounded-lg font-bold text-slate-400 hover:text-slate-200 transition-all">1. Notificação</button>
+              <button onclick="switchDocMode('PARCELAMENTO')" id="tabBtnParc" class="px-3 py-1.5 rounded-lg font-bold bg-emerald-600 text-white shadow-sm transition-all">2. Acordo Curto</button>
+              <button onclick="switchDocMode('CESSAO')" id="tabBtnCessao" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all">3. Cessão</button>
+              <button onclick="switchDocMode('REFIN')" id="tabBtnRefin" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all">4. Refin</button>
+              <button onclick="switchDocMode('RESCISAO')" id="tabBtnRescisao" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all">5. Rescisão</button>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button id="btnCopiarPrevia" onclick="copyDocumentText()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              Copiar Prévia
+            </button>
+            <button id="btnImprimirPrevia" onclick="printDocument()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-emerald-700/60 flex items-center gap-1.5 shadow-sm transition-all">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+              Imprimir Prévia
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Abas de Navegação do Dossiê do Caso -->
+      <div class="flex items-center justify-between border-b soft-border px-1 no-print">
+        <div class="flex items-center gap-4 text-xs font-semibold">
+          <button onclick="setDetailTab('MINUTA')" id="tabNavMinuta" class="pb-3 border-b-2 border-emerald-500 text-emerald-400 font-bold flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            1. Prévia Operacional
+          </button>
+          <button onclick="setDetailTab('DOSSIE')" id="tabNavDossie" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            2. Dossiê Cadastral & Contrato
+          </button>
+          <button onclick="setDetailTab('AUDITORIA')" id="tabNavAuditoria" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            3. Trilha de Auditoria & Trello
+          </button>
+        </div>
+        <div class="text-[11px] text-slate-500 pb-3 flex items-center gap-2">
+          <span>Backend Lote 5:</span>
+          <span class="text-emerald-400 font-mono font-semibold">OK (3 docs sincronizados)</span>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 1: PAINEL DE SIMULAÇÃO DE ALÇADA & CONDIÇÕES (no-print) -->
+      <div id="actionControlsPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+        <!-- Renderizado dinamicamente via JS de acordo com o termo -->
+      </div>
+      <div id="governancaOperacionalPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Governança Operacional</div>
+            <div id="governancaTitulo" class="mt-1 text-sm font-extrabold text-white">Carregando estado do processo...</div>
+            <div id="governancaMotivo" class="mt-1.5 text-[11px] leading-relaxed text-slate-400"></div>
+            <div id="governancaBloqueios" class="mt-3 flex flex-wrap gap-2"></div>
+          </div>
+
+          <div class="flex flex-col items-end gap-2">
+            <span id="governancaBadge" class="px-2.5 py-1 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-[9px] font-extrabold">
+              VERIFICANDO
+            </span>
+
+            <button
+              id="btnGerarDocumentoOficial"
+              aria-label="Gerar documento oficial"
+              onclick="acionarGeracaoDocumentoOficialRecebeOps()"
+              disabled
+              class="px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-500 text-xs font-extrabold cursor-not-allowed transition-all"
+            >
+              Gerar Documento Oficial
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="complementosPanel" class="crm-card p-4 rounded-2xl text-xs no-print hidden">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Dados complementares</div>
+            <div class="text-xs text-slate-300 mt-1">Preencha apenas dados ausentes. A prévia aprovada permanece preservada.</div>
+          </div>
+          <span id="complementosStatusBadge" class="px-2 py-1 rounded-lg border border-amber-800/60 bg-amber-950/50 text-amber-300 text-[10px] font-bold">PENDENTE</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">RG</span>
+            <input id="compRg" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="RG do comprador">
+          </label>
+
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Órgão expedidor</span>
+            <input id="compOrgaoRg" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="Ex.: SSP/SP">
+          </label>
+
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Profissão</span>
+            <input id="compProfissao" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="Profissão do comprador">
+          </label>
+
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Telefone</span>
+            <input id="compTelefone" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="Telefone">
+          </label>
+
+          <label class="block md:col-span-2">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Endereço completo</span>
+            <input id="compEndereco" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="Logradouro, nº, complemento, bairro, cidade/UF, CEP">
+          </label>
+
+          <label class="block">
+            <span class="text-[10px] uppercase font-bold text-slate-500">Data do contrato</span>
+            <input id="compDataContrato" class="mt-1 w-full bg-slate-950 border soft-border rounded-xl px-3 py-2 text-slate-200 text-xs" placeholder="DD/MM/AAAA">
+          </label>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3 mt-4 pt-4 border-t border-slate-800">
+          <div id="complementosPendenciasTexto" class="text-[11px] text-amber-300">Pendências não carregadas.</div>
+          <button id="btnSalvarComplementos" aria-label="Salvar dados complementares" onclick="salvarComplementosRecebeOps()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition-all">
+            Salvar complementos
+          </button>
+        </div>
+      </div>
+
+      <div id="recebeOpsAuditPanel" class="crm-card p-5 rounded-2xl text-xs no-print">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Histórico do Processo</div>
+            <div class="text-xs text-slate-300 mt-1">Registro cronológico das principais etapas e ações deste caso.</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[9px] uppercase tracking-[0.12em] text-slate-500 font-bold">Estado do processo</div>
+            <div id="estadoProcessoRecebeOps" class="text-[11px] font-extrabold text-emerald-300 mt-1">Carregando...</div>
+          </div>
+        </div>
+        <div id="recebeOpsAuditTimeline"></div>
+      </div>
+
+      <div id="recebeOpsProvenienciaPanel" class="crm-card p-4 rounded-2xl text-xs no-print">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <div class="text-[10px] uppercase tracking-[0.15em] text-slate-500 font-extrabold">Origem dos Dados</div>
+            <div class="text-xs text-slate-300 mt-1">Dados organizados conforme a fonte em que foram localizados.</div>
+          </div>
+          <span class="px-2 py-1 rounded-lg border border-slate-700 bg-slate-950 text-slate-400 text-[9px] font-bold">PROVENIÊNCIA</span>
+        </div>
+        <div id="recebeOpsProvenienciaGrid" class="space-y-3"></div>
+        <div id="recebeOpsProvenienciaAviso" class="mt-3 text-[10px] text-slate-500"></div>
+      </div>
+
+      <!-- SEÇÃO 2: ÁREA DA MINUTA / FOLHA TIMBRADA -->
+      <div id="viewMinutaContainer" class="crm-card rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+        <div class="bg-slate-900/90 px-5 py-3 border-b soft-border flex items-center justify-between text-xs no-print">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span class="text-slate-200 font-bold">Prévia Operacional • Dados do Caso</span>
+            <span id="modeloStatusHeader" class="text-[10px] text-slate-500 font-mono">| Modelo oficial ainda não conectado</span>
+          </div>
+          <div class="text-slate-400 text-[11px]">
+            Responsável Técnico: <strong class="text-slate-200 font-semibold">Everton Lanzilotti (Operações Lote 5)</strong>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-8 bg-slate-950/70 flex justify-center items-start overflow-x-hidden">
+          <div id="printArea" class="paper-sheet p-8 sm:p-12 w-full max-w-[840px] min-w-0 text-sm leading-relaxed overflow-hidden">
+            <!-- Conteúdo da minuta gerado via JS -->
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-900/90 border-t soft-border flex flex-wrap items-center justify-between gap-3 text-xs no-print">
+          <div class="flex items-center gap-2 text-slate-400 text-[11px]">
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>Conferência dos dados antes da futura mesclagem com o modelo jurídico oficial.</span>
+          </div>
+          <button id="btnConfirmarPrevia" aria-label="Confirmar dados da prévia" onclick="approveAndSave()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-extrabold shadow-lg shadow-emerald-950/50 flex items-center gap-2 transition-all">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            Confirmar Dados da Prévia
+          </button>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 3: ABA DE DOSSIÊ COMPLETO (inicialmente oculta) -->
+      <div id="viewDossieContainer" class="crm-card p-6 rounded-2xl hidden flex-col gap-5 text-xs no-print">
+        <div class="flex items-center justify-between pb-3 border-b soft-border">
+          <div>
+            <h3 class="text-sm font-bold text-white">Dossiê Cadastral & Imobiliário Unificado</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Cruzamento direto: Ficha Cadastral + Síntese do Contrato Lote 5.</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-mono text-[11px]">
+            Status: Verificado
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Bloco Cliente -->
+          <div class="p-4 rounded-xl bg-slate-950/60 border soft-border flex flex-col gap-2.5">
+            <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Dados Cadastrais do Titular</h4>
+            <div class="space-y-1.5 text-slate-300">
+              <div class="flex justify-between"><span class="text-slate-500">Nome:</span> <strong class="text-white" id="dossieNome">-</strong></div>
+              <div class="flex justify-between"><span class="text-slate-500">CPF:</span> <span class="font-mono" id="dossieCpf">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">RG:</span> <span class="font-mono" id="dossieRg">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Estado Civil:</span> <span id="dossieCiv">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Profissão:</span> <span id="dossieProf">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Endereço:</span> <span class="text-right text-[11px] max-w-[200px]" id="dossieEnd">-</span></div>
+              <div class="flex justify-between pt-2 border-t soft-border"><span class="text-slate-500">Cônjuge:</span> <span class="text-slate-400" id="dossieConjuge">Não informado / não aplicável</span></div>
+            </div>
+          </div>
+
+          <!-- Bloco Imóvel & Contrato -->
+          <div class="p-4 rounded-xl bg-slate-950/60 border soft-border flex flex-col gap-2.5">
+            <h4 class="text-xs font-bold text-teal-400 uppercase tracking-wider">Dados do Lote & Matrícula</h4>
+            <div class="space-y-1.5 text-slate-300">
+              <div class="flex justify-between"><span class="text-slate-500">Empreendimento:</span> <strong class="text-white" id="dossieLot">-</strong></div>
+              <div class="flex justify-between"><span class="text-slate-500">Quadra / Lote:</span> <span class="font-mono font-bold text-emerald-300" id="dossieQdLote">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Metragem:</span> <span id="dossieM2">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Contrato:</span> <span class="font-mono text-emerald-400" id="dossieContrato">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Data de Assinatura:</span> <span id="dossieDataContrato">-</span></div>
+              <div class="flex justify-between"><span class="text-slate-500">Matrícula RI:</span> <span class="text-[11px] text-right max-w-[220px]" id="dossieMatricula">-</span></div>
+              <div class="flex justify-between pt-2 border-t soft-border"><span class="text-slate-500">Origem:</span> <span class="text-emerald-400">Portal Lote 5 / RecebeOps Cloud</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 4: ABA DE TRILHA DE AUDITORIA & TRELLO (inicialmente oculta) -->
+      <div id="viewAuditoriaContainer" class="crm-card p-6 rounded-2xl hidden flex-col gap-4 text-xs no-print">
+        <div class="flex items-center justify-between pb-3 border-b soft-border">
+          <div>
+            <h3 class="text-sm font-bold text-white">Log de Auditoria & Sincronização Trello</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Histórico de validação em conformidade com as regras operacionais.</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-lg bg-slate-900 border soft-border text-slate-300 font-mono text-[11px]">
+            Card ID: <strong class="text-emerald-400" id="auditCardId">-</strong>
+          </span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border soft-border">
+            <span class="w-6 h-6 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">1</span>
+            <div>
+              <div class="font-bold text-slate-200">Gatilho do Cartão no Trello</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Campo personalizado "GERAR TERMO" acionado pelo operador Everton.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border soft-border">
+            <span class="w-6 h-6 rounded-lg bg-teal-950/60 border border-teal-800 text-teal-400 flex items-center justify-center font-bold text-xs shrink-0">2</span>
+            <div>
+              <div class="font-bold text-slate-200">Coleta Automática • Backend Lote 5</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Download e validação dos 3 arquivos obrigatórios: Síntese, Extrato Financeiro e Ficha Cadastral.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border soft-border">
+            <span class="w-6 h-6 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">3</span>
+            <div>
+              <div class="font-bold text-slate-200">Governança Jurídica (Dr. Leandro)</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Validação de alçada: limite operacional do acordo curto e tratamento de cônjuge conforme os dados cadastrais.</p>
+            </div>
+          </div>
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-950/60 border soft-border">
+            <span class="w-6 h-6 rounded-lg bg-slate-900 border soft-border text-slate-400 flex items-center justify-center font-bold text-xs shrink-0">4</span>
+            <div>
+              <div class="font-bold text-slate-200">Emissão Final em Google Docs & Anexo de PDF</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Aguardando confirmação do operador para acionar o gerador do Google Apps Script.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal Pix Honorários / Entrada com Visual Fintech -->
+  <div id="pixModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 no-print">
+    <div class="crm-card border-slate-700/80 rounded-3xl max-w-md w-full p-6 shadow-2xl relative">
+      <button onclick="closePixModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg">✕</button>
+      
+      <div class="flex items-center gap-2.5 mb-1">
+        <div class="w-8 h-8 rounded-xl bg-emerald-950 border border-emerald-800 flex items-center justify-center text-emerald-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        </div>
+        <h3 class="text-sm font-bold text-white">Cobrança e Entrada via Pix</h3>
+      </div>
+      <p class="text-xs text-slate-400 mb-4">Honorários advocatícios ou valor de entrada vinculados ao acordo.</p>
+
+      <div class="text-center py-4 bg-slate-950 rounded-2xl border soft-border mb-4">
+        <div class="text-xs text-slate-400">Valor da Operação:</div>
+        <div class="text-3xl font-black text-emerald-400 font-mono mt-0.5" id="pixModalValor">R$ 398,99</div>
+        <div class="text-[11px] text-slate-400 mt-1">Beneficiário: <strong class="text-slate-200">L.G.T Gestão de Recebimentos LTDA</strong></div>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Chave Pix Oficial (E-mail):</label>
+        <div class="flex items-center gap-2">
+          <input type="text" readonly id="pixCodeInput" value="adm@gtadv.com.br" 
+                 class="bg-slate-950 border soft-border text-slate-200 text-xs rounded-xl px-3 py-2.5 w-full font-mono text-center select-all">
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="copyPixCode()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 transition-all">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          Copiar Chave Pix
+        </button>
+        <button onclick="closePixModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de Notificação -->
+  <div id="toast" class="fixed bottom-6 right-6 crm-card border-emerald-500/60 text-slate-100 px-4 py-3 rounded-2xl shadow-2xl z-50 text-xs translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print flex items-center gap-2.5">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="toastMessage">Operação realizada com sucesso!</span>
+  </div>
+
+  <script>
+    const RECEBEOPS_API_URL = "/api/recebeops";
+    window.recebeOpsLivePreview = null;
+    window.recebeOpsPreviewHash = null;
+
+    window.recebeOpsComplementos = {};
+    window.recebeOpsPendenciasRestantes = [];
+
+    window.recebeOpsAuditEvents = [];
+    window.recebeOpsEstadoProcesso = "";
+
+    let CASES = [];
+    let currentCaseId = null;
+    let currentFilter = 'ALL';
+    let currentDocMode = 'PARCELAMENTO';
+    let currentDetailTab = 'MINUTA';
+    let agreementState = { entradaValor: 0, qtdParcelas: 0, descontoJuros: 0 };
+    let rescisaoState = { retencaoClausulaPenalPct: 10, parcelasDevolucao: 12 };
+
+    function criarCasoBaseRecebeOps(cardId) {
+      return {
+        id: 1,
+        cardId: String(cardId || ""),
+        nome: "Carregando caso...",
+        cpf: "", rg: "", civ: "", prof: "", end: "",
+        lot: "", qd: "-", lt: "-", m2: "", mat: "",
+        ct: String(cardId || "-"), dt: "",
+        st: "PARCELAMENTO",
+        stLbl: "Carregando",
+        stCls: "bg-slate-900 text-slate-300 border-slate-700",
+        dias: 0, parcVenc: 0, parcNum: "",
+        valOrig: 0, multa: 0, jur: 0, corr: 0,
+        tot: 0, saldo: 0, pago: 0,
+        honorarios: 0, honorariosPago: false,
+        cess: null
+      };
+    }
+
+    function casoAtualRecebeOps() {
+      return CASES.find(item => item.id === currentCaseId) || null;
+    }
+
+    function limparCasoAtualRecebeOps() {
+      CASES = [];
+      currentCaseId = null;
+      window.recebeOpsLivePreview = null;
+      window.recebeOpsPreviewHash = null;
+      window.recebeOpsComplementos = {};
+      window.recebeOpsPendenciasRestantes = [];
+      window.recebeOpsAuditEvents = [];
+      window.recebeOpsEstadoProcesso = "";
+    }
+
+    function renderEstadoSemCasoRecebeOps() {
+      const container = document.getElementById("casesContainer");
+      const badge = document.getElementById("caseCountBadge");
+
+      if (badge) badge.innerText = "0 casos ativos";
+
+      if (container) {
+        container.innerHTML = `
+          <div class="crm-card rounded-2xl p-4 text-center">
+            <div class="text-xs font-bold text-slate-300">Nenhum caso carregado</div>
+            <div class="mt-1 text-[10px] leading-relaxed text-slate-500">
+              Abra o RecebeOps por um link do Trello com <span class="font-mono text-slate-400">?cardId=...</span>.
+            </div>
+          </div>
+        `;
+      }
+
+      const nome = document.getElementById("detailName");
+      if (nome) nome.innerText = "Nenhum caso selecionado";
+    }
+
+    async function init() {
+      await verificarParametroCardIdNaUrl();
+      renderCaseList();
+
+      if (CASES.length) {
+        selectCase(CASES[0].id);
+      } else {
+        renderEstadoSemCasoRecebeOps();
+      }
+    }
+
+    function limparPrefixoUnidade(valor, prefixo) {
+      return String(valor || "")
+        .replace(new RegExp("^\\s*" + prefixo + "\\s*", "i"), "")
+        .trim();
+    }
+
+    function montarEnderecoRecebeOps(endereco) {
+      if (!endereco) return "";
+      if (typeof endereco === "string") return endereco.trim();
+
+      const partes = [
+        endereco.logradouro,
+        endereco.numero,
+        endereco.complemento,
+        endereco.bairro,
+        endereco.cidade,
+        endereco.uf,
+        endereco.cep
+      ].filter(v => String(v || "").trim());
+
+      return partes.join(", ");
+    }
+
+    function numeroBRRecebeOps(valor) {
+      if (typeof valor === "number") return valor;
+      if (valor == null || valor === "") return 0;
+
+      const s = String(valor)
+        .replace(/R\$\s*/gi, "")
+        .replace(/\./g, "")
+        .replace(",", ".")
+        .replace(/[^\d.-]/g, "");
+
+      const n = Number(s);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function normalizarDadosPreviewRecebeOps(data) {
+      if (!data || typeof data !== "object") return null;
+
+      if (data.dados && typeof data.dados === "object") {
+        return data.dados;
+      }
+
+      if (Array.isArray(data.unidades) && data.unidades.length) {
+        const unidade = data.unidades.find(u => {
+          const status = String((u && u.status) || "").toLowerCase();
+          return status === "ok" || status === "preview_ready";
+        }) || data.unidades[0];
+
+        if (!unidade) return null;
+
+        if (unidade.dados && typeof unidade.dados === "object") {
+          return unidade.dados;
+        }
+
+        const cadastro = unidade.dados_cadastrais || {};
+        const contrato = unidade.contrato || {};
+        const end = montarEnderecoRecebeOps(cadastro.endereco);
+
+        return {
+          nomeComprador: cadastro.nome || contrato.cliente || "",
+          cpfComprador: cadastro.cpf || "",
+          rgComprador: cadastro.rg || "",
+          orgaoExpedidorRgComprador: cadastro.orgao_expedidor_rg || "",
+          estadoCivilComprador: cadastro.estado_civil || "",
+          regimeBensComprador: cadastro.regime_bens || "",
+          dataNascimentoComprador: cadastro.data_nascimento || "",
+          profissaoComprador: cadastro.profissao || "",
+          emailComprador: cadastro.email || "",
+          telefoneComprador: cadastro.telefone || "",
+          enderecoComprador: end,
+          conjuge: cadastro.conjuge || {},
+          empreendimentoModelo: contrato.empreendimento || "",
+          contrato: contrato.contrato || "",
+          quadra: limparPrefixoUnidade(contrato.quadra, "QUADRA"),
+          lote: limparPrefixoUnidade(contrato.lote, "LOTE"),
+          arquivos_drive: unidade.arquivos_drive || {},
+          snapshot: unidade.snapshot || {},
+          tipoTermo: data.tipoTermo || data.tipo_termo || "",
+          pendencias: data.pendencias || [],
+          acordo: data.acordo || null,
+          valorHonorarios: data.valorHonorarios || data.valor_honorarios || "",
+          qtdParcelas: data.qtdParcelas || data.qtd_parcelas || ""
+        };
+      }
+
+      return null;
+    }
+
+    function parcelasReaisDoAcordoRecebeOps() {
+      const d = window.recebeOpsLivePreview && window.recebeOpsLivePreview.dados;
+      const acordo = d && d.acordo;
+      return acordo && Array.isArray(acordo.parcelas) ? acordo.parcelas : [];
+    }
+
+    function valorCentavosRecebeOps(centavos) {
+      const n = Number(centavos);
+      return Number.isFinite(n) ? n / 100 : 0;
+    }
+
+    function valorParcelaNumeroRecebeOps(parcela) {
+      if (!parcela) return 0;
+
+      if (parcela.centavos !== undefined && parcela.centavos !== null && parcela.centavos !== "") {
+        return valorCentavosRecebeOps(parcela.centavos);
+      }
+
+      return numeroBRRecebeOps(parcela.valor || parcela.valorFormatado || 0);
+    }
+
+    function valorParcelaFormatadoRecebeOps(parcela) {
+      return valorParcelaNumeroRecebeOps(parcela).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function resumoParcelasReaisRecebeOps() {
+      const parcelas = parcelasReaisDoAcordoRecebeOps();
+      if (!parcelas.length) return "";
+
+      return parcelas
+        .map((p, i) => `${i + 1}ª R$ ${valorParcelaFormatadoRecebeOps(p)}`)
+        .join(" • ");
+    }
+
+    function valorCampoComplementoRecebeOps(id) {
+      const el = document.getElementById(id);
+      return el ? String(el.value || "").trim() : "";
+    }
+
+    function preencherComplementosNaTelaRecebeOps() {
+      const painel = document.getElementById("complementosPanel");
+      if (!painel) return;
+
+      const previa = window.recebeOpsLivePreview;
+
+      if (!previa || !previa.snapshotAprovado) {
+        painel.classList.add("hidden");
+        return;
+      }
+
+      painel.classList.remove("hidden");
+
+      const c = previa.complementos || {};
+      window.recebeOpsComplementos = c;
+
+      const mapa = {
+        compRg: "rgComprador",
+        compOrgaoRg: "orgaoExpedidorRgComprador",
+        compProfissao: "profissaoComprador",
+        compTelefone: "telefoneComprador",
+        compEndereco: "enderecoComprador",
+        compDataContrato: "dataContrato"
+      };
+
+      Object.keys(mapa).forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.value = c[mapa[id]] || "";
+      });
+
+      const registro = previa.registro || {};
+      const pendencias = Array.isArray(registro.pendenciasRestantes)
+        ? registro.pendenciasRestantes
+        : [];
+
+      window.recebeOpsPendenciasRestantes = pendencias;
+
+      const statusBadge = document.getElementById("complementosStatusBadge");
+      const texto = document.getElementById("complementosPendenciasTexto");
+
+      const completo =
+        registro.geracaoStatus === "PRONTO_PARA_GERACAO_CONTROLADA" &&
+        pendencias.length === 0;
+
+      if (completo) {
+        if (statusBadge) {
+          statusBadge.textContent = "COMPLETO";
+          statusBadge.className =
+            "px-2 py-1 rounded-lg border border-emerald-800/60 bg-emerald-950/50 text-emerald-300 text-[10px] font-bold";
+        }
+        if (texto) {
+          texto.textContent = "Sem pendências. Caso pronto para geração controlada.";
+          texto.className = "text-[11px] text-emerald-300";
+        }
+      } else {
+        if (statusBadge) {
+          statusBadge.textContent = "PENDENTE";
+          statusBadge.className =
+            "px-2 py-1 rounded-lg border border-amber-800/60 bg-amber-950/50 text-amber-300 text-[10px] font-bold";
+        }
+
+        if (texto) {
+          texto.className = "text-[11px] text-amber-300";
+          texto.textContent = pendencias.length
+            ? "Pendências restantes: " + pendencias.map(function(p) {
+                return typeof p === "string"
+                  ? p
+                  : (p.campo || p.motivo || p.nome || "pendência");
+              }).join(", ")
+            : "Complementos ainda não validados.";
+        }
+      }
+    }
+
+    function humanizarAutorRecebeOps(valor) {
+      const v = String(valor || "").trim();
+
+      const mapa = {
+        "Sistema RecebeOps": "Sistema RecebeOps",
+        "EVERTON": "Everton Lanzilotti",
+        "USUARIO_RECEBEOPS": "Usuário RecebeOps",
+        "RecebeOps": "RecebeOps"
+      };
+
+      if (mapa[v]) return mapa[v];
+
+      return v
+        .replace(/_/g, " ")
+        .replace(/\s+/g, " ")
+        .replace(/\b\w/g, function(m) { return m.toUpperCase(); });
+    }
+
+    function humanizarStatusTecnicoRecebeOps(valor) {
+      const v = String(valor || "").trim();
+
+      const mapa = {
+        "PREVIA_PENDENTE_REVISAO": "Prévia pendente de revisão",
+        "SNAPSHOT_APROVADO": "Dados da prévia aprovados",
+        "AGUARDANDO_MODELO_E_COMPLEMENTOS": "Aguardando modelo e dados complementares",
+        "AGUARDANDO_MODELO_OFICIAL": "Aguardando modelo oficial",
+        "AGUARDANDO_COMPLEMENTOS": "Aguardando dados complementares",
+        "PRONTO_PARA_GERACAO_CONTROLADA": "Pronto para geração controlada",
+        "MODELO_LOCALIZADO": "Modelo oficial localizado",
+        "MODELO_NAO_MAPEADO": "Modelo oficial não mapeado",
+        "BLOQUEADA": "Validação bloqueada",
+        "PENDENCIA_DADOS": "Dados pendentes",
+        "PREVIA_PENDENTE_REVISÃO": "Prévia pendente de revisão"
+      };
+
+      if (mapa[v]) return mapa[v];
+
+      return v
+        .replace(/_/g, " ")
+        .toLowerCase()
+        .replace(/^\w/, function(m) { return m.toUpperCase(); });
+    }
+
+    function limparRotuloInterfaceRecebeOps(valor) {
+      return String(valor || "")
+        .replace(/_/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function traduzirEstadoProcessoRecebeOps(status) {
+      const mapa = {
+        SEM_SNAPSHOT: "Prévia ainda não criada",
+        PREVIA_PENDENTE_REVISAO: "Prévia pendente de revisão",
+        SNAPSHOT_APROVADO: "Dados da prévia aprovados",
+        AGUARDANDO_MODELO_E_COMPLEMENTOS: "Aguardando modelo e dados complementares",
+        AGUARDANDO_MODELO_OFICIAL: "Aguardando modelo oficial",
+        AGUARDANDO_COMPLEMENTOS: "Aguardando dados complementares",
+        PRONTO_PARA_GERACAO_CONTROLADA: "Pronto para geração controlada",
+        DOCUMENTO_GERADO: "Documento oficial gerado",
+        PDF_GERADO: "PDF final gerado"
+      };
+      return mapa[status] || status || "Estado não informado";
+    }
+
+    function traduzirEventoAuditoriaRecebeOps(evento) {
+      const mapa = {
+        SNAPSHOT_CRIADO: "Prévia registrada",
+        SNAPSHOT_APROVADO: "Dados da prévia aprovados",
+        FILA_GERACAO_CRIADA: "Preparação para geração iniciada",
+        COMPLEMENTOS_SALVOS: "Dados complementares salvos"
+      };
+      return mapa[evento] || evento || "Evento";
+    }
+
+    function formatarDataAuditoriaRecebeOps(valor) {
+      if (!valor) return "";
+      try {
+        return new Intl.DateTimeFormat("pt-BR", {
+          dateStyle: "short",
+          timeStyle: "medium"
+        }).format(new Date(valor));
+      } catch (_) {
+        return valor;
+      }
+    }
+
+    function atualizarEstadoProcessoRecebeOps() {
+      const el = document.getElementById("estadoProcessoRecebeOps");
+      if (!el) return;
+
+      const status =
+        window.recebeOpsEstadoProcesso ||
+        (window.recebeOpsLivePreview && window.recebeOpsLivePreview.estadoProcesso) ||
+        (window.recebeOpsLivePreview &&
+         window.recebeOpsLivePreview.registro &&
+         window.recebeOpsLivePreview.registro.estadoProcesso) ||
+        "";
+
+      el.textContent = traduzirEstadoProcessoRecebeOps(status);
+    }
+
+    function renderizarAuditoriaRecebeOps() {
+      const alvo = document.getElementById("recebeOpsAuditTimeline");
+      if (!alvo) return;
+
+      const eventos = window.recebeOpsAuditEvents || [];
+
+      if (!eventos.length) {
+        alvo.innerHTML = `
+          <div class="text-xs text-slate-500 border border-slate-800 rounded-xl p-4">
+            Nenhum evento de auditoria registrado para este caso ainda.
+          </div>
+        `;
+        return;
+      }
+
+      alvo.innerHTML = eventos.slice().reverse().map(function(item) {
+        const detalhes = item.detalhes || {};
+        const resumo = [];
+
+        if (detalhes.status) resumo.push(humanizarStatusTecnicoRecebeOps(detalhes.status));
+        if (detalhes.generationStatus) resumo.push(humanizarStatusTecnicoRecebeOps(detalhes.generationStatus));
+        if (detalhes.modeloStatus) resumo.push(humanizarStatusTecnicoRecebeOps(detalhes.modeloStatus));
+        if (detalhes.complementoVersao) resumo.push("Versão complementar " + detalhes.complementoVersao);
+
+        return `
+          <div class="relative pl-6 pb-5">
+            <div class="absolute left-[3px] top-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+            <div class="absolute left-[7px] top-4 bottom-0 w-px bg-slate-800"></div>
+            <div class="text-xs font-extrabold text-slate-200">
+              ${traduzirEventoAuditoriaRecebeOps(item.evento)}
+            </div>
+            <div class="mt-1 text-[10px] text-slate-500">
+              ${formatarDataAuditoriaRecebeOps(item.criadoEm)}
+              ${item.autor ? " • " + humanizarAutorRecebeOps(item.autor) : ""}
+            </div>
+            ${resumo.length ? `
+              <div class="mt-2 text-[11px] text-slate-400">
+                ${resumo.join(" • ")}
+              </div>
+            ` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function carregarAuditoriaRecebeOps() {
+      const c = casoAtualRecebeOps();
+      if (!c || !c.cardId) return;
+
+      try {
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action: "get_audit",
+            cardId: c.cardId
+          })
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok || data.status === "error") {
+          throw new Error(data.message || data.code || "Falha ao carregar auditoria.");
+        }
+
+        window.recebeOpsAuditEvents = Array.isArray(data.eventos) ? data.eventos : [];
+        window.recebeOpsEstadoProcesso = data.estadoProcesso || "";
+
+        renderizarAuditoriaRecebeOps();
+        atualizarEstadoProcessoRecebeOps();
+        atualizarGovernancaRecebeOps();
+      } catch (e) {
+        console.error("Falha ao carregar auditoria:", e);
+        const alvo = document.getElementById("recebeOpsAuditTimeline");
+        if (alvo) {
+          alvo.innerHTML = `
+            <div class="text-xs text-amber-400 border border-amber-900/60 rounded-xl p-4">
+              Não foi possível carregar a trilha de auditoria.
+            </div>
+          `;
+        }
+      }
+    }
+
+    function bloquearBotaoRecebeOps(el, bloqueado, textoAlternativo) {
+      if (!el) return;
+
+      el.disabled = !!bloqueado;
+
+      if (bloqueado) {
+        el.classList.add("opacity-50", "cursor-not-allowed");
+        el.classList.remove("hover:from-emerald-500", "hover:to-teal-400", "hover:bg-emerald-500");
+      } else {
+        el.classList.remove("opacity-50", "cursor-not-allowed");
+      }
+
+      if (textoAlternativo) {
+        const textoNode = Array.from(el.childNodes).find(function(n) {
+          return n.nodeType === Node.TEXT_NODE && String(n.textContent || "").trim();
+        });
+        if (textoNode) textoNode.textContent = " " + textoAlternativo + " ";
+      }
+    }
+
+    function calcularGovernancaRecebeOps() {
+      const previa = window.recebeOpsLivePreview || {};
+      const registro = previa.registro || {};
+
+      const snapshotAprovado = !!previa.snapshotAprovado;
+      const estado =
+        registro.estadoProcesso ||
+        previa.estadoProcesso ||
+        registro.geracaoStatus ||
+        registro.status ||
+        "";
+
+      const modeloStatus = registro.modeloStatus || window.recebeOpsModeloStatus || "";
+      const geracaoStatus = registro.geracaoStatus || window.recebeOpsGenerationStatus || "";
+
+      const pendencias = Array.isArray(previa.dados && previa.dados.pendencias)
+        ? previa.dados.pendencias
+        : [];
+
+      const bloqueios = [];
+
+      if (!snapshotAprovado) {
+        bloqueios.push("Dados da prévia ainda não aprovados");
+      }
+
+      if (snapshotAprovado && modeloStatus !== "MODELO_LOCALIZADO") {
+        bloqueios.push("Modelo oficial não localizado");
+      }
+
+      if (geracaoStatus === "AGUARDANDO_COMPLEMENTOS" || pendencias.length) {
+        bloqueios.push("Existem dados pendentes");
+      }
+
+      if (geracaoStatus !== "PRONTO_PARA_GERACAO_CONTROLADA") {
+        bloqueios.push("Caso ainda não liberado para geração");
+      }
+
+      // Mesmo quando o caso atingir o estado correto, a geração real ainda não
+      // está conectada nesta fase do projeto.
+      bloqueios.push("Módulo de geração do Google Docs ainda não conectado");
+
+      return {
+        snapshotAprovado: snapshotAprovado,
+        estado: estado,
+        modeloStatus: modeloStatus,
+        geracaoStatus: geracaoStatus,
+        pendencias: pendencias,
+        bloqueios: Array.from(new Set(bloqueios)),
+        podeGerar:
+          snapshotAprovado &&
+          modeloStatus === "MODELO_LOCALIZADO" &&
+          geracaoStatus === "PRONTO_PARA_GERACAO_CONTROLADA" &&
+          false
+      };
+    }
+
+    function atualizarGovernancaRecebeOps() {
+      const g = calcularGovernancaRecebeOps();
+
+      const titulo = document.getElementById("governancaTitulo");
+      const motivo = document.getElementById("governancaMotivo");
+      const bloqueios = document.getElementById("governancaBloqueios");
+      const badge = document.getElementById("governancaBadge");
+      const btnGerar = document.getElementById("btnGerarDocumentoOficial");
+      const btnConfirmar = document.getElementById("btnConfirmarPrevia");
+      const btnComplementos = document.getElementById("btnSalvarComplementos");
+
+      if (titulo) {
+        titulo.textContent = traduzirEstadoProcessoRecebeOps(g.estado);
+      }
+
+      if (motivo) {
+        if (g.snapshotAprovado) {
+          motivo.textContent =
+            "Os dados da prévia já foram aprovados. As próximas ações dependem do estado atual do processo.";
+        } else {
+          motivo.textContent =
+            "Revise os dados da prévia antes de confirmar a aprovação.";
+        }
+      }
+
+      if (bloqueios) {
+        bloqueios.innerHTML = g.bloqueios.map(function(texto) {
+          return `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-amber-900/60 bg-amber-950/25 text-[9px] font-semibold text-amber-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              ${escaparHtmlRecebeOps(texto)}
+            </span>
+          `;
+        }).join("");
+      }
+
+      if (badge) {
+        if (g.podeGerar) {
+          badge.textContent = "LIBERADO";
+          badge.className = "px-2.5 py-1 rounded-lg border border-emerald-800 bg-emerald-950/50 text-emerald-300 text-[9px] font-extrabold";
+        } else if (g.snapshotAprovado) {
+          badge.textContent = "BLOQUEADO";
+          badge.className = "px-2.5 py-1 rounded-lg border border-amber-800 bg-amber-950/50 text-amber-300 text-[9px] font-extrabold";
+        } else {
+          badge.textContent = "REVISÃO";
+          badge.className = "px-2.5 py-1 rounded-lg border border-sky-800 bg-sky-950/50 text-sky-300 text-[9px] font-extrabold";
+        }
+      }
+
+      if (btnGerar) {
+        btnGerar.disabled = !g.podeGerar;
+        btnGerar.className = g.podeGerar
+          ? "px-4 py-2.5 rounded-xl border border-emerald-700 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold transition-all"
+          : "px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-slate-500 text-xs font-extrabold cursor-not-allowed transition-all";
+      }
+
+      if (btnConfirmar) {
+        bloquearBotaoRecebeOps(
+          btnConfirmar,
+          g.snapshotAprovado,
+          g.snapshotAprovado ? "Dados já aprovados" : "Confirmar Dados da Prévia"
+        );
+      }
+
+      if (btnComplementos) {
+        bloquearBotaoRecebeOps(
+          btnComplementos,
+          !g.snapshotAprovado,
+          "Salvar complementos"
+        );
+      }
+    }
+
+    function acionarGeracaoDocumentoOficialRecebeOps() {
+      const g = calcularGovernancaRecebeOps();
+
+      if (!g.podeGerar) {
+        showToast(
+          "Geração bloqueada: " +
+          (g.bloqueios[0] || "o caso ainda não está liberado.")
+        );
+        return;
+      }
+
+      showToast("Módulo de geração oficial ainda não conectado.");
+    }
+
+    async function salvarComplementosRecebeOps() {
+      const c = casoAtualRecebeOps();
+
+      if (!c || !c.cardId) {
+        return showToast("Cartão não identificado.");
+      }
+
+      if (!window.recebeOpsPreviewHash) {
+        return showToast("Não foi possível validar esta prévia. Recarregue o caso.");
+      }
+
+      const complementos = {
+        rgComprador: valorCampoComplementoRecebeOps("compRg"),
+        orgaoExpedidorRgComprador: valorCampoComplementoRecebeOps("compOrgaoRg"),
+        profissaoComprador: valorCampoComplementoRecebeOps("compProfissao"),
+        telefoneComprador: valorCampoComplementoRecebeOps("compTelefone"),
+        enderecoComprador: valorCampoComplementoRecebeOps("compEndereco"),
+        dataContrato: valorCampoComplementoRecebeOps("compDataContrato")
+      };
+
+      Object.keys(complementos).forEach(function(k) {
+        if (!complementos[k]) delete complementos[k];
+      });
+
+      if (!Object.keys(complementos).length) {
+        return showToast("Preencha ao menos um complemento.");
+      }
+
+      try {
+        showToast("Salvando complementos...");
+
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action: "save_complements",
+            cardId: c.cardId,
+            hash: window.recebeOpsPreviewHash,
+            complementos: complementos,
+            autor: "Everton Lanzilotti"
+          })
+        });
+
+        let data = null;
+        try {
+          data = await resp.json();
+        } catch (_) {
+          throw new Error("Resposta inválida do backend.");
+        }
+
+        if (!resp.ok || data.status === "error") {
+          throw new Error(data.message || data.code || "Erro ao salvar complementos.");
+        }
+
+        const novoResp = await fetch(
+          `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
+          {cache:"no-store"}
+        );
+
+        if (novoResp.ok) {
+          const novoData = await novoResp.json();
+
+          window.recebeOpsLivePreview = novoData;
+          window.recebeOpsPreviewHash =
+            novoData.hash ||
+            (novoData.registro && novoData.registro.hash) ||
+            window.recebeOpsPreviewHash;
+
+          window.recebeOpsModeloNome =
+            (novoData.registro && novoData.registro.modeloNome) ||
+            window.recebeOpsModeloNome ||
+            "";
+
+          window.recebeOpsModeloStatus =
+            (novoData.registro && novoData.registro.modeloStatus) ||
+            window.recebeOpsModeloStatus ||
+            "";
+
+          window.recebeOpsGenerationStatus =
+            (novoData.registro && novoData.registro.geracaoStatus) ||
+            window.recebeOpsGenerationStatus ||
+            "";
+
+          preencherComplementosNaTelaRecebeOps();
+          atualizarStatusModeloNaTelaRecebeOps();
+          renderizarProvenienciaRecebeOps();
+          atualizarGovernancaRecebeOps();
+          renderDocumentContent();
+        }
+
+        if (data.generationStatus === "PRONTO_PARA_GERACAO_CONTROLADA") {
+          showToast("Complementos salvos. Caso pronto para geração controlada.");
+        } else {
+          showToast("Complementos salvos. Ainda existem pendências.");
+        }
+      } catch (e) {
+        console.error("Falha ao salvar complementos:", e);
+        showToast(e.message || "Não foi possível salvar os complementos.");
+      }
+    }
+
+    function atualizarStatusModeloNaTelaRecebeOps() {
+      const el = document.getElementById("modeloStatusHeader");
+      if (!el) return;
+
+      const nome = window.recebeOpsModeloNome || "";
+      const status = window.recebeOpsGenerationStatus || "";
+
+      if (nome) {
+        el.innerText = "| " + nome + (status ? " • " + status : "");
+      } else if (window.recebeOpsModeloStatus === "MODELO_NAO_MAPEADO") {
+        el.innerText = "| Modelo não mapeado";
+      } else {
+        el.innerText = "| Modelo oficial ainda não conectado";
+      }
+    }
+
+    function escaparHtmlRecebeOps(valor) {
+      return String(valor == null ? "" : valor)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderizarProvenienciaRecebeOps() {
+      const grid = document.getElementById("recebeOpsProvenienciaGrid");
+      const aviso = document.getElementById("recebeOpsProvenienciaAviso");
+      if (!grid) return;
+
+      const previa = window.recebeOpsLivePreview || {};
+      const d = previa.dados || {};
+      const prov = d.proveniencia || previa.proveniencia || {};
+      const campos = Array.isArray(prov.campos) ? prov.campos : [];
+      const docs = Array.isArray(prov.documentosConferencia) ? prov.documentosConferencia : [];
+
+      if (!campos.length) {
+        grid.innerHTML = `
+          <div class="text-xs text-slate-500 border border-slate-800 rounded-xl p-4">
+            Proveniência ainda não disponível para este snapshot.
+          </div>
+        `;
+        if (aviso) aviso.textContent = "";
+        return;
+      }
+
+      const ordemFontes = [
+        "Cadastro Lote5",
+        "Contrato Lote5",
+        "Trello — descrição/comentários"
+      ];
+
+      const titulosFonte = {
+        "Cadastro Lote5": "Cadastro Lote5",
+        "Contrato Lote5": "Contrato Lote5",
+        "Trello — descrição/comentários": "Trello — Condições do Acordo"
+      };
+
+      const descricaoFonte = {
+        "Cadastro Lote5": "Dados cadastrais estruturados do cliente.",
+        "Contrato Lote5": "Dados identificados na estrutura contratual do Lote5.",
+        "Trello — descrição/comentários": "Condições operacionais do acordo registradas no cartão."
+      };
+
+      const grupos = {};
+
+      campos.forEach(function(item) {
+        const fonte = item.fonte || "Outras fontes";
+        if (!grupos[fonte]) grupos[fonte] = [];
+        grupos[fonte].push(item);
+      });
+
+      const fontes = ordemFontes
+        .filter(function(f) { return grupos[f] && grupos[f].length; })
+        .concat(
+          Object.keys(grupos).filter(function(f) {
+            return ordemFontes.indexOf(f) === -1;
+          })
+        );
+
+      function renderLinha(item) {
+        const localizado = item.status === "LOCALIZADO";
+        const valor = localizado
+          ? escaparHtmlRecebeOps(item.valor)
+          : "Não localizado";
+
+        return `
+          <div class="grid grid-cols-[minmax(150px,0.8fr)_minmax(220px,1.4fr)_auto] gap-3 items-center py-2.5 border-b border-slate-800/70 last:border-b-0">
+            <div class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">
+              ${escaparHtmlRecebeOps(item.rotulo)}
+            </div>
+            <div class="text-xs font-semibold ${localizado ? "text-slate-200" : "text-amber-300"} break-words">
+              ${valor}
+            </div>
+            <div class="text-right">
+              <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md border text-[8px] font-bold ${
+                localizado
+                  ? "text-emerald-300 border-emerald-900/60 bg-emerald-950/30"
+                  : "text-amber-300 border-amber-900/60 bg-amber-950/30"
+              }">
+                ${localizado ? "✓ LOCALIZADO" : "! AUSENTE"}
+              </span>
+            </div>
+          </div>
+        `;
+      }
+
+      grid.innerHTML = fontes.map(function(fonte) {
+        const itens = grupos[fonte] || [];
+        const localizados = itens.filter(function(i) { return i.status === "LOCALIZADO"; }).length;
+        const ausentes = itens.length - localizados;
+
+        return `
+          <section class="rounded-2xl border border-slate-800 bg-slate-950/40 overflow-hidden">
+            <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-800 bg-slate-950/60">
+              <div>
+                <div class="text-[11px] uppercase tracking-[0.12em] font-extrabold text-slate-200">
+                  ${escaparHtmlRecebeOps(titulosFonte[fonte] || fonte)}
+                </div>
+                <div class="mt-1 text-[10px] text-slate-500">
+                  ${escaparHtmlRecebeOps(descricaoFonte[fonte] || "")}
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-[9px]">
+                <span class="px-2 py-1 rounded-md border border-emerald-900/60 bg-emerald-950/30 text-emerald-300 font-bold">
+                  ${localizados} localizado${localizados === 1 ? "" : "s"}
+                </span>
+                ${
+                  ausentes
+                    ? `<span class="px-2 py-1 rounded-md border border-amber-900/60 bg-amber-950/30 text-amber-300 font-bold">
+                         ${ausentes} ausente${ausentes === 1 ? "" : "s"}
+                       </span>`
+                    : ""
+                }
+              </div>
+            </div>
+
+            <div class="px-4">
+              ${itens.map(renderLinha).join("")}
+            </div>
+          </section>
+        `;
+      }).join("");
+
+      if (docs.length) {
+        grid.innerHTML += `
+          <section class="rounded-2xl border border-slate-800 bg-slate-950/40 overflow-hidden">
+            <div class="flex items-center justify-between gap-3 px-4 py-3 border-b border-slate-800 bg-slate-950/60">
+              <div>
+                <div class="text-[11px] uppercase tracking-[0.12em] font-extrabold text-slate-200">
+                  Documentos de Conferência
+                </div>
+                <div class="mt-1 text-[10px] text-slate-500">
+                  Documentos usados para conferência e suporte do caso.
+                </div>
+              </div>
+              <span class="px-2 py-1 rounded-md border border-sky-900/60 bg-sky-950/30 text-sky-300 text-[9px] font-bold">
+                ${docs.length} documento${docs.length === 1 ? "" : "s"}
+              </span>
+            </div>
+
+            <div class="px-4">
+              ${docs.map(function(doc) {
+                const nome = doc.tipo === "EXTRATO_FINANCEIRO"
+                  ? "Extrato Financeiro"
+                  : doc.tipo === "SINTESE_CONTRATO"
+                    ? "Síntese do Contrato"
+                    : doc.tipo;
+
+                let uso = doc.uso || "";
+                if (uso === "CONFERENCIA_APENAS") uso = "Somente conferência";
+                if (uso === "CONFERENCIA_E_DADOS_CONTRATUAIS_QUANDO_DISPONIVEIS") {
+                  uso = "Conferência e dados contratuais quando disponíveis";
+                }
+
+                return `
+                  <div class="grid grid-cols-[minmax(180px,0.9fr)_minmax(260px,1.5fr)] gap-3 items-center py-2.5 border-b border-slate-800/70 last:border-b-0">
+                    <div class="text-[10px] uppercase tracking-wide text-slate-500 font-bold">
+                      ${escaparHtmlRecebeOps(nome)}
+                    </div>
+                    <div class="text-xs font-semibold text-slate-300">
+                      ${escaparHtmlRecebeOps(uso)}
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </section>
+        `;
+      }
+
+      if (aviso) {
+        aviso.textContent = prov.aviso || "";
+      }
+    }
+
+    function aplicarDadosReaisNoCaso(data, cardId) {
+      const d = normalizarDadosPreviewRecebeOps(data);
+      if (!d) return false;
+
+      data.dados = d;
+      window.recebeOpsLivePreview = data;
+      window.recebeOpsPreviewHash =
+        data.hash ||
+        (data.registro && data.registro.hash) ||
+        null;
+
+      if (data.registro) {
+        window.recebeOpsGenerationStatus = data.registro.geracaoStatus || "";
+        window.recebeOpsModeloStatus = data.registro.modeloStatus || "";
+        window.recebeOpsModeloNome = data.registro.modeloNome || "";
+        window.recebeOpsEstadoProcesso =
+          data.registro.estadoProcesso ||
+          data.estadoProcesso ||
+          data.registro.geracaoStatus ||
+          data.registro.status ||
+          "";
+      } else {
+        window.recebeOpsEstadoProcesso = data.estadoProcesso || "";
+      }
+
+      if (!CASES.length) {
+        CASES = [criarCasoBaseRecebeOps(cardId || data.cardId || data.shortLink || "")];
+        currentCaseId = CASES[0].id;
+      }
+
+      const c = CASES[0];
+      c.cardId = cardId || data.cardId || data.shortLink || c.cardId;
+      c.nome = d.nomeComprador || "Cliente sem nome";
+      c.cpf = d.cpfComprador || "";
+      c.rg = d.rgComprador || "";
+      c.civ = d.estadoCivilComprador || "";
+      c.prof = d.profissaoComprador || "";
+      c.end = d.enderecoComprador || "";
+      c.lot = d.empreendimentoModelo || "";
+      c.ct = d.contrato || "";
+      c.qd = d.quadra || "";
+      c.lt = d.lote || "";
+      c.dt = d.dataContrato || "";
+      c.m2 = d.metragem || "";
+      c.mat = d.matricula || "";
+      c.st = "PARCELAMENTO";
+      c.stLbl = d.tipoTermo || "Caso sincronizado";
+      c.stCls = "bg-emerald-950/80 text-emerald-300 border-emerald-800/70";
+
+      const acordo = d.acordo || {};
+      const parcelas = Array.isArray(acordo.parcelas) ? acordo.parcelas : [];
+
+      c.parcVenc = parcelas.length || Number(d.qtdParcelas || 0) || 0;
+      c.parcNum = parcelas.length
+        ? `${parcelas.length} parcela(s) identificada(s)`
+        : "";
+
+      const honorarios = acordo.honorarios && acordo.honorarios.centavos !== undefined
+        ? valorCentavosRecebeOps(acordo.honorarios.centavos)
+        : numeroBRRecebeOps(
+            d.valorHonorarios ||
+            (acordo.honorarios && (acordo.honorarios.valor || acordo.honorarios.valorFormatado))
+          );
+
+      agreementState.entradaValor = honorarios;
+      agreementState.qtdParcelas = c.parcVenc || 1;
+
+      c.honorarios = honorarios;
+
+      const totalParcelas = parcelas.reduce(
+        (soma, p) => soma + valorParcelaNumeroRecebeOps(p),
+        0
+      );
+
+      c.tot = totalParcelas ||
+        (acordo.total !== undefined
+          ? valorCentavosRecebeOps(acordo.total)
+          : numeroBRRecebeOps(d.valorAcordo || 0));
+
+      c.saldo = acordo.saldo !== undefined
+        ? valorCentavosRecebeOps(acordo.saldo)
+        : numeroBRRecebeOps(d.saldo || 0);
+
+      c.pago = acordo.pago !== undefined
+        ? valorCentavosRecebeOps(acordo.pago)
+        : numeroBRRecebeOps(d.valorPago || 0);
+
+      atualizarStatusModeloNaTelaRecebeOps();
+      preencherComplementosNaTelaRecebeOps();
+      atualizarEstadoProcessoRecebeOps();
+      renderizarProvenienciaRecebeOps();
+      atualizarGovernancaRecebeOps();
+      carregarAuditoriaRecebeOps();
+
+      return true;
+    }
+
+    async function verificarParametroCardIdNaUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cardId = String(urlParams.get("cardId") || "").trim();
+
+      limparCasoAtualRecebeOps();
+
+      if (!cardId) return;
+
+      const caso = criarCasoBaseRecebeOps(cardId);
+      CASES = [caso];
+      currentCaseId = caso.id;
+
+      showToast("Carregando caso do Trello...");
+
+      try {
+        const resp = await fetch(
+          `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(cardId)}&_=${Date.now()}`,
+          { cache: "no-store" }
+        );
+
+        let data = null;
+
+        try {
+          data = await resp.json();
+        } catch (_) {
+          throw new Error("O RecebeOps recebeu uma resposta inválida do servidor.");
+        }
+
+        if (!resp.ok || (data && data.status === "error")) {
+          throw new Error(
+            (data && (data.message || data.code)) ||
+            `Não foi possível carregar o caso (HTTP ${resp.status}).`
+          );
+        }
+
+        const carregou = aplicarDadosReaisNoCaso(data, cardId);
+
+        if (!carregou) {
+          throw new Error("O caso foi localizado, mas não há dados suficientes para exibi-lo.");
+        }
+
+        renderCaseList();
+        showToast("Caso carregado com sucesso.");
+      } catch (e) {
+        console.error("Falha ao carregar caso:", e);
+
+        caso.nome = "Não foi possível carregar o caso";
+        caso.lot = "Verifique a integração ou o cartão informado";
+        caso.ct = cardId;
+        caso.stLbl = "Falha no carregamento";
+        caso.stCls = "bg-rose-950/80 text-rose-300 border-rose-800/70";
+
+        renderCaseList();
+        showToast(e.message || "Não foi possível carregar o caso.");
+      }
+    }
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active', 'bg-emerald-600', 'text-white');
+        btn.classList.add('bg-slate-950/70', 'text-slate-400');
+      });
+      event.target.classList.add('active', 'bg-emerald-600', 'text-white');
+      event.target.classList.remove('bg-slate-950/70', 'text-slate-400');
+      renderCaseList();
+    }
+
+    function setDetailTab(tab) {
+      currentDetailTab = tab;
+      const tMinuta = document.getElementById('tabNavMinuta');
+      const tDossie = document.getElementById('tabNavDossie');
+      const tAudit = document.getElementById('tabNavAuditoria');
+
+      const vMinuta = document.getElementById('viewMinutaContainer');
+      const vDossie = document.getElementById('viewDossieContainer');
+      const vAudit = document.getElementById('viewAuditoriaContainer');
+
+      [tMinuta, tDossie, tAudit].forEach(el => {
+        el.className = "pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2";
+      });
+
+      vMinuta.classList.add('hidden');
+      vDossie.classList.add('hidden');
+      vAudit.classList.add('hidden');
+
+      if (tab === 'MINUTA') {
+        tMinuta.className = "pb-3 border-b-2 border-emerald-500 text-emerald-400 font-bold flex items-center gap-2";
+        vMinuta.classList.remove('hidden');
+      } else if (tab === 'DOSSIE') {
+        tDossie.className = "pb-3 border-b-2 border-emerald-500 text-emerald-400 font-bold flex items-center gap-2";
+        vDossie.classList.remove('hidden');
+      } else {
+        tAudit.className = "pb-3 border-b-2 border-emerald-500 text-emerald-400 font-bold flex items-center gap-2";
+        vAudit.classList.remove('hidden');
+      }
+    }
+
+    function renderCaseList() {
+      const search = (document.getElementById('searchInput').value || document.getElementById('globalSearchInput').value || "").toLowerCase();
+      const container = document.getElementById('casesContainer');
+      container.innerHTML = '';
+      const filtered = CASES.filter(c => {
+        const matchesFilter = (currentFilter === 'ALL') || (c.st === currentFilter);
+        const matchesSearch =
+          String(c.nome || "").toLowerCase().includes(search) ||
+          String(c.lot || "").toLowerCase().includes(search) ||
+          String(c.cpf || "").includes(search) ||
+          String(c.ct || "").toLowerCase().includes(search);
+        return matchesFilter && matchesSearch;
+      });
+      document.getElementById('caseCountBadge').innerText =
+        `${filtered.length} ${filtered.length === 1 ? "caso ativo" : "casos ativos"}`;
+
+      if (!filtered.length) {
+        container.innerHTML = `
+          <div class="crm-card rounded-2xl p-4 text-center">
+            <div class="text-xs font-bold text-slate-300">
+              ${CASES.length ? "Nenhum caso corresponde ao filtro" : "Nenhum caso carregado"}
+            </div>
+            <div class="mt-1 text-[10px] text-slate-500">
+              ${CASES.length ? "Altere o filtro ou a busca." : "Abra um caso pelo link do Trello."}
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach(c => {
+        const isSelected = c.id === currentCaseId;
+        const initials = String(c.nome || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
+        const item = document.createElement('div');
+        item.onclick = () => selectCase(c.id);
+        item.className = `p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col gap-2 ${isSelected ? 'crm-card-highlight shadow-lg ring-1 ring-emerald-500/50' : 'crm-card hover:border-slate-700/80'}`;
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 text-[11px] font-bold text-slate-300 flex items-center justify-center shrink-0">
+                ${initials}
+              </div>
+              <span class="text-xs font-bold text-white tracking-tight">${c.nome}</span>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${c.stCls}">${c.stLbl}</span>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-400">
+            <span>${c.lot} • <strong class="text-slate-300 font-mono">Qd ${c.qd}, Lt ${c.lt}</strong></span>
+            <span class="font-mono text-slate-200 font-bold">R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</span>
+          </div>
+          <div class="flex items-center justify-between pt-1 border-t soft-border text-[10px] text-slate-500">
+            <span class="font-mono">#${c.ct}</span>
+            <span class="${c.dias > 60 ? 'text-rose-400 font-bold' : 'text-amber-400 font-semibold'}">${c.dias > 0 ? `${c.dias} dias atraso` : 'Contrato em dia'}</span>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    document.getElementById('searchInput').addEventListener('input', renderCaseList);
+    document.getElementById('globalSearchInput').addEventListener('input', renderCaseList);
+
+    function selectCase(id) {
+      currentCaseId = id;
+      const c = CASES.find(item => item.id === id);
+      if (!c) return;
+
+      const initials = String(c.nome || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
+      document.getElementById('detailAvatar').innerText = initials;
+      document.getElementById('detailName').innerText = c.nome;
+      document.getElementById('detailCpf').innerText = c.cpf;
+      document.getElementById('detailProfissao').innerText = c.prof;
+      document.getElementById('detailEstadoCivil').innerText = c.civ;
+      document.getElementById('detailLoteamento').innerText = c.lot;
+      document.getElementById('detailUnidade').innerText = `Qd. ${c.qd}, Lt. ${c.lt} (${c.m2})`;
+      document.getElementById('detailContrato').innerText = `#${c.ct}`;
+      document.getElementById('detailMatricula').innerText = c.mat;
+      document.getElementById('detailValorTotal').innerText = `R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      
+      const atrasoEl = document.getElementById('detailAtraso');
+      atrasoEl.innerText = c.dias > 0 ? `${c.parcVenc} parcela(s) em aberto • ${c.dias} dias` : 'Contrato em dia';
+      atrasoEl.className = c.dias > 0 ? "text-xs text-rose-400 font-bold" : "text-xs text-emerald-400 font-bold";
+      
+      const badge = document.getElementById('detailBadgeType');
+      badge.innerText = c.stLbl;
+      badge.className = `px-2.5 py-0.5 rounded-full text-xs font-semibold border ${c.stCls}`;
+      
+      currentDocMode = c.st;
+      agreementState.entradaValor = Number(c.honorarios || 0);
+      agreementState.qtdParcelas = Number(c.parcVenc || 0);
+
+      // Atualiza a aba do Dossiê
+      document.getElementById('dossieNome').innerText = c.nome;
+      document.getElementById('dossieCpf').innerText = c.cpf;
+      document.getElementById('dossieRg').innerText = c.rg;
+      document.getElementById('dossieCiv').innerText = c.civ;
+      document.getElementById('dossieProf').innerText = c.prof;
+      document.getElementById('dossieEnd').innerText = c.end;
+      document.getElementById('dossieLot').innerText = c.lot;
+      document.getElementById('dossieQdLote').innerText = `Quadra ${c.qd} - Lote ${c.lt}`;
+      document.getElementById('dossieM2').innerText = c.m2;
+      document.getElementById('dossieContrato').innerText = `#${c.ct}`;
+      document.getElementById('dossieDataContrato').innerText = c.dt;
+      document.getElementById('dossieMatricula').innerText = c.mat;
+      document.getElementById('auditCardId').innerText = c.cardId;
+
+      updateTabsUI();
+      renderActionControls();
+      renderDocumentContent();
+      renderCaseList();
+    }
+
+    function switchDocMode(mode) {
+      currentDocMode = mode;
+      updateTabsUI();
+      renderActionControls();
+      renderDocumentContent();
+    }
+
+    function updateTabsUI() {
+      const map = { 'NOTIFICACAO': 'tabBtnNotif', 'PARCELAMENTO': 'tabBtnParc', 'CESSAO': 'tabBtnCessao', 'REFIN': 'tabBtnRefin', 'RESCISAO': 'tabBtnRescisao' };
+      Object.keys(map).forEach(k => {
+        const btn = document.getElementById(map[k]);
+        btn.className = currentDocMode === k ? "px-3 py-1.5 rounded-lg font-bold bg-emerald-600 text-white shadow-sm transition-all" : "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all";
+      });
+    }
+
+    function renderActionControls() {
+      const c = casoAtualRecebeOps();
+      const panel = document.getElementById('actionControlsPanel');
+      if (currentDocMode === 'NOTIFICACAO') {
+        panel.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="font-bold text-slate-200 flex items-center gap-2 text-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                Notificação Premonitória de Mora (Art. 32 da Lei 6.766/79)
+              </div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Prazo improrrogável de 30 dias para purgação da mora no Registro de Imóveis competente. <strong>Regra: sem inclusão de cônjuge.</strong></p>
+            </div>
+            <button onclick="openPixModal(${c.tot})" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center gap-1.5">
+              <span>Chave Pix Total</span>
+            </button>
+          </div>
+        `;
+      } else if (currentDocMode === 'PARCELAMENTO') {
+        const parcelasReais = parcelasReaisDoAcordoRecebeOps();
+        const valParc = c.tot / Math.max(1, agreementState.qtdParcelas);
+        const resumoParcelas = parcelasReais.length
+          ? resumoParcelasReaisRecebeOps()
+          : `${agreementState.qtdParcelas}x de R$ ${valParc.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+
+        panel.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            <div>
+              <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Honorários/Entrada (Separados da Dívida):</label>
+              <input type="number" value="${agreementState.entradaValor}" onchange="agreementState.entradaValor=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500">
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Parcelas registradas no acordo:</label>
+              <select ${parcelasReais.length ? 'disabled' : ''} onchange="agreementState.qtdParcelas=parseInt(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed">
+                <option value="1" ${agreementState.qtdParcelas==1?'selected':''}>1x (À vista)</option>
+                <option value="2" ${agreementState.qtdParcelas==2?'selected':''}>2x mensais</option>
+                <option value="3" ${agreementState.qtdParcelas==3?'selected':''}>3x mensais</option>
+                <option value="4" ${agreementState.qtdParcelas==4?'selected':''}>4x mensais</option>
+                <option value="6" ${agreementState.qtdParcelas==6?'selected':''}>6x mensais (Limite)</option>
+              </select>
+            </div>
+            <div class="bg-slate-950/80 p-2.5 rounded-xl border soft-border flex items-center justify-between">
+              <div>
+                <span class="text-[10px] uppercase font-bold text-slate-500">Parcelas do acordo:</span>
+                <div class="text-emerald-400 font-bold font-mono text-xs leading-relaxed">${resumoParcelas}</div>
+              </div>
+              <button onclick="openPixModal(${agreementState.entradaValor})" class="text-xs text-emerald-400 underline font-bold hover:text-emerald-300">Pix Entrada</button>
+            </div>
+          </div>
+        `;
+      } else if (currentDocMode === 'CESSAO') {
+        panel.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="font-bold text-slate-200 text-xs">Termo de Cessão e Transferência de Lote (Com Anuência da Loteadora)</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Exige qualificação completa do cessionário e assinatura do cônjuge caso casado sob comunhão.</p>
+            </div>
+            <button onclick="openPixModal(4500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Taxa de Cessão (R$ 4.500)</button>
+          </div>
+        `;
+      } else if (currentDocMode === 'REFIN') {
+        panel.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="font-bold text-slate-200 text-xs">Termo Aditivo de Repactuação de Saldo Residual e Refinanciamento</div>
+              <p class="text-slate-400 text-[11px] mt-0.5">Saldo vincendo diluído em até 150 prestações mensais corrigidas pelo IPCA + juros legais.</p>
+            </div>
+            <button onclick="openPixModal(3500)" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Gerar Entrada Refin</button>
+          </div>
+        `;
+      } else {
+        const ret = c.pago * (rescisaoState.retencaoClausulaPenalPct / 100);
+        const liq = Math.max(0, c.pago - ret);
+        panel.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+            <div>
+              <span class="text-slate-400 text-[11px] font-semibold">Total Pago pelo Cliente:</span>
+              <div class="font-bold text-slate-200 font-mono text-sm mt-0.5">R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+            </div>
+            <div>
+              <label class="block text-slate-400 text-[11px] mb-1 font-semibold">Retenção Cláusula Penal (Lei 13.786/18):</label>
+              <select onchange="rescisaoState.retencaoClausulaPenalPct=parseFloat(this.value);renderActionControls();renderDocumentContent();" class="w-full bg-slate-950 border soft-border rounded-xl px-3 py-1.5 text-slate-200 font-mono text-xs focus:border-emerald-500">
+                <option value="10">10%</option>
+                <option value="20">20%</option>
+                <option value="25">25% (Teto Legal)</option>
+              </select>
+            </div>
+            <div class="bg-slate-950/80 p-2.5 rounded-xl border soft-border">
+              <span class="text-[10px] uppercase font-bold text-slate-500">Restituição em 12x:</span>
+              <div class="text-amber-400 font-bold font-mono text-sm">R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function escapeHtmlRecebeOps(v) {
+      return String(v == null ? "" : v).replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+    }
+
+    function valorOuPendente(v) {
+      const t = String(v == null ? "" : v).trim();
+      return t ? escapeHtmlRecebeOps(t) : '<span class="text-amber-500 font-semibold">Não localizado</span>';
+    }
+
+    function renderPreviaOperacionalRecebeOps() {
+      const previa = window.recebeOpsLivePreview;
+      if (!previa || !previa.dados) return false;
+      const d = previa.dados;
+      const parcelas = d.acordo && Array.isArray(d.acordo.parcelas) ? d.acordo.parcelas : [];
+      const conjuge = d.conjuge || {};
+      const temConjuge = !!String(conjuge.nome || '').trim();
+      const pendencias = Array.isArray(d.pendencias) ? d.pendencias : [];
+      const printArea = document.getElementById('printArea');
+      const linhasParcelas = parcelas.length
+        ? parcelas.map((p,i)=>`<tr class="border-t border-slate-200"><td class="py-2 pr-3">${i+1}ª</td><td class="py-2 pr-3 font-mono font-bold">R$ ${valorParcelaFormatadoRecebeOps(p)}</td><td class="py-2">${escapeHtmlRecebeOps(p.vencimento || '')}</td></tr>`).join('')
+        : '<tr><td colspan="3" class="py-3 text-amber-600">Parcelas não localizadas no Trello</td></tr>';
+      
+      printArea.innerHTML = `
+        <div class="space-y-6 text-slate-800 w-full min-w-0 overflow-hidden">
+          <div class="border-b border-slate-200 pb-4 flex items-start justify-between gap-4">
+            <div>
+              <div class="text-[10px] uppercase tracking-[0.2em] text-emerald-700 font-extrabold">RecebeOps CRM • Prévia Operacional</div>
+              <h2 class="text-lg font-black text-slate-900 mt-1">Variáveis Extraídas para Termo Oficial</h2>
+              <p class="text-xs text-slate-500 mt-1">Os dados abaixo serão usados na futura mesclagem com o modelo oficial, sem reescrita de cláusulas.</p>
+            </div>
+            <div class="text-right text-xs text-slate-500 font-mono">
+              <div>Contrato: <strong class="text-slate-900">${valorOuPendente(d.contrato)}</strong></div>
+              <div>Qd. ${valorOuPendente(d.quadra)} • Lt. ${valorOuPendente(d.lote)}</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-xl border border-slate-200 p-4 bg-slate-50/50">
+              <h3 class="font-extrabold text-xs uppercase text-slate-700 mb-3 tracking-wider">Identificação do Cliente</h3>
+              <div class="space-y-1.5 text-xs">
+                <div><span class="text-slate-500">Nome:</span> <strong>${valorOuPendente(d.nomeComprador)}</strong></div>
+                <div><span class="text-slate-500">CPF:</span> <span class="font-mono">${valorOuPendente(d.cpfComprador)}</span></div>
+                <div><span class="text-slate-500">RG:</span> <span class="font-mono">${valorOuPendente(d.rgComprador)}</span></div>
+                <div><span class="text-slate-500">Estado Civil:</span> ${valorOuPendente(d.estadoCivilComprador)}</div>
+                <div><span class="text-slate-500">Profissão:</span> ${valorOuPendente(d.profissaoComprador)}</div>
+                <div><span class="text-slate-500">E-mail:</span> ${valorOuPendente(d.emailComprador)}</div>
+                <div><span class="text-slate-500">Endereço:</span> ${valorOuPendente(d.enderecoComprador)}</div>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 p-4 bg-slate-50/50">
+              <h3 class="font-extrabold text-xs uppercase text-slate-700 mb-3 tracking-wider">Condições & Governança</h3>
+              <div class="space-y-1.5 text-xs">
+                <div><span class="text-slate-500">Empreendimento:</span> <strong>${valorOuPendente(d.empreendimentoModelo)}</strong></div>
+                <div><span class="text-slate-500">Data do Contrato:</span> ${valorOuPendente(d.dataContrato)}</div>
+                <div><span class="text-slate-500">Termo:</span> <strong class="text-emerald-700">${valorOuPendente(d.tipoTermo)}</strong></div>
+                <div><span class="text-slate-500">Honorários/Entrada:</span> <strong class="font-mono text-emerald-700">${valorOuPendente(d.valorHonorarios)}</strong></div>
+                <div><span class="text-slate-500">Regra Cônjuge:</span> ${temConjuge ? escapeHtmlRecebeOps(conjuge.nome) : 'Não informado / não aplicável'}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 p-4 w-full min-w-0 overflow-hidden">
+            <h3 class="font-extrabold text-xs uppercase text-slate-700 mb-2 tracking-wider">Plano de Parcelas Concluído</h3>
+            <div class="w-full overflow-x-auto">
+              <table class="w-full text-xs">
+              <thead><tr class="text-left text-slate-500 border-b border-slate-200"><th class="pb-2">Parcela</th><th class="pb-2">Valor</th><th class="pb-2">Vencimento</th></tr></thead>
+              <tbody>${linhasParcelas}</tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border ${pendencias.length ? 'border-amber-800/70 bg-slate-950/95' : 'border-emerald-800/70 bg-slate-950/95'} p-4 shadow-sm">
+            <div class="flex flex-wrap items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="text-[10px] uppercase tracking-[0.16em] font-extrabold ${pendencias.length ? 'text-amber-300' : 'text-emerald-300'}">
+                  Auditoria Pré-Emissão
+                </div>
+                <div class="mt-1.5 text-[11px] leading-relaxed text-slate-300">
+                  ${pendencias.length
+                    ? 'Dados pendentes que ainda precisam ser localizados ou conferidos antes da liberação.'
+                    : 'Nenhuma pendência operacional identificada nesta prévia.'}
+                </div>
+              </div>
+
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[9px] font-extrabold ${
+                pendencias.length
+                  ? 'border-amber-700/70 bg-amber-950/70 text-amber-200'
+                  : 'border-emerald-700/70 bg-emerald-950/70 text-emerald-200'
+              }">
+                <span class="w-1.5 h-1.5 rounded-full ${pendencias.length ? 'bg-amber-400' : 'bg-emerald-400'}"></span>
+                ${pendencias.length
+                  ? `${pendencias.length} PENDÊNCIA${pendencias.length === 1 ? '' : 'S'}`
+                  : 'SEM PENDÊNCIAS'}
+              </span>
+            </div>
+
+            ${
+              pendencias.length
+                ? `
+                  <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                    ${pendencias.map(function(x) {
+                      const nome = typeof x === 'string'
+                        ? x
+                        : (x.campo || x.motivo || 'Pendência');
+
+                      return `
+                        <div class="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-700/80 bg-slate-900/80">
+                          <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                          <span class="text-[10px] font-bold text-slate-200">
+                            ${escapeHtmlRecebeOps(nome)}
+                          </span>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                `
+                : `
+                  <div class="mt-3 text-[10px] text-slate-400">
+                    A geração continuará condicionada ao estado do processo e às regras do modelo oficial.
+                  </div>
+                `
+            }
+          </div>
+        </div>
+      `;
+      return true;
+    }
+
+    function renderDocumentContent() {
+      if (renderPreviaOperacionalRecebeOps()) return;
+
+      const printArea = document.getElementById('printArea');
+      if (!window.recebeOpsLivePreview || !window.recebeOpsLivePreview.dados) {
+        printArea.innerHTML = `
+          <div class="min-h-[420px] flex items-center justify-center text-center">
+            <div class="max-w-md">
+              <div class="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-extrabold">RecebeOps</div>
+              <h2 class="text-lg font-black text-slate-900 mt-2">Nenhum caso real carregado</h2>
+              <p class="text-sm text-slate-500 mt-2">
+                Abra o RecebeOps pelo link gerado no cartão do Trello para visualizar a prévia operacional do caso.
+              </p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const c = casoAtualRecebeOps();
+      const hoje = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+      
+      const hdr = `
+        <div class="border-b border-slate-300 pb-4 mb-6 flex justify-between items-start">
+          <div>
+            <div class="text-[10px] font-mono tracking-widest text-emerald-800 uppercase font-bold">L.G.T GESTÃO DE RECEBÍVEIS • ASSESSORIA JURÍDICA</div>
+            <h2 class="font-extrabold text-base text-slate-900 tracking-tight mt-0.5">GT ADVOGADOS ASSOCIADOS</h2>
+            <p class="text-[11px] text-slate-500">Departamento de Recuperação de Crédito Imobiliário • Lote 5</p>
+          </div>
+          <div class="text-right text-[11px] font-mono text-slate-500">
+            <div>Contrato nº: <strong class="text-slate-800">${c.ct}</strong></div>
+            <div>São José dos Campos/SP, ${hoje}</div>
+          </div>
+        </div>
+      `;
+
+      if (currentDocMode === 'NOTIFICACAO') {
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">NOTIFICAÇÃO PREMONITÓRIA DE MORA (ART. 32 DA LEI 6.766/79)</h3>
+          <p class="mb-3 text-justify">NOTIFICADO(A): <strong>${c.nome.toUpperCase()}</strong>, brasileiro(a), portador(a) do RG nº ${c.rg} e inscrito(a) no CPF/MF sob o nº <strong>${c.cpf}</strong>, residente e domiciliado(a) na ${c.end}.</p>
+          <p class="mb-3 text-justify">Fica V. Sa. formalmente NOTIFICADO(A) de que se encontra em mora com as obrigações assumidas no Contrato de Promessa de Compra e Venda nº <strong>${c.ct}</strong>, referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> do loteamento denominado <em>${c.lot}</em> (${c.mat}), acumulando débito vencido consolidado de <strong>R$ ${c.tot.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> (${c.parcNum}).</p>
+          <p class="mb-4 font-semibold text-justify">Fica V. Sa. intimado(a) a efetuar a purgação da mora no prazo improrrogável de 30 (trinta) dias contados do recebimento desta, sob pena de rescisão contratual de pleno direito e reintegração de posse na forma estrita da Lei nº 6.766/79.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-2 text-center text-xs mt-8">
+            <div>
+              <strong>GT Advogados / L.G.T Gestão</strong><br>
+              <span class="text-slate-500">Everton Lanzilotti - Gestão de Operações</span>
+            </div>
+            <div>
+              <strong>Ciente do Notificado</strong><br>
+              <span class="text-slate-500">Data: ___/___/2026</span>
+            </div>
+          </div>
+        `;
+      } else if (currentDocMode === 'PARCELAMENTO') {
+        const parcelasReais = parcelasReaisDoAcordoRecebeOps();
+        const linhas = parcelasReais.length
+          ? parcelasReais.map((p, i) => `<li>${i + 1}ª parcela — R$ ${valorParcelaFormatadoRecebeOps(p)} — ${escapeHtmlRecebeOps(p.vencimento || '')}</li>`).join('')
+          : '<li>Condições não localizadas.</li>';
+
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm mb-5 text-slate-900">PRÉVIA OPERACIONAL — PARCELAMENTO CURTO</h3>
+          <p class="mb-3 text-justify">Esta tela não substitui o modelo jurídico oficial. Ela apresenta somente os dados extraídos para conferência antes da futura mesclagem no Google Docs.</p>
+          <p class="mb-2"><strong>Cliente:</strong> ${escapeHtmlRecebeOps(c.nome)}</p>
+          <p class="mb-2"><strong>Contrato:</strong> ${escapeHtmlRecebeOps(c.ct)} — Quadra ${escapeHtmlRecebeOps(c.qd)} / Lote ${escapeHtmlRecebeOps(c.lt)}</p>
+          <p class="mb-2"><strong>Honorários/Entrada:</strong> R$ ${agreementState.entradaValor.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+          <div class="mt-4">
+            <strong>Parcelas registradas no acordo:</strong>
+            <ul class="list-disc ml-6 mt-2">${linhas}</ul>
+          </div>
+        `;
+      } else if (currentDocMode === 'CESSAO') {
+        const cess = c.cess || { nome: "Lucas Guilherme Barbosa", cpf: "419.221.308-11" };
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">TERMO DE CESSÃO DE DIREITOS E OBRIGAÇÕES COM ANUÊNCIA EXPRESSA</h3>
+          <p class="mb-3">CEDENTE: <strong>${c.nome}</strong> (CPF: ${c.cpf}) | CESSIONÁRIO: <strong>${cess.nome}</strong> (CPF: ${cess.cpf}).</p>
+          <p class="mb-3 text-justify">O Cedente, com expressa anuência da interveniente credora, cede e transfere a posse e a totalidade dos direitos decorrentes do Contrato nº ${c.ct} referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> (${c.lot}), transferindo o saldo devedor vincendo ao Cessionário, recolhida a taxa de cessão no valor de R$ 4.500,00.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-3 text-center text-xs mt-8">
+            <div><strong>Cedente</strong><br><span class="text-slate-500">${c.nome}</span></div>
+            <div><strong>Cessionário</strong><br><span class="text-slate-500">${cess.nome}</span></div>
+            <div><strong>Anuente</strong><br><span class="text-slate-500">Everton Lanzilotti</span></div>
+          </div>
+        `;
+      } else if (currentDocMode === 'REFIN') {
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">TERMO ADITIVO DE REPACTUAÇÃO DE SALDO E REFINANCIAMENTO</h3>
+          <p class="mb-3 text-justify">O saldo devedor vincendo consolidado de <strong>R$ ${c.saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> referente ao <strong>Lote ${c.lt}, Quadra ${c.qd}</strong> é repactuado em 150 prestações mensais atualizadas pelo IPCA + 0,8% a.m.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-2 text-center text-xs mt-8">
+            <div><strong>Credora / GT Advogados</strong><br><span class="text-slate-500">Everton Lanzilotti</span></div>
+            <div><strong>Comprador</strong><br><span class="text-slate-500">${c.nome}</span></div>
+          </div>
+        `;
+      } else {
+        const ret = c.pago * (rescisaoState.retencaoClausulaPenalPct / 100);
+        const liq = Math.max(0, c.pago - ret);
+        printArea.innerHTML = `
+          ${hdr}
+          <h3 class="text-center font-extrabold text-sm underline mb-5 text-slate-900">DISTRATO CONTRATUAL E RESCISÃO DE PROMESSA DE COMPRA E VENDA</h3>
+          <p class="mb-3 text-justify">Resilição amigável do Contrato nº ${c.ct} referente ao Lote ${c.lt}, Quadra ${c.qd} (${c.lot}). Total pago pelo adquirente: R$ ${c.pago.toLocaleString('pt-BR', {minimumFractionDigits: 2})}. Aplicação da retenção legal prevista na Lei Federal 13.786/18 de ${rescisaoState.retencaoClausulaPenalPct}%, restando o saldo líquido de <strong>R$ ${liq.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</strong> restituível em 12 parcelas mensais.</p>
+          <div class="pt-10 border-t border-slate-300 grid grid-cols-2 text-center text-xs mt-8">
+            <div><strong>GT Advogados</strong><br><span class="text-slate-500">Everton Lanzilotti</span></div>
+            <div><strong>Distratante</strong><br><span class="text-slate-500">${c.nome}</span></div>
+          </div>
+        `;
+      }
+    }
+
+    function openPixModal(v) {
+      document.getElementById('pixModalValor').innerText = `R$ ${parseFloat(v || 398.99).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+      document.getElementById('pixModal').classList.remove('hidden');
+    }
+
+    function closePixModal() {
+      document.getElementById('pixModal').classList.add('hidden');
+    }
+
+    function copyPixCode() {
+      navigator.clipboard.writeText(document.getElementById('pixCodeInput').value);
+      showToast("Chave Pix copiada com sucesso: adm@gtadv.com.br");
+    }
+
+    function copyDocumentText() {
+      navigator.clipboard.writeText(document.getElementById('printArea').innerText);
+      showToast("Minuta jurídica copiada para a área de transferência!");
+    }
+
+    function printDocument() {
+      window.print();
+    }
+
+    async function approveAndSave() {
+      const c = casoAtualRecebeOps();
+
+      if (!c || !c.cardId) {
+        return showToast("Cartão não identificado.");
+      }
+
+      if (!window.recebeOpsPreviewHash) {
+        return showToast("Prévia sem hash de validação. Recarregue o caso pelo link do Trello.");
+      }
+
+      try {
+        showToast("Confirmando dados da prévia...");
+
+        const resp = await fetch(RECEBEOPS_API_URL, {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            action: "approve_preview",
+            cardId: c.cardId,
+            hash: window.recebeOpsPreviewHash
+          })
+        });
+
+        let data = null;
+        try {
+          data = await resp.json();
+        } catch (_) {
+          throw new Error("Resposta inválida do backend.");
+        }
+
+        if (!resp.ok) {
+          throw new Error(
+            (data && (data.message || data.code)) ||
+            `Erro HTTP ${resp.status}`
+          );
+        }
+
+        if (data.status === "generated") {
+          showToast("Documento gerado e confirmado pelo backend.");
+          return;
+        }
+
+        if (data.status === "approved_waiting_generator") {
+          window.recebeOpsModeloNome = data.modeloNome || window.recebeOpsModeloNome || "";
+          window.recebeOpsModeloStatus = data.modeloStatus || window.recebeOpsModeloStatus || "";
+          window.recebeOpsGenerationStatus = data.generationStatus || window.recebeOpsGenerationStatus || "";
+          atualizarStatusModeloNaTelaRecebeOps();
+          atualizarGovernancaRecebeOps();
+
+          try {
+            const refreshResp = await fetch(
+              `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
+              {cache:"no-store"}
+            );
+
+            if (refreshResp.ok) {
+              const refreshData = await refreshResp.json();
+              window.recebeOpsLivePreview = refreshData;
+              window.recebeOpsPreviewHash =
+                refreshData.hash ||
+                (refreshData.registro && refreshData.registro.hash) ||
+                window.recebeOpsPreviewHash;
+              preencherComplementosNaTelaRecebeOps();
+            }
+          } catch (_) {}
+
+          const modeloNome = data.modeloNome || "";
+          const modeloStatus = data.modeloStatus || "";
+          const generationStatus = data.generationStatus || "";
+
+          if (modeloStatus === "MODELO_LOCALIZADO" && modeloNome) {
+            if (generationStatus === "AGUARDANDO_COMPLEMENTOS") {
+              showToast("Modelo localizado: " + modeloNome + " • Aguardando complementos.");
+            } else if (generationStatus === "PRONTO_PARA_GERACAO_CONTROLADA") {
+              showToast("Modelo localizado: " + modeloNome + " • Pronto para geração controlada.");
+            } else {
+              showToast("Modelo localizado: " + modeloNome + " • " + (generationStatus || "Fila preparada."));
+            }
+          } else if (generationStatus) {
+            showToast("Dados aprovados • " + generationStatus);
+          } else {
+            showToast("Dados aprovados. Aguardando o módulo de geração do Google Docs.");
+          }
+
+          return;
+        }
+
+        if (
+          data.status === "approved" ||
+          data.status === "preview_approved" ||
+          data.status === "ok"
+        ) {
+          showToast("Dados da prévia aprovados com sucesso.");
+          return;
+        }
+
+        showToast(
+          data.message ||
+          data.code ||
+          "A aprovação foi recebida, mas o backend não informou o estado final."
+        );
+      } catch (e) {
+        console.error("Falha na aprovação:", e);
+        showToast(e.message || "Não foi possível confirmar a aprovação.");
+      }
+    }
+
+    function showToast(m) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMessage').innerText = m;
+      t.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3200);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
+
