@@ -336,11 +336,11 @@
                   <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold" id="detailBadgeType">-</span>
                 </div>
                 <div class="text-xs text-slate-400 mt-0.5 flex flex-wrap items-center gap-2">
-                  <span id="detailCpf" class="font-mono text-slate-300">000.000.000-00</span>
+                  <span id="detailCpf" class="font-mono text-slate-300">-</span>
                   <span>•</span>
-                  <span id="detailProfissao" class="text-slate-400">Comerciante</span>
+                  <span id="detailProfissao" class="text-slate-400">-</span>
                   <span>•</span>
-                  <span id="detailEstadoCivil" class="text-slate-400">Casado</span>
+                  <span id="detailEstadoCivil" class="text-slate-400">-</span>
                 </div>
               </div>
             </div>
@@ -755,6 +755,15 @@
 
       if (badge) badge.innerText = "0 casos ativos";
 
+      const financeiro = document.getElementById("detailTotal");
+      if (financeiro) financeiro.innerText = "R$ 0,00";
+
+      const saldo = document.getElementById("detailSaldo");
+      if (saldo) saldo.innerText = "R$ 0,00";
+
+      const pago = document.getElementById("detailPago");
+      if (pago) pago.innerText = "R$ 0,00";
+
       if (container) {
         container.innerHTML = `
           <div class="crm-card rounded-2xl p-4 text-center">
@@ -768,6 +777,33 @@
 
       const nome = document.getElementById("detailName");
       if (nome) nome.innerText = "Nenhum caso selecionado";
+
+      const neutros = [
+        "detailCpf",
+        "detailRg",
+        "detailCivil",
+        "detailProf",
+        "detailEndereco",
+        "detailLoteamento",
+        "detailContrato",
+        "detailQuadraLote",
+        "detailEmail"
+      ];
+
+      neutros.forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.innerText = "-";
+      });
+
+      const avatar = document.getElementById("detailAvatar");
+      if (avatar) avatar.innerText = "-";
+
+      const badgeTipo = document.getElementById("detailBadgeType");
+      if (badgeTipo) {
+        badgeTipo.innerText = "Sem caso";
+        badgeTipo.className =
+          "px-2.5 py-0.5 rounded-full text-xs font-semibold border bg-slate-900 text-slate-400 border-slate-700";
+      }
     }
 
     async function init() {
