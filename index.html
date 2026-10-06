@@ -1335,6 +1335,15 @@
       }
 
       try {
+        const controller =
+          new AbortController();
+
+        const timeout =
+          setTimeout(
+            () => controller.abort(),
+            15000
+          );
+
         const r = await fetch(
           RECEBEOPS_API_URL,
           {
@@ -1347,9 +1356,13 @@
               JSON.stringify({
                 action:
                   "trello_status"
-              })
+              }),
+            signal:
+              controller.signal
           }
         );
+
+        clearTimeout(timeout);
 
         const d = await r.json();
 
@@ -1382,18 +1395,31 @@
             "text-rose-300 text-[11px]";
         }
 
+        if (
+          e &&
+          e.name === "AbortError"
+        ) {
+          throw new Error(
+            "O Trello demorou mais de 15 segundos para responder."
+          );
+        }
+
         throw e;
       }
     }
 
-    async function carregarPendenciasTrelloRecebeOps() {
+    async function carregarPendenciasTrelloRecebeOps(
+      trelloJaValidado = false
+    ) {
       CASES = [];
       currentCaseId = null;
       renderCaseList();
       limparCasoAtualRecebeOps();
 
       try {
-        await verificarTrelloRealRecebeOps();
+        if (!trelloJaValidado) {
+          await verificarTrelloRealRecebeOps();
+        }
 
         showToast(
           "Carregando suas pendências do Trello..."
@@ -1532,12 +1558,25 @@
           ).get("cardId") || ""
         ).trim();
 
+      // A conexão do Trello deve ser validada em qualquer entrada:
+      // tanto na tela geral quanto ao abrir um cardId diretamente.
+      try {
+        await verificarTrelloRealRecebeOps();
+      } catch (e) {
+        console.error(
+          "Falha ao validar Trello:",
+          e
+        );
+      }
+
       if (cardId) {
         await verificarParametroCardIdNaUrl();
       } else {
         limparCasoAtualRecebeOps();
 
-        await carregarPendenciasTrelloRecebeOps();
+        await carregarPendenciasTrelloRecebeOps(
+          true
+        );
       }
     }
 
