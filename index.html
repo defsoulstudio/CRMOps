@@ -419,7 +419,7 @@
           <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-950/70 border soft-border" title="Webhook do Trello sincronizado e ouvindo eventos">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
             <span class="text-slate-400 text-[11px]">Trello:</span>
-            <strong class="text-slate-200 text-[11px]" id="statFilaTotal">Conectado</strong>
+            <strong class="text-amber-300 text-[11px]" id="statFilaTotal">Verificando...</strong>
           </div>
 
           <!-- Alçadas Dr. Leandro Badge -->
@@ -1320,8 +1320,81 @@
       }
     }
 
-    async function carregarPendenciasTrelloRecebeOps() {
+    async function verificarTrelloRealRecebeOps() {
+      const el =
+        document.getElementById(
+          "statFilaTotal"
+        );
+
+      if (el) {
+        el.textContent =
+          "Verificando...";
+
+        el.className =
+          "text-amber-300 text-[11px]";
+      }
+
       try {
+        const r = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            body:
+              JSON.stringify({
+                action:
+                  "trello_status"
+              })
+          }
+        );
+
+        const d = await r.json();
+
+        if (
+          !r.ok ||
+          d.status === "error" ||
+          !d.conectado
+        ) {
+          throw new Error(
+            d.message ||
+            "Trello não conectado."
+          );
+        }
+
+        if (el) {
+          el.textContent =
+            "Conectado";
+
+          el.className =
+            "text-emerald-300 text-[11px]";
+        }
+
+        return true;
+      } catch (e) {
+        if (el) {
+          el.textContent =
+            "Falha na conexão";
+
+          el.className =
+            "text-rose-300 text-[11px]";
+        }
+
+        throw e;
+      }
+    }
+
+    async function carregarPendenciasTrelloRecebeOps() {
+      CASES = [];
+      currentCaseId = null;
+      renderCaseList();
+      limparCasoAtualRecebeOps();
+
+      try {
+        await verificarTrelloRealRecebeOps();
+
         showToast(
           "Carregando suas pendências do Trello..."
         );
@@ -1439,11 +1512,14 @@
       } catch (e) {
         console.error(e);
 
+        CASES = [];
+        currentCaseId = null;
+        renderCaseList();
         renderEstadoSemCasoRecebeOps();
 
         showToast(
           e.message ||
-          "Não foi possível carregar as pendências."
+          "Não foi possível carregar as pendências do Trello."
         );
       }
     }
