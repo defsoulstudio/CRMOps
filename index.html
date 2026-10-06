@@ -331,6 +331,31 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
 
+  <div id="authGate" class="fixed inset-0 z-[9999] bg-[#060b13] flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-3xl border border-slate-800 bg-[#0c1422] p-6 sm:p-8 shadow-2xl">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-11 h-11 rounded-2xl bg-emerald-600 flex items-center justify-center text-lg font-black text-white">R</div>
+        <div>
+          <div class="text-lg font-extrabold text-white">RecebeOps</div>
+          <div class="text-xs text-slate-400">Acesso restrito • GT Advogados</div>
+        </div>
+      </div>
+
+      <label class="block text-xs font-bold text-slate-400 mb-1.5">Usuário</label>
+      <input id="authUser" autocomplete="username" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-3 text-sm text-white outline-none focus:border-emerald-500" placeholder="Usuário">
+
+      <label class="block text-xs font-bold text-slate-400 mb-1.5 mt-4">Senha</label>
+      <input id="authPassword" type="password" autocomplete="current-password" class="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-3 text-sm text-white outline-none focus:border-emerald-500" placeholder="Senha">
+
+      <button onclick="loginRecebeOps()" class="mt-5 w-full rounded-xl bg-emerald-600 hover:bg-emerald-500 px-4 py-3 text-sm font-extrabold text-white">
+        Entrar
+      </button>
+
+      <div id="authMessage" class="mt-3 min-h-[20px] text-xs text-rose-300"></div>
+    </div>
+  </div>
+
+
   <!-- Top Navigation Header / Suite Bar -->
   <header class="sticky top-0 z-50 crm-glass-nav no-print">
     <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
@@ -413,7 +438,7 @@
             <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#080e19]"></span>
           </div>
           <div class="text-left hidden sm:block">
-            <div class="text-xs font-bold text-slate-200 leading-tight">Everton Lanzilotti</div>
+            <div class="text-xs font-bold text-slate-200 leading-tight">Everton Lanzilotti</div><button onclick="logoutRecebeOps()" class="text-[9px] text-slate-500 hover:text-slate-300 mt-0.5">Sair</button>
             <div class="text-[10px] text-slate-400 leading-tight">Gestão de Operações • Lote 5</div>
           </div>
         </div>
@@ -1035,6 +1060,8 @@
 
     window.recebeOpsAuditEvents = [];
     window.recebeOpsEstadoProcesso = "";
+    window.recebeOpsAutenticado = false;
+    window.recebeOpsAguardandoSelecaoTermo = false;
 
     let CASES = [];
     let currentCaseId = null;
@@ -1044,6 +1071,399 @@
     let currentDetailTab = 'MINUTA';
     let agreementState = { entradaValor: 0, qtdParcelas: 0, descontoJuros: 0 };
     let rescisaoState = { retencaoClausulaPenalPct: 10, parcelasDevolucao: 12 };
+
+    async function verificarAutenticacaoRecebeOps() {
+      try {
+        const r = await fetch(
+          "/api/auth",
+          {
+            cache: "no-store",
+            credentials: "same-origin"
+          }
+        );
+
+        const d = await r.json();
+
+        window.recebeOpsAutenticado =
+          !!d.authenticated;
+      } catch (_) {
+        window.recebeOpsAutenticado = false;
+      }
+
+      document
+        .getElementById("authGate")
+        ?.classList.toggle(
+          "hidden",
+          window.recebeOpsAutenticado
+        );
+
+      return window.recebeOpsAutenticado;
+    }
+
+    async function loginRecebeOps() {
+      const user = String(
+        document
+          .getElementById("authUser")
+          ?.value || ""
+      ).trim();
+
+      const password = String(
+        document
+          .getElementById("authPassword")
+          ?.value || ""
+      );
+
+      const msg =
+        document.getElementById(
+          "authMessage"
+        );
+
+      if (msg) {
+        msg.textContent =
+          "Validando acesso...";
+      }
+
+      try {
+        const r = await fetch(
+          "/api/auth",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            credentials:
+              "same-origin",
+            body:
+              JSON.stringify({
+                action: "login",
+                user: user,
+                password: password
+              })
+          }
+        );
+
+        const d = await r.json();
+
+        if (
+          !r.ok ||
+          !d.authenticated
+        ) {
+          throw new Error(
+            d.message ||
+            "Não foi possível entrar."
+          );
+        }
+
+        window.recebeOpsAutenticado =
+          true;
+
+        document
+          .getElementById("authGate")
+          ?.classList.add("hidden");
+
+        if (msg) {
+          msg.textContent = "";
+        }
+
+        await iniciarRecebeOpsAposLogin();
+      } catch (e) {
+        if (msg) {
+          msg.textContent =
+            e.message ||
+            "Acesso não autorizado.";
+        }
+      }
+    }
+
+    async function logoutRecebeOps() {
+      try {
+        await fetch(
+          "/api/auth",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            credentials:
+              "same-origin",
+            body:
+              JSON.stringify({
+                action: "logout"
+              })
+          }
+        );
+      } catch (_) {}
+
+      window.location.reload();
+    }
+
+    function modoParaTipoDocumentoRecebeOps(
+      mode
+    ) {
+      return ({
+        NOTIFICACAO:
+          "NOTIFICAÇÃO EXTRAJUDICIAL",
+        PARCELAMENTO:
+          "PARCELAMENTO CURTO",
+        CESSAO:
+          "CESSÃO",
+        REFIN:
+          "REFINANCIAMENTO",
+        RESCISAO:
+          "RESCISÃO"
+      })[mode] || "";
+    }
+
+    async function selecionarTipoDocumentoNoRecebeOps(
+      mode
+    ) {
+      const c =
+        casoAtualRecebeOps();
+
+      if (
+        !c ||
+        !c.cardId
+      ) {
+        return;
+      }
+
+      const tipo =
+        modoParaTipoDocumentoRecebeOps(
+          mode
+        );
+
+      if (!tipo) return;
+
+      try {
+        showToast(
+          "Coletando dados reais e preparando a prévia..."
+        );
+
+        const r = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            body:
+              JSON.stringify({
+                action:
+                  "select_document_type",
+                cardId:
+                  c.cardId,
+                tipoTermo:
+                  tipo,
+                autor:
+                  "Everton Lanzilotti"
+              })
+          }
+        );
+
+        const d =
+          await r.json();
+
+        if (
+          !r.ok ||
+          d.status === "error"
+        ) {
+          throw new Error(
+            d.message ||
+            d.code ||
+            "Falha ao selecionar documento."
+          );
+        }
+
+        window.recebeOpsAguardandoSelecaoTermo =
+          false;
+
+        const rr = await fetch(
+          `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
+          {
+            cache: "no-store"
+          }
+        );
+
+        const dados =
+          await rr.json();
+
+        if (
+          !rr.ok ||
+          dados.status === "error"
+        ) {
+          throw new Error(
+            dados.message ||
+            dados.code ||
+            "Falha ao atualizar o caso."
+          );
+        }
+
+        aplicarDadosReaisNoCaso(
+          dados,
+          c.cardId
+        );
+
+        renderCaseList();
+        selectCase(c.id);
+
+        showToast(
+          "Documento selecionado. Revise os dados antes de aprovar."
+        );
+      } catch (e) {
+        showToast(
+          e.message ||
+          "Falha ao selecionar documento."
+        );
+      }
+    }
+
+    async function carregarPendenciasTrelloRecebeOps() {
+      try {
+        showToast(
+          "Carregando suas pendências do Trello..."
+        );
+
+        const r = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            body:
+              JSON.stringify({
+                action:
+                  "list_term_pendencies"
+              })
+          }
+        );
+
+        const d =
+          await r.json();
+
+        if (
+          !r.ok ||
+          d.status === "error"
+        ) {
+          throw new Error(
+            d.message ||
+            d.code ||
+            "Falha ao carregar pendências."
+          );
+        }
+
+        CASES =
+          (d.itens || [])
+            .map(function(
+              item,
+              index
+            ) {
+              return {
+                id: index + 1,
+                filaTrello: true,
+                cardId:
+                  item.shortLink ||
+                  item.cardId,
+                shortLink:
+                  item.shortLink || "",
+                nome:
+                  item.nome ||
+                  "Cartão sem nome",
+                cpf: "",
+                rg: "",
+                civ: "",
+                prof: "",
+                end: "",
+                lot:
+                  item.quadro || "",
+                qd: "",
+                lt: "",
+                m2: "",
+                mat: "",
+                ct:
+                  item.shortLink || "",
+                dt:
+                  item.solicitadoEm || "",
+                st:
+                  "PENDENTE_DOCUMENTO",
+                stLbl:
+                  item.tipoSugerido ||
+                  "Documento pendente",
+                stCls:
+                  "bg-amber-950/70 text-amber-300 border-amber-800/70",
+                dias: 0,
+                parcVenc: 0,
+                parcNum: "",
+                valOrig: 0,
+                multa: 0,
+                jur: 0,
+                corr: 0,
+                tot: 0,
+                saldo: 0,
+                pago: 0,
+                honorarios: 0,
+                honorariosPago:
+                  false,
+                listaTrello:
+                  item.lista || "",
+                urlTrello:
+                  item.url || "",
+                ultimaSolicitacao:
+                  item.ultimaSolicitacao ||
+                  ""
+              };
+            });
+
+        currentCaseId = null;
+
+        atualizarOpcoesEmpreendimentoRecebeOps();
+        renderCaseList();
+
+        const badge =
+          document.getElementById(
+            "caseCountBadge"
+          );
+
+        if (badge) {
+          badge.innerText =
+            `${CASES.length} pendência${CASES.length === 1 ? "" : "s"}`;
+        }
+
+        showToast(
+          `${CASES.length} pendência${CASES.length === 1 ? "" : "s"} carregada${CASES.length === 1 ? "" : "s"}.`
+        );
+      } catch (e) {
+        console.error(e);
+
+        renderEstadoSemCasoRecebeOps();
+
+        showToast(
+          e.message ||
+          "Não foi possível carregar as pendências."
+        );
+      }
+    }
+
+    async function iniciarRecebeOpsAposLogin() {
+      const cardId =
+        String(
+          new URLSearchParams(
+            window.location.search
+          ).get("cardId") || ""
+        ).trim();
+
+      if (cardId) {
+        await verificarParametroCardIdNaUrl();
+      } else {
+        limparCasoAtualRecebeOps();
+
+        await carregarPendenciasTrelloRecebeOps();
+      }
+    }
 
     function criarCasoBaseRecebeOps(cardId) {
       return {
@@ -1164,17 +1584,15 @@
     });
 
     async function init() {
-      await verificarParametroCardIdNaUrl();
-      atualizarOpcoesEmpreendimentoRecebeOps();
-      renderCaseList();
+      prepararVisualizacoesPorAbaRecebeOps();
+      setDetailTab("MINUTA");
 
-      if (CASES.length) {
-        prepararVisualizacoesPorAbaRecebeOps();
-        selectCase(CASES[0].id);
-        setDetailTab("MINUTA");
-      } else {
-        renderEstadoSemCasoRecebeOps();
-      }
+      const autenticado =
+        await verificarAutenticacaoRecebeOps();
+
+      if (!autenticado) return;
+
+      await iniciarRecebeOpsAposLogin();
     }
 
     function limparPrefixoUnidade(valor, prefixo) {
@@ -2671,6 +3089,77 @@
           );
         }
 
+        if (
+          data &&
+          data.status ===
+            "awaiting_term_selection"
+        ) {
+          window.recebeOpsAguardandoSelecaoTermo =
+            true;
+
+          caso.nome =
+            (data.card &&
+              data.card.nome) ||
+            "Caso do Trello";
+
+          caso.lot =
+            (data.card &&
+              data.card.quadro) ||
+            "";
+
+          caso.ct =
+            data.shortLink ||
+            cardId;
+
+          caso.st =
+            "PARCELAMENTO";
+
+          caso.stLbl =
+            "Selecione o documento";
+
+          caso.stCls =
+            "bg-sky-950/70 text-sky-300 border-sky-800/70";
+
+          caso.urlTrello =
+            (data.card &&
+              data.card.url) ||
+            "";
+
+          caso.listaTrello =
+            (data.card &&
+              data.card.lista) ||
+            "";
+
+          renderCaseList();
+          selectCase(caso.id);
+
+          const tituloGov =
+            document.getElementById(
+              "governancaTitulo"
+            );
+
+          const motivoGov =
+            document.getElementById(
+              "governancaMotivo"
+            );
+
+          if (tituloGov) {
+            tituloGov.textContent =
+              "Selecione o documento que será preparado";
+          }
+
+          if (motivoGov) {
+            motivoGov.textContent =
+              "A escolha do termo agora é feita somente dentro do RecebeOps. Depois da escolha, os dados reais do caso serão coletados e a prévia será montada para revisão.";
+          }
+
+          showToast(
+            "Selecione o documento desejado no RecebeOps."
+          );
+
+          return;
+        }
+
         const carregou = aplicarDadosReaisNoCaso(data, cardId);
 
         if (!carregou) {
@@ -2992,6 +3481,18 @@
       const c = CASES.find(item => item.id === id);
       if (!c) return;
 
+      if (c.filaTrello) {
+        const ref =
+          c.shortLink ||
+          c.cardId;
+
+        if (ref) {
+          window.location.href =
+            `/?cardId=${encodeURIComponent(ref)}`;
+          return;
+        }
+      }
+
       const initials = String(c.nome || '?').split(' ').filter(Boolean).map(n => n[0]).slice(0, 2).join('').toUpperCase() || '?';
       document.getElementById('detailAvatar').innerText = initials;
       document.getElementById('detailName').innerText = c.nome;
@@ -3047,6 +3548,16 @@
     function switchDocMode(mode) {
       currentDocMode = mode;
       updateTabsUI();
+
+      if (
+        window.recebeOpsAguardandoSelecaoTermo
+      ) {
+        selecionarTipoDocumentoNoRecebeOps(
+          mode
+        );
+        return;
+      }
+
       renderActionControls();
       renderDocumentContent();
     }
