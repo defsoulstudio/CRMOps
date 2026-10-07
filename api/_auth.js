@@ -3,18 +3,22 @@ import crypto from "crypto";
 const COOKIE_NAME = "recebeops_session";
 const TTL = 60 * 60 * 12;
 
-function sign(value) {
-  const secret =
+function secret() {
+  const value =
     process.env.RECEBEOPS_SESSION_SECRET || "";
 
-  if (!secret) {
+  if (!value) {
     throw new Error(
       "RECEBEOPS_SESSION_SECRET não configurada."
     );
   }
 
+  return value;
+}
+
+function sign(value) {
   return crypto
-    .createHmac("sha256", secret)
+    .createHmac("sha256", secret())
     .update(value)
     .digest("base64url");
 }
@@ -33,7 +37,7 @@ export function createSession(username) {
   return payload + "." + sign(payload);
 }
 
-function cookies(req) {
+function parseCookies(req) {
   const out = {};
 
   String(req.headers.cookie || "")
@@ -42,7 +46,9 @@ function cookies(req) {
       const i = part.indexOf("=");
 
       if (i > 0) {
-        out[part.slice(0, i).trim()] =
+        out[
+          part.slice(0, i).trim()
+        ] =
           decodeURIComponent(
             part.slice(i + 1).trim()
           );
@@ -52,48 +58,121 @@ function cookies(req) {
   return out;
 }
 
-export function isAuthenticated(req) {
+function bearerToken(req) {
+  const auth =
+    String(
+      req.headers.authorization || ""
+    ).trim();
+
+  const m =
+    auth.match(/^Bearer\s+(.+)$/i);
+
+  return m ? m[1].trim() : "";
+}
+
+function validateToken(token) {
   try {
-    const token = cookies(req)[COOKIE_NAME];
+    if (!token) return null;
 
-    if (!token) return false;
+    const parts =
+      String(token).split(".");
 
-    const [payload, signature] =
-      token.split(".");
+    if (parts.length !== 2) {
+      return null;
+    }
 
-    if (!payload || !signature) return false;
+    const payload =
+      parts[0];
 
-    const expected = sign(payload);
+    const signature =
+      parts[1];
 
-    const a = Buffer.from(signature);
-    const b = Buffer.from(expected);
+    const expected =
+      sign(payload);
+
+    const a =
+      Buffer.from(signature);
+
+    const b =
+      Buffer.from(expected);
 
     if (
       a.length !== b.length ||
       !crypto.timingSafeEqual(a, b)
     ) {
-      return false;
+      return null;
     }
 
-    const data = JSON.parse(
-      Buffer
-        .from(payload, "base64url")
-        .toString("utf8")
-    );
+    const data =
+      JSON.parse(
+        Buffer
+          .from(
+            payload,
+            "base64url"
+          )
+          .toString("utf8")
+      );
 
-    return (
-      Boolean(data.u) &&
-      Number(data.exp || 0) >
+    if (
+      !data.u ||
+      Number(data.exp || 0) <=
         Math.floor(Date.now() / 1000)
-    );
+    ) {
+      return null;
+    }
+
+    return data;
   } catch {
-    return false;
+    return null;
   }
+}
+
+export function getSession(req) {
+  // 1. Authorization Bearer tem prioridade.
+  const bearer =
+    bearerToken(req);
+
+  const byBearer =
+    validateToken(bearer);
+
+  if (byBearer) {
+    return {
+      authenticated: true,
+      user: byBearer.u,
+      source: "bearer"
+    };
+  }
+
+  // 2. Fallback para cookie HttpOnly.
+  const cookieToken =
+    parseCookies(req)[COOKIE_NAME];
+
+  const byCookie =
+    validateToken(cookieToken);
+
+  if (byCookie) {
+    return {
+      authenticated: true,
+      user: byCookie.u,
+      source: "cookie"
+    };
+  }
+
+  return {
+    authenticated: false,
+    user: "",
+    source: ""
+  };
+}
+
+export function isAuthenticated(req) {
+  return getSession(req).authenticated;
 }
 
 export function sessionCookie(token) {
   return (
-    "recebeops_session=" +
+    COOKIE_NAME +
+    "=" +
     encodeURIComponent(token) +
     "; Path=/" +
     "; HttpOnly" +
@@ -106,7 +185,8 @@ export function sessionCookie(token) {
 
 export function clearSessionCookie() {
   return (
-    "recebeops_session=" +
+    COOKIE_NAME +
+    "=" +
     "; Path=/" +
     "; HttpOnly" +
     "; Secure" +
