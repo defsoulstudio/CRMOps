@@ -1320,19 +1320,53 @@
       }
     }
 
-    async function verificarTrelloRealRecebeOps() {
+    function atualizarIndicadorTrelloRecebeOps(
+      estado,
+      quantidade
+    ) {
       const el =
         document.getElementById(
           "statFilaTotal"
         );
 
-      if (el) {
+      if (!el) return;
+
+      if (estado === "CONECTADO") {
+        const qtd =
+          Number.isFinite(Number(quantidade))
+            ? Number(quantidade)
+            : null;
+
         el.textContent =
-          "Verificando...";
+          qtd === null
+            ? "Conectado"
+            : `Conectado • ${qtd} pendência${qtd === 1 ? "" : "s"}`;
 
         el.className =
-          "text-amber-300 text-[11px]";
+          "text-emerald-300 text-[11px]";
+        return;
       }
+
+      if (estado === "FALHA") {
+        el.textContent =
+          "Falha na conexão";
+
+        el.className =
+          "text-rose-300 text-[11px]";
+        return;
+      }
+
+      el.textContent =
+        "Verificando...";
+
+      el.className =
+        "text-amber-300 text-[11px]";
+    }
+
+    async function verificarTrelloRealRecebeOps() {
+      atualizarIndicadorTrelloRecebeOps(
+        "VERIFICANDO"
+      );
 
       try {
         const controller =
@@ -1377,23 +1411,21 @@
           );
         }
 
-        if (el) {
-          el.textContent =
-            "Conectado";
+        window.recebeOpsTrelloConectado =
+          true;
 
-          el.className =
-            "text-emerald-300 text-[11px]";
-        }
+        atualizarIndicadorTrelloRecebeOps(
+          "CONECTADO"
+        );
 
         return true;
       } catch (e) {
-        if (el) {
-          el.textContent =
-            "Falha na conexão";
+        window.recebeOpsTrelloConectado =
+          false;
 
-          el.className =
-            "text-rose-300 text-[11px]";
-        }
+        atualizarIndicadorTrelloRecebeOps(
+          "FALHA"
+        );
 
         if (
           e &&
@@ -1529,8 +1561,13 @@
 
         if (badge) {
           badge.innerText =
-            `${CASES.length} pendência${CASES.length === 1 ? "" : "s"}`;
+            `${CASES.length} ${CASES.length === 1 ? "caso ativo" : "casos ativos"}`;
         }
+
+        atualizarIndicadorTrelloRecebeOps(
+          "CONECTADO",
+          CASES.length
+        );
 
         showToast(
           `${CASES.length} pendência${CASES.length === 1 ? "" : "s"} carregada${CASES.length === 1 ? "" : "s"}.`
@@ -1542,6 +1579,10 @@
         currentCaseId = null;
         renderCaseList();
         renderEstadoSemCasoRecebeOps();
+
+        atualizarIndicadorTrelloRecebeOps(
+          "FALHA"
+        );
 
         showToast(
           e.message ||
@@ -3283,6 +3324,12 @@
 
         atualizarOpcoesEmpreendimentoRecebeOps();
         renderCaseList();
+
+        // O caso foi preenchido após a resposta do backend.
+        // Re-renderiza explicitamente o painel de detalhes para
+        // substituir o estado inicial "Carregando...".
+        selectCase(caso.id);
+
         showToast("Caso carregado com sucesso.");
       } catch (e) {
         console.error("Falha ao carregar caso:", e);
