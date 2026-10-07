@@ -1072,13 +1072,40 @@
     let agreementState = { entradaValor: 0, qtdParcelas: 0, descontoJuros: 0 };
     let rescisaoState = { retencaoClausulaPenalPct: 10, parcelasDevolucao: 12 };
 
+    function recebeOpsSessionToken() {
+      return String(
+        sessionStorage.getItem(
+          "recebeops_session_token"
+        ) || ""
+      );
+    }
+
+    function recebeOpsApiHeaders(
+      extras = {}
+    ) {
+      const token =
+        recebeOpsSessionToken();
+
+      return {
+        ...extras,
+        ...(token
+          ? {
+              Authorization:
+                "Bearer " + token
+            }
+          : {})
+      };
+    }
+
     async function verificarAutenticacaoRecebeOps() {
       try {
         const r = await fetch(
           "/api/auth",
           {
             cache: "no-store",
-            credentials: "same-origin"
+            credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders()
           }
         );
 
@@ -1128,10 +1155,10 @@
           "/api/auth",
           {
             method: "POST",
-            headers: {
+            headers: recebeOpsApiHeaders({
               "Content-Type":
                 "application/json"
-            },
+            }),
             credentials: "same-origin",
             body:
               JSON.stringify({
@@ -1157,6 +1184,13 @@
         window.recebeOpsAutenticado =
           true;
 
+        if (d.sessionToken) {
+          sessionStorage.setItem(
+            "recebeops_session_token",
+            d.sessionToken
+          );
+        }
+
         document
           .getElementById("authGate")
           ?.classList.add("hidden");
@@ -1181,10 +1215,10 @@
           "/api/auth",
           {
             method: "POST",
-            headers: {
+            headers: recebeOpsApiHeaders({
               "Content-Type":
                 "application/json"
-            },
+            }),
             credentials: "same-origin",
             body:
               JSON.stringify({
@@ -1193,6 +1227,10 @@
           }
         );
       } catch (_) {}
+
+      sessionStorage.removeItem(
+        "recebeops_session_token"
+      );
 
       window.location.reload();
     }
@@ -1244,10 +1282,10 @@
           {
             credentials: "same-origin",
             method: "POST",
-            headers: {
+            headers: recebeOpsApiHeaders({
               "Content-Type":
                 "application/json"
-            },
+            }),
             body:
               JSON.stringify({
                 action:
@@ -1296,6 +1334,8 @@
           `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             cache: "no-store"
           
           }
@@ -1421,10 +1461,10 @@
           {
             credentials: "same-origin",
             method: "POST",
-            headers: {
+            headers: recebeOpsApiHeaders({
               "Content-Type":
                 "application/json"
-            },
+            }),
             body:
               JSON.stringify({
                 action:
@@ -1514,10 +1554,10 @@
           {
             credentials: "same-origin",
             method: "POST",
-            headers: {
+            headers: recebeOpsApiHeaders({
               "Content-Type":
                 "application/json"
-            },
+            }),
             body:
               JSON.stringify({
                 action:
@@ -2258,8 +2298,13 @@
           RECEBEOPS_API_URL,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             method: "POST",
-          headers: {"Content-Type":"application/json"},
+          headers: recebeOpsApiHeaders({
+              "Content-Type":
+                "application/json"
+            }),
           body: JSON.stringify({
             action: "get_trello_return_queue",
             cardId: c.cardId
@@ -2300,8 +2345,13 @@
           RECEBEOPS_API_URL,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             method: "POST",
-          headers: {"Content-Type":"application/json"},
+          headers: recebeOpsApiHeaders({
+              "Content-Type":
+                "application/json"
+            }),
           body: JSON.stringify({
             action: "review_trello_return",
             cardId: c.cardId,
@@ -2357,8 +2407,13 @@
           RECEBEOPS_API_URL,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             method: "POST",
-          headers: {"Content-Type":"application/json"},
+          headers: recebeOpsApiHeaders({
+              "Content-Type":
+                "application/json"
+            }),
           body: JSON.stringify({
             action: "prepare_trello_return",
             cardId: c.cardId,
@@ -2401,8 +2456,13 @@
           RECEBEOPS_API_URL,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             method: "POST",
-          headers: {"Content-Type":"application/json"},
+          headers: recebeOpsApiHeaders({
+              "Content-Type":
+                "application/json"
+            }),
           body: JSON.stringify({
             action: "get_audit",
             cardId: c.cardId
@@ -2760,8 +2820,13 @@
           RECEBEOPS_API_URL,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             method: "POST",
-          headers: {"Content-Type":"application/json"},
+          headers: recebeOpsApiHeaders({
+              "Content-Type":
+                "application/json"
+            }),
           body: JSON.stringify({
             action: "save_complements",
             cardId: c.cardId,
@@ -2788,6 +2853,8 @@
           `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             cache:"no-store"
           }
         );
@@ -3312,6 +3379,8 @@
           `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(cardId)}&_=${Date.now()}`,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             cache: "no-store" 
           }
         );
@@ -4257,8 +4326,13 @@
           RECEBEOPS_API_URL,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             method: "POST",
-          headers: {"Content-Type":"application/json"},
+          headers: recebeOpsApiHeaders({
+              "Content-Type":
+                "application/json"
+            }),
           body: JSON.stringify({
             action: "approve_preview",
             cardId: c.cardId,
@@ -4299,6 +4373,8 @@
           `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
           {
             credentials: "same-origin",
+            headers:
+              recebeOpsApiHeaders(),
             cache:"no-store"
           }
         );
