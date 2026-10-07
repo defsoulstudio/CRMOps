@@ -1,14 +1,20 @@
 import {
-  isAuthenticated
+  getSession
 } from "./_auth.js";
 
-export default async function handler(req, res) {
+export default async function handler(
+  req,
+  res
+) {
   res.setHeader(
     "Cache-Control",
-    "no-store"
+    "no-store, no-cache, must-revalidate"
   );
 
-  if (!isAuthenticated(req)) {
+  const session =
+    getSession(req);
+
+  if (!session.authenticated) {
     return res
       .status(401)
       .json({
@@ -54,11 +60,13 @@ export default async function handler(req, res) {
           "?cardId=" +
           encodeURIComponent(cardId),
         {
-          redirect: "follow"
+          redirect: "follow",
+          cache: "no-store"
         }
       );
 
-      const text = await r.text();
+      const text =
+        await r.text();
 
       res.setHeader(
         "Content-Type",
@@ -66,7 +74,7 @@ export default async function handler(req, res) {
       );
 
       return res
-        .status(200)
+        .status(r.ok ? 200 : r.status)
         .send(text);
     }
 
@@ -83,11 +91,13 @@ export default async function handler(req, res) {
             JSON.stringify(
               req.body || {}
             ),
-          redirect: "follow"
+          redirect: "follow",
+          cache: "no-store"
         }
       );
 
-      const text = await r.text();
+      const text =
+        await r.text();
 
       res.setHeader(
         "Content-Type",
@@ -95,7 +105,7 @@ export default async function handler(req, res) {
       );
 
       return res
-        .status(200)
+        .status(r.ok ? 200 : r.status)
         .send(text);
     }
 
@@ -111,7 +121,8 @@ export default async function handler(req, res) {
       .status(500)
       .json({
         status: "error",
-        message: String(e)
+        message:
+          String(e?.message || e)
       });
   }
 }
