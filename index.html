@@ -1132,8 +1132,7 @@
               "Content-Type":
                 "application/json"
             },
-            credentials:
-              "same-origin",
+            credentials: "same-origin",
             body:
               JSON.stringify({
                 action: "login",
@@ -1186,8 +1185,7 @@
               "Content-Type":
                 "application/json"
             },
-            credentials:
-              "same-origin",
+            credentials: "same-origin",
             body:
               JSON.stringify({
                 action: "logout"
@@ -1244,6 +1242,7 @@
         const r = await fetch(
           RECEBEOPS_API_URL,
           {
+            credentials: "same-origin",
             method: "POST",
             headers: {
               "Content-Type":
@@ -1259,12 +1258,25 @@
                   tipo,
                 autor:
                   "Everton Lanzilotti"
-              })
+              
+          }
+        )
           }
         );
 
         const d =
           await r.json();
+
+        if (
+          erroAutenticacaoRecebeOps(
+            d,
+            r.status
+          )
+        ) {
+          throw new Error(
+            "Sua sessão expirou. Entre novamente."
+          );
+        }
 
         if (
           !r.ok ||
@@ -1283,7 +1295,9 @@
         const rr = await fetch(
           `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
           {
+            credentials: "same-origin",
             cache: "no-store"
+          
           }
         );
 
@@ -1363,6 +1377,30 @@
         "text-amber-300 text-[11px]";
     }
 
+    function erroAutenticacaoRecebeOps(dados, statusHttp) {
+      if (
+        Number(statusHttp) === 401 ||
+        (
+          dados &&
+          (
+            dados.code === "AUTH_REQUIRED" ||
+            dados.message ===
+              "Faça login no RecebeOps para continuar."
+          )
+        )
+      ) {
+        window.recebeOpsAutenticado = false;
+
+        document
+          .getElementById("authGate")
+          ?.classList.remove("hidden");
+
+        return true;
+      }
+
+      return false;
+    }
+
     async function verificarTrelloRealRecebeOps() {
       atualizarIndicadorTrelloRecebeOps(
         "VERIFICANDO"
@@ -1381,6 +1419,7 @@
         const r = await fetch(
           RECEBEOPS_API_URL,
           {
+            credentials: "same-origin",
             method: "POST",
             headers: {
               "Content-Type":
@@ -1390,7 +1429,9 @@
               JSON.stringify({
                 action:
                   "trello_status"
-              }),
+              
+          }
+        ),
             signal:
               controller.signal
           }
@@ -1399,6 +1440,17 @@
         clearTimeout(timeout);
 
         const d = await r.json();
+
+        if (
+          erroAutenticacaoRecebeOps(
+            d,
+            r.status
+          )
+        ) {
+          throw new Error(
+            "Sua sessão expirou. Entre novamente."
+          );
+        }
 
         if (
           !r.ok ||
@@ -1460,6 +1512,7 @@
         const r = await fetch(
           RECEBEOPS_API_URL,
           {
+            credentials: "same-origin",
             method: "POST",
             headers: {
               "Content-Type":
@@ -1469,7 +1522,9 @@
               JSON.stringify({
                 action:
                   "list_term_pendencies"
-              })
+              
+          }
+        )
           }
         );
 
@@ -2199,13 +2254,18 @@
       }
 
       try {
-        const resp = await fetch(RECEBEOPS_API_URL, {
-          method: "POST",
+        const resp = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            credentials: "same-origin",
+            method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({
             action: "get_trello_return_queue",
             cardId: c.cardId
-          })
+          
+          }
+        )
         });
 
         const data = await resp.json();
@@ -2236,8 +2296,11 @@
             : "Cancelando ação..."
         );
 
-        const resp = await fetch(RECEBEOPS_API_URL, {
-          method: "POST",
+        const resp = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            credentials: "same-origin",
+            method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({
             action: "review_trello_return",
@@ -2245,7 +2308,9 @@
             retornoId: retornoId,
             decisao: decisao,
             autor: "Everton Lanzilotti"
-          })
+          
+          }
+        )
         });
 
         const data = await resp.json();
@@ -2288,8 +2353,11 @@
       try {
         showToast("Preparando comentário para revisão...");
 
-        const resp = await fetch(RECEBEOPS_API_URL, {
-          method: "POST",
+        const resp = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            credentials: "same-origin",
+            method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({
             action: "prepare_trello_return",
@@ -2301,7 +2369,9 @@
               comentario: comentario,
               motivo: "Preparado manualmente no RecebeOps"
             }
-          })
+          
+          }
+        )
         });
 
         const data = await resp.json();
@@ -2327,13 +2397,18 @@
       if (!c || !c.cardId) return;
 
       try {
-        const resp = await fetch(RECEBEOPS_API_URL, {
-          method: "POST",
+        const resp = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            credentials: "same-origin",
+            method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({
             action: "get_audit",
             cardId: c.cardId
-          })
+          
+          }
+        )
         });
 
         const data = await resp.json();
@@ -2681,8 +2756,11 @@
       try {
         showToast("Salvando complementos...");
 
-        const resp = await fetch(RECEBEOPS_API_URL, {
-          method: "POST",
+        const resp = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            credentials: "same-origin",
+            method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({
             action: "save_complements",
@@ -2690,7 +2768,9 @@
             hash: window.recebeOpsPreviewHash,
             complementos: complementos,
             autor: "Everton Lanzilotti"
-          })
+          
+          }
+        )
         });
 
         let data = null;
@@ -2706,7 +2786,10 @@
 
         const novoResp = await fetch(
           `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
-          {cache:"no-store"}
+          {
+            credentials: "same-origin",
+            cache:"no-store"
+          }
         );
 
         if (novoResp.ok) {
@@ -3227,7 +3310,10 @@
       try {
         const resp = await fetch(
           `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(cardId)}&_=${Date.now()}`,
-          { cache: "no-store" }
+          {
+            credentials: "same-origin",
+            cache: "no-store" 
+          }
         );
 
         let data = null;
@@ -4167,14 +4253,19 @@
       try {
         showToast("Confirmando dados da prévia...");
 
-        const resp = await fetch(RECEBEOPS_API_URL, {
-          method: "POST",
+        const resp = await fetch(
+          RECEBEOPS_API_URL,
+          {
+            credentials: "same-origin",
+            method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({
             action: "approve_preview",
             cardId: c.cardId,
             hash: window.recebeOpsPreviewHash
-          })
+          
+          }
+        )
         });
 
         let data = null;
@@ -4205,9 +4296,12 @@
 
           try {
             const refreshResp = await fetch(
-              `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
-              {cache:"no-store"}
-            );
+          `${RECEBEOPS_API_URL}?cardId=${encodeURIComponent(c.cardId)}&_=${Date.now()}`,
+          {
+            credentials: "same-origin",
+            cache:"no-store"
+          }
+        );
 
             if (refreshResp.ok) {
               const refreshData = await refreshResp.json();
