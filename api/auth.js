@@ -2,33 +2,51 @@ import crypto from "crypto";
 
 import {
   createSession,
-  isAuthenticated,
+  getSession,
   sessionCookie,
   clearSessionCookie
 } from "./_auth.js";
 
 function equal(a, b) {
-  const aa = Buffer.from(String(a || ""));
-  const bb = Buffer.from(String(b || ""));
+  const aa =
+    Buffer.from(
+      String(a || "")
+    );
+
+  const bb =
+    Buffer.from(
+      String(b || "")
+    );
 
   return (
     aa.length === bb.length &&
-    crypto.timingSafeEqual(aa, bb)
+    crypto.timingSafeEqual(
+      aa,
+      bb
+    )
   );
 }
 
-export default async function handler(req, res) {
+export default async function handler(
+  req,
+  res
+) {
   res.setHeader(
     "Cache-Control",
-    "no-store"
+    "no-store, no-cache, must-revalidate"
   );
 
   if (req.method === "GET") {
+    const session =
+      getSession(req);
+
     return res
       .status(200)
       .json({
         authenticated:
-          isAuthenticated(req)
+          session.authenticated,
+        user:
+          session.user || ""
       });
   }
 
@@ -37,13 +55,15 @@ export default async function handler(req, res) {
       .status(405)
       .json({
         status: "error",
-        message: "Método não permitido."
+        message:
+          "Método não permitido."
       });
   }
 
   if (
-    String(req.body?.action || "") ===
-    "logout"
+    String(
+      req.body?.action || ""
+    ) === "logout"
   ) {
     res.setHeader(
       "Set-Cookie",
@@ -59,18 +79,21 @@ export default async function handler(req, res) {
   }
 
   const expectedUser =
-    process.env.RECEBEOPS_LOGIN_USER || "";
+    process.env
+      .RECEBEOPS_LOGIN_USER || "";
 
   const expectedPassword =
-    process.env.RECEBEOPS_LOGIN_PASSWORD || "";
+    process.env
+      .RECEBEOPS_LOGIN_PASSWORD || "";
 
-  const secret =
-    process.env.RECEBEOPS_SESSION_SECRET || "";
+  const sessionSecret =
+    process.env
+      .RECEBEOPS_SESSION_SECRET || "";
 
   if (
     !expectedUser ||
     !expectedPassword ||
-    !secret
+    !sessionSecret
   ) {
     return res
       .status(500)
@@ -82,14 +105,24 @@ export default async function handler(req, res) {
   }
 
   const user =
-    String(req.body?.user || "").trim();
+    String(
+      req.body?.user || ""
+    ).trim();
 
   const password =
-    String(req.body?.password || "");
+    String(
+      req.body?.password || ""
+    );
 
   if (
-    !equal(user, expectedUser) ||
-    !equal(password, expectedPassword)
+    !equal(
+      user,
+      expectedUser
+    ) ||
+    !equal(
+      password,
+      expectedPassword
+    )
   ) {
     return res
       .status(401)
@@ -100,17 +133,20 @@ export default async function handler(req, res) {
       });
   }
 
+  const token =
+    createSession(user);
+
   res.setHeader(
     "Set-Cookie",
-    sessionCookie(
-      createSession(user)
-    )
+    sessionCookie(token)
   );
 
   return res
     .status(200)
     .json({
       status: "ok",
-      authenticated: true
+      authenticated: true,
+      user: user,
+      sessionToken: token
     });
 }
