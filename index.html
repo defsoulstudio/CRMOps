@@ -494,10 +494,10 @@
       <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
         <div>
           <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Acordos / Parcelamentos</div>
-          <div class="text-lg font-extrabold text-emerald-400 mt-0.5 font-mono">—</div>
+          <div id="kpiAcordosValor" class="text-lg font-extrabold text-emerald-400 mt-0.5 font-mono">—</div>
           <div class="text-[10px] text-emerald-500/80 mt-0.5 flex items-center gap-1 font-medium">
             <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-            Indicador geral ainda não conectado
+            <span id="kpiAcordosDescricao">Indicador geral ainda não conectado</span>
           </div>
         </div>
         <div class="w-9 h-9 rounded-xl bg-emerald-950/40 border border-emerald-800/40 flex items-center justify-center text-emerald-400">
@@ -509,9 +509,9 @@
       <div class="crm-card p-3.5 rounded-2xl flex items-center justify-between">
         <div>
           <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Honorários / Entradas Pix</div>
-          <div class="text-lg font-extrabold text-teal-300 mt-0.5 font-mono">—</div>
+          <div id="kpiHonorariosValor" class="text-lg font-extrabold text-teal-300 mt-0.5 font-mono">—</div>
           <div class="text-[10px] text-slate-500 mt-0.5">
-            Indicador financeiro geral ainda não conectado
+            <span id="kpiHonorariosDescricao">Indicador financeiro geral ainda não conectado</span>
           </div>
         </div>
         <div class="w-9 h-9 rounded-xl bg-teal-950/40 border border-teal-800/40 flex items-center justify-center text-teal-400">
@@ -1532,6 +1532,116 @@
       }
     }
 
+    function valorCentavosFilaRecebeOps(v) {
+      const n = Number(v || 0);
+      return Number.isFinite(n)
+        ? n / 100
+        : 0;
+    }
+
+    function atualizarKPIsFilaRecebeOps() {
+      const carteira =
+        CASES.reduce(
+          (soma, c) =>
+            soma +
+            Number(
+              c.saldo ||
+              c.tot ||
+              0
+            ),
+          0
+        );
+
+      const acordos =
+        CASES.filter(
+          c =>
+            Number(
+              c.parcVenc || 0
+            ) > 0 ||
+            Number(
+              c.tot || 0
+            ) > 0
+        );
+
+      const honorarios =
+        CASES.reduce(
+          (soma, c) =>
+            soma +
+            Number(
+              c.honorarios || 0
+            ),
+          0
+        );
+
+      const kpiCarteira =
+        document.getElementById(
+          "kpiValorCarteira"
+        );
+
+      const kpiAcordos =
+        document.getElementById(
+          "kpiAcordosValor"
+        );
+
+      const kpiAcordosDesc =
+        document.getElementById(
+          "kpiAcordosDescricao"
+        );
+
+      const kpiHonorarios =
+        document.getElementById(
+          "kpiHonorariosValor"
+        );
+
+      const kpiHonorariosDesc =
+        document.getElementById(
+          "kpiHonorariosDescricao"
+        );
+
+      if (kpiCarteira) {
+        kpiCarteira.textContent =
+          `R$ ${carteira.toLocaleString(
+            "pt-BR",
+            {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }
+          )}`;
+      }
+
+      if (kpiAcordos) {
+        kpiAcordos.textContent =
+          String(
+            acordos.length
+          );
+      }
+
+      if (kpiAcordosDesc) {
+        kpiAcordosDesc.textContent =
+          `${acordos.length} caso${
+            acordos.length === 1
+              ? ""
+              : "s"
+          } com condição identificada`;
+      }
+
+      if (kpiHonorarios) {
+        kpiHonorarios.textContent =
+          `R$ ${honorarios.toLocaleString(
+            "pt-BR",
+            {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }
+          )}`;
+      }
+
+      if (kpiHonorariosDesc) {
+        kpiHonorariosDesc.textContent =
+          "Somatório identificado no Trello";
+      }
+    }
+
     async function carregarPendenciasTrelloRecebeOps(
       trelloJaValidado = false
     ) {
@@ -1597,6 +1707,7 @@
                 shortLink:
                   item.shortLink || "",
                 nome:
+                  item.cliente ||
                   item.nome ||
                   "Cartão sem nome",
                 cpf: "",
@@ -1606,8 +1717,10 @@
                 end: "",
                 lot:
                   item.quadro || "",
-                qd: "",
-                lt: "",
+                qd:
+                  item.quadra || "",
+                lt:
+                  item.lote || "",
                 m2: "",
                 mat: "",
                 ct:
@@ -1622,18 +1735,46 @@
                 stCls:
                   "bg-amber-950/70 text-amber-300 border-amber-800/70",
                 dias: 0,
-                parcVenc: 0,
-                parcNum: "",
+                parcVenc:
+                  Number(
+                    item.acordo &&
+                    item.acordo.quantidadeParcelas ||
+                    0
+                  ),
+                parcNum:
+                  item.acordo &&
+                  item.acordo.quantidadeParcelas
+                    ? `${item.acordo.quantidadeParcelas} parcela(s)`
+                    : "",
                 valOrig: 0,
                 multa: 0,
                 jur: 0,
                 corr: 0,
-                tot: 0,
-                saldo: 0,
-                pago: 0,
-                honorarios: 0,
+                tot:
+                  valorCentavosFilaRecebeOps(
+                    item.acordo &&
+                    item.acordo.totalCentavos
+                  ),
+                saldo:
+                  valorCentavosFilaRecebeOps(
+                    item.acordo &&
+                    item.acordo.saldoCentavos
+                  ),
+                pago:
+                  valorCentavosFilaRecebeOps(
+                    item.acordo &&
+                    item.acordo.pagoCentavos
+                  ),
+                honorarios:
+                  valorCentavosFilaRecebeOps(
+                    item.acordo &&
+                    item.acordo.honorariosCentavos
+                  ),
                 honorariosPago:
-                  false,
+                  !!(
+                    item.acordo &&
+                    item.acordo.honorariosPago
+                  ),
                 listaTrello:
                   item.lista || "",
                 urlTrello:
@@ -1648,6 +1789,7 @@
 
         atualizarOpcoesEmpreendimentoRecebeOps();
         renderCaseList();
+        atualizarKPIsFilaRecebeOps();
 
         const badge =
           document.getElementById(
@@ -3408,19 +3550,75 @@
           window.recebeOpsAguardandoSelecaoTermo =
             true;
 
+          const cardTrello =
+            data.card || {};
+
+          const acordoTrello =
+            cardTrello.acordo || {};
+
           caso.nome =
-            (data.card &&
-              data.card.nome) ||
+            cardTrello.cliente ||
+            cardTrello.nome ||
             "Caso do Trello";
 
           caso.lot =
-            (data.card &&
-              data.card.quadro) ||
+            cardTrello.quadro ||
+            "";
+
+          caso.qd =
+            cardTrello.quadra ||
+            "";
+
+          caso.lt =
+            cardTrello.lote ||
             "";
 
           caso.ct =
             data.shortLink ||
             cardId;
+
+          caso.dt =
+            cardTrello.solicitadoEm ||
+            cardTrello.atualizadoEm ||
+            "";
+
+          caso.parcVenc =
+            Number(
+              acordoTrello.quantidadeParcelas ||
+              0
+            );
+
+          caso.parcNum =
+            caso.parcVenc
+              ? `${caso.parcVenc} parcela(s)`
+              : "";
+
+          caso.tot =
+            valorCentavosFilaRecebeOps(
+              acordoTrello.totalCentavos
+            );
+
+          caso.saldo =
+            valorCentavosFilaRecebeOps(
+              acordoTrello.saldoCentavos
+            );
+
+          caso.pago =
+            valorCentavosFilaRecebeOps(
+              acordoTrello.pagoCentavos
+            );
+
+          caso.honorarios =
+            valorCentavosFilaRecebeOps(
+              acordoTrello.honorariosCentavos
+            );
+
+          caso.honorariosPago =
+            !!acordoTrello.honorariosPago;
+
+          caso.ultimaSolicitacao =
+            cardTrello.ultimaSolicitacao ||
+            "";
 
           caso.st =
             "PARCELAMENTO";
